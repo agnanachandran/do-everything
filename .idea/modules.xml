@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/Emotive.iml" filepath="$PROJECT_DIR$/Emotive.iml" />
+      <module fileurl="file://$PROJECT_DIR$/emotive/emotive.iml" filepath="$PROJECT_DIR$/emotive/emotive.iml" />
+    </modules>
+  </component>
+</project>
+

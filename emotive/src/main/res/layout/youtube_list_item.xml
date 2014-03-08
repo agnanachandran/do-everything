@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/FrameLayout1"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_shadow_card_no_padding" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp" >
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" >
+
+            <ImageView
+                android:id="@+id/ivVideoThumbnail"
+                android:layout_width="100dp"
+                android:layout_height="75dp"
+                android:src="@drawable/ic_envelope" />
+
+            <TextView
+                android:id="@+id/tvVideoTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/ivVideoThumbnail"
+                android:layout_alignRight="@+id/ivVideoThumbnail"
+                android:alpha="0.8"
+                android:background="@color/transparent_black"
+                android:gravity="right"
+                android:paddingRight="5dp"
+                android:text="@string/placeholder_time"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/tvVideoName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-condensed"
+                android:maxLines="2"
+                android:text="@string/placeholder_video_title" />
+
+            <TextView
+                android:id="@+id/tvChannelName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-condensed"
+                android:text="@string/placeholder_video_channel_name"
+                android:textColor="@color/default_light_blue" />
+
+            <LinearLayout
+                android:id="@+id/ll_view_count_and_date_uploaded"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
+
+                <TextView
+                    android:id="@+id/tvViewCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="3dp"
+                    android:fontFamily="sans-serif-condensed"
+                    android:text="@string/placeholder_video_view_count"
+                    android:textColor="@color/LightGray" />
+
+                <TextView
+                    android:id="@+id/tvDateUploaded"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-condensed"
+                    android:text="@string/placeholder_video_date_uploaded"
+                    android:textColor="@color/LightGray" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+</FrameLayout>

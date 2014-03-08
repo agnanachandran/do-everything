@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="drawer_icons"> <!-- Corresponds to drawer_titles from strings.xml -->
+        <item>@drawable/ic_gear</item>
+        <item>@drawable/ic_envelope</item>
+    </array>
+</resources>

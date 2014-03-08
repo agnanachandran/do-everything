@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Emotive</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_new_section">New Search</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section3">Section 3</string>
+    <string name="placeholder_mainSearchView">Search…</string>
+    <string name="search_text_label">Search:</string>
+    <string name="drawer_open">Open</string>
+    <string name="drawer_close">Close</string>
+
+    <string-array name="drawer_titles"> <!-- When modifying this list, also modify res/values/arrays icons drawable list in the same order -->
+        <item>Settings</item>
+        <item>Feedback</item>
+    </string-array>
+
+    <!-- When modifying this, also modify Options enums -->
+    <string-array name="verb_titles">
+        <item>Search</item> <!-- Google query in user's web browser; not in web view -->
+        <item>Find</item> <!-- Location search with GMaps -->
+        <item>Listen</item> <!-- Play music -->
+        <item>Watch a movie</item> <!-- Watch a movie in some theatre -->
+    </string-array>
+
+    <!-- Must be duplicated in Option.java -->
+    <string-array name="search_options">
+        <item>Anything</item>
+        <item>Web</item>
+        <item>Images</item>
+    </string-array>
+    <string-array name="find_me_options">
+        <item>Anything</item>
+        <item>Food</item>
+        <item>Theatre</item>
+    </string-array>
+    <string-array name="listen_to_options">
+        <item>On my device</item>
+        <item>On YouTube</item>
+        <item>On Grooveshark</item>
+    </string-array>
+    <string-array name="watch_a_movie_options">
+        <item>Near me</item>
+        <item>Near…</item>
+        <item>Watch a trailer</item>
+    </string-array>
+    <!-- Must be duplicated in Option.java -->
+
+    <string name="placeholder_text">Placeholder</string>
+
+    <string-array name="placeholder_where_options">
+        <item>…</item>
+    </string-array>
+
+    <string name="drawer_icon_desc">Drawer icon</string>
+    <string name="placeholder_search_query_textview">Search something! :)</string>
+    <string name="placeholder_button">Button</string>
+    <string name="search_icon_desc">Search icon</string>
+    <string name="search_options_title_label">Search for…</string>
+    <string name="find_options_title_label">Find me</string>
+    <string name="listen_options_title_label">Listen to music</string>
+    <string name="watch_options_title_label">Watch a movie</string>
+    <string name="my_email">anojhgnanachandran@gmail.com</string>
+    <string name="feedback_subject">Emotive — Feedback</string>
+    <string name="placeholder_video_title">Video Title Long Enough to span Two Lines</string>
+    <string name="placeholder_video_channel_name">Channel Name</string>
+    <string name="placeholder_video_description">Some lorem ipsum long description of sorts</string>
+    <string name="placeholder_time">11:37</string>
+    <string name="placeholder_video_date_uploaded">5 days ago</string>
+    <string name="placeholder_video_view_count">1,512,341</string>
+
+</resources>

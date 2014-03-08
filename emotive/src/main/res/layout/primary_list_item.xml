@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_shadow_card"
+    android:orientation="horizontal"
+    android:paddingBottom="0dp"
+    android:paddingTop="0dp"
+    android:scrollbarStyle="outsideOverlay" >
+
+    <View
+        android:id="@+id/primary_simple_main_divider"
+        style="@style/SimpleDivider"
+        android:layout_width="2dp"
+        android:layout_height="match_parent"
+        android:background="@color/search_option_selected_blue" />
+
+    <TextView
+        android:id="@+id/tvPrimaryOption"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        android:drawableLeft="@drawable/ic_search"
+        android:drawablePadding="10dp"
+        android:fontFamily="sans-serif-light"
+        android:gravity="center_vertical"
+        android:text="Search"
+        android:textColor="@color/black"
+        android:textSize="20sp" />
+
+</LinearLayout>
