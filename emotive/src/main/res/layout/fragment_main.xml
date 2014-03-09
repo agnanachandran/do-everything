@@ -1,175 +1,146 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent">
 
-        <ScrollView
-            android:id="@+id/scroll_view_main_container"
+    <ScrollView
+        android:id="@+id/scroll_view_main_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/main_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" >
+            android:layout_height="wrap_content"
+            android:background="#eee"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/activity_vertical_margin"
+            tools:context=".MainActivity$DummySectionFragment">
 
             <LinearLayout
-                android:id="@+id/main_container"
+                android:id="@+id/lvPrimaryContainer"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#eee"
+                android:layout_height="300dp"
+                android:layout_marginTop="70dp"
                 android:orientation="vertical"
-                android:paddingBottom="@dimen/activity_vertical_margin"
-                android:paddingLeft="@dimen/activity_horizontal_margin"
-                android:paddingRight="@dimen/activity_horizontal_margin"
-                android:paddingTop="@dimen/activity_vertical_margin"
-                tools:context=".MainActivity$DummySectionFragment" >
+                android:padding="10dp">
+
 
                 <TextView
-                    android:id="@+id/tvSection_searchQuery"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:text="How are you feeling?"
+                    android:id="@+id/mainTextview"
+                    android:layout_gravity="center_horizontal"
                     android:fontFamily="sans-serif-light"
-                    android:text="@string/placeholder_search_query_textview"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:textColor="@color/black"
-                    android:textSize="20sp"
-                    android:visibility="gone" />
-
-                <ListView
-                    android:id="@+id/lvPrimaryOptions"
-                    android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    android:layout_marginBottom="@dimen/default_medium_vertical_margin"
-                    android:choiceMode="singleChoice"
-                    android:clickable="true"
-                    android:drawSelectorOnTop="false"
-                    android:paddingLeft="-9dp"
-                    android:visibility="visible"
-                    tools:listitem="@layout/primary_list_item" >
-                </ListView>
+                    android:textSize="25sp"
+                    android:layout_marginBottom="10dp" />
 
                 <LinearLayout
+                    android:id="@+id/horizontalButtonLinearLayout1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/bg_shadow_card"
-                    android:paddingLeft="8dp"
-                    android:paddingRight="8dp"
-                    android:paddingTop="8dp" >
+                    android:background="@drawable/roundrect"
+                    android:padding="5dp">
 
-                    <ImageView
-                        android:id="@+id/imgSearchIcon"
-                        android:layout_width="28dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginRight="3dp"
-                        android:contentDescription="@string/search_icon_desc"
-                        android:src="@drawable/ic_search" />
+                    <Button
+                        android:id="@+id/bFirstOption"
+                        style="@style/CustomTransparentButton"
+                        android:background="@drawable/primary_blue_selector"
+                        android:text="@string/primary_hungry" />
 
-                    <AutoCompleteTextView
-                        android:id="@+id/mainSearchView"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:ems="10"
-                        android:gravity="center_vertical"
-                        android:hint="@string/placeholder_mainSearchView"
-                        android:imeOptions="actionSearch"
-                        android:inputType="text"
-                        android:fontFamily="sans-serif-light" />
+                    <Button
+                        android:id="@+id/bSecondOption"
+                        style="@style/CustomTransparentButton"
+                        android:background="@drawable/primary_blue_selector"
+                        android:text="@string/primary_musical" />
+
+                    <Button
+                        android:id="@+id/bThirdOption"
+                        style="@style/CustomTransparentButton"
+                        android:background="@drawable/primary_blue_selector"
+                        android:text="Chilling" />
                 </LinearLayout>
 
-                <RelativeLayout
-                    android:id="@+id/rlSecondaryContainer"
-                    android:layout_width="match_parent"
-                    android:layout_height="159dp"
-                    android:background="@drawable/bg_shadow_card" >
-
-                    <LinearLayout
-                        android:id="@+id/horizontalButtonLinearLayout"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_below="@+id/simple_main_divider"
-                        android:background="@drawable/roundrect"
-                        android:weightSum="3" >
-
-                        <Button
-                            android:id="@+id/bFirstOption"
-                            style="@style/CustomTransparentButton"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_marginTop="10dp"
-                            android:layout_weight="1"
-                            android:textColor="@color/black" />
-
-                        <View
-                            android:layout_width="1dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="5dp"
-                            android:layout_marginTop="10dp"
-                            android:background="@drawable/gradient_thin_vertical_line" />
-
-                        <Button
-                            android:id="@+id/bSecondOption"
-                            style="@style/CustomTransparentButton"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_marginTop="10dp"
-                            android:layout_weight="1"
-                            android:textColor="@color/black" />
-
-                        <View
-                            android:layout_width="1dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="5dp"
-                            android:layout_marginTop="10dp"
-                            android:background="@drawable/gradient_thin_vertical_line" />
-
-                        <Button
-                            android:id="@+id/bThirdOption"
-                            style="@style/CustomTransparentButton"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_marginTop="10dp"
-                            android:layout_weight="1"
-                            android:textColor="@color/black" />
-                    </LinearLayout>
-
-                    <TextView
-                        android:id="@+id/tvSecondaryOptionsTitle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginLeft="15dp"
-                        android:layout_marginRight="10dp"
-                        android:layout_marginTop="10dp"
-                        android:fontFamily="sans-serif-light"
-                        android:text="@string/search_options_title_label"
-                        android:textColor="@color/black"
-                        android:textSize="20sp"
-                        android:textStyle="italic" />
-
-                    <View
-                        android:id="@+id/simple_main_divider"
-                        style="@style/SimpleDivider"
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_below="@id/tvSecondaryOptionsTitle"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        android:background="@color/WhiteSmoke" />
-                </RelativeLayout>
                 <LinearLayout
-                android:id="@+id/ll_panel_container"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical" >
+                    android:id="@+id/horizontalButtonLinearLayout2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/roundrect"
+                    android:padding="5dp">
 
-                <ListView
-                    android:id="@+id/lvQueryResults"
+                    <Button
+                        android:id="@+id/bFourthOption"
+                        style="@style/CustomTransparentButton"
+                        android:background="@drawable/primary_blue_selector"
+                        android:text="Lorem" />
+
+                    <Button
+                        android:id="@+id/bFifthOption"
+                        style="@style/CustomTransparentButton"
+                        android:background="@drawable/primary_blue_selector"
+                        android:text="Ipsum" />
+
+                    <Button
+                        android:id="@+id/bSixthOption"
+                        style="@style/CustomTransparentButton"
+                        android:background="@drawable/primary_blue_selector"
+                        android:text="Dolor" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/bg_shadow_card"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:paddingTop="8dp"
+                android:visibility="visible">
+
+                <ImageView
+                    android:id="@+id/imgSearchIcon"
+                    android:layout_width="28dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="3dp"
+                    android:contentDescription="@string/search_icon_desc"
+                    android:src="@android:drawable/ic_menu_search" />
+
+                <AutoCompleteTextView
+                    android:id="@+id/mainSearchView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:visibility="visible"
-                    tools:listitem="@layout/youtube_list_item" >
-                </ListView>
-            </LinearLayout>
+                    android:ems="10"
+                    android:fontFamily="sans-serif-light"
+                    android:gravity="center_vertical"
+                    android:hint="@string/placeholder_mainSearchView"
+                    android:imeOptions="actionSearch"
+                    android:inputType="text" />
             </LinearLayout>
 
-        </ScrollView>
+        </LinearLayout>
+
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/ll_panel_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ListView
+            android:id="@+id/lvQueryResults"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="visible"
+            tools:listitem="@layout/youtube_list_item" />
+    </LinearLayout>
 
 </RelativeLayout>

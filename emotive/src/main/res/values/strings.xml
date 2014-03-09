@@ -69,5 +69,7 @@
     <string name="placeholder_time">11:37</string>
     <string name="placeholder_video_date_uploaded">5 days ago</string>
     <string name="placeholder_video_view_count">1,512,341</string>
+    <string name="primary_hungry">Hungry</string>
+    <string name="primary_musical">Musical</string>
 
 </resources>
