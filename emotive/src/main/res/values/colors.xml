@@ -1,10 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <color name="android_green">#A4C639</color>
 
+    <!-- Text shadows -->
+    <color name="text_shadow">#7F000000</color>
+
     <!-- Default colours -->
-    <color name="default_green">#27AE60</color>
-    <color name="default_dark_green">#219251</color>
+    <color name="pager_title_strip_bg">#99000000</color>
+    <color name="action_bar_bg">#99000000</color>
+    <color name="action_bar_transparent_bg">#00000000</color>
+    <color name="primary_btn_selector_bg">#33eeeeee</color>
+
+
     <color name="default_light_blue">#00ABF0</color>
     <color name="default_gray_bg">#f9f9f9</color>
     <color name="default_three_dark_transparent">#11000000</color>
@@ -15,7 +22,7 @@
     <!-- Transparent styles -->
     <color name="transparent_black">#dd3f3f3f</color>
     <color name="transparent_light">#dde0e0e0</color>
-    
+
     <!-- Primary option colours -->
     <color name="search_option_selected_blue">#196EEE</color>
     <color name="search_option_unselected_blue">#88b4f6</color>
@@ -26,7 +33,7 @@
     <color name="watch_option_selected_red">#e32c26</color>
     <color name="listen_option_unselected_orange">#FFAB5F</color>
     <color name="listen_option_selected_orange">#FF6600</color>
-    
+
     <color name="btn_selected_green">#b7fcd5</color>
     <color name="btn_secondary_view_green">#e8fef2</color>
 

@@ -22,6 +22,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -70,6 +71,13 @@ public class MainSectionFragment extends Fragment implements View.OnClickListene
     private View rootView;
     private TextView mainTextView;
     private Animation slideUp;
+    private ImageView imgFirstOption;
+    private ImageView imgSecondOption;
+    private ImageView imgThirdOption;
+    private ImageView imgFourthOption;
+    private ImageView imgFifthOption;
+    private ImageView imgSixthOption;
+    private ImageView[] primaryImages;
 
     public MainSectionFragment() {
     }
@@ -112,10 +120,21 @@ public class MainSectionFragment extends Fragment implements View.OnClickListene
         bFifthButton = (Button) rootView.findViewById(R.id.bFifthOption);
         bSixthButton = (Button) rootView.findViewById(R.id.bSixthOption);
 
-        primaryButtons = new Button[]{bFirstButton, bSecondButton, bThirdButton, bFourthButton, bFifthButton, bSixthButton};
+        imgFirstOption = (ImageView) rootView.findViewById(R.id.imgFirstOption);
+        imgSecondOption = (ImageView) rootView.findViewById(R.id.imgSecondOption);
+        imgThirdOption = (ImageView) rootView.findViewById(R.id.imgThirdOption);
+        imgFourthOption = (ImageView) rootView.findViewById(R.id.imgFourthOption);
+        imgFifthOption = (ImageView) rootView.findViewById(R.id.imgFifthOption);
+        imgSixthOption = (ImageView) rootView.findViewById(R.id.imgSixthOption);
 
+        primaryButtons = new Button[]{bFirstButton, bSecondButton, bThirdButton, bFourthButton, bFifthButton, bSixthButton};
+        primaryImages = new ImageView[]{imgFirstOption, imgSecondOption, imgThirdOption, imgFourthOption, imgFifthOption, imgSixthOption};
         for (Button b : primaryButtons) {
             b.setOnClickListener(this);
+        }
+
+        for (ImageView img : primaryImages) {
+            img.setOnClickListener(this);
         }
     }
 
@@ -279,29 +298,34 @@ public class MainSectionFragment extends Fragment implements View.OnClickListene
 
     @Override
     public void onClick(View v) {
-        Button b = (Button) v;
-        switch (b.getId()) {
+        switch (v.getId()) {
             case R.id.bFirstOption:
+            case R.id.imgFirstOption:
                 mPrimaryOption = 1;
                 setupFoodOptions();
                 break;
             case R.id.bSecondOption:
+            case R.id.imgSecondOption:
                 mPrimaryOption = 2;
                 break;
             case R.id.bThirdOption:
+            case R.id.imgThirdOption:
                 mPrimaryOption = 3;
                 break;
             case R.id.bFourthOption:
+            case R.id.imgFourthOption:
                 mPrimaryOption = 4;
                 break;
             case R.id.bFifthOption:
+            case R.id.imgFifthOption:
                 mPrimaryOption = 5;
                 break;
             case R.id.bSixthOption:
+            case R.id.imgSixthOption:
                 mPrimaryOption = 6;
                 break;
         }
-        setupButton(b.getText().toString());
+//        setupButton(b.getText().toString());
 
     }
 

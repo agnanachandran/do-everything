@@ -1,13 +1,5 @@
 package ca.pluszero.emotive.activities;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
@@ -18,6 +10,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.PagerTitleStrip;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
@@ -26,6 +19,15 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
 import ca.pluszero.emotive.R;
 import ca.pluszero.emotive.adapters.DrawerListAdapter;
 import ca.pluszero.emotive.fragments.MainSectionFragment;
@@ -62,7 +64,7 @@ public class MainActivity extends FragmentActivity {
         
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
-        
+
         // Set up image cacher/retriever
         DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder().cacheInMemory(true)
                 .cacheOnDisc(true).build();
@@ -76,9 +78,20 @@ public class MainActivity extends FragmentActivity {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         // set a custom shadow that overlays the main content when the drawer opens
-        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START); 
+        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
+
+        int statusBarHeight = getStatusBarHeight();
+        int actionBarSize = getActionBarSize();
+
+        // Move down pagerTitleStrip and drawer
+        PagerTitleStrip titleStrip = (PagerTitleStrip) findViewById(R.id.pager_title_strip);
+
+        // TODO: adjust for non 4.4 phones
+        titleStrip.setPadding(0, statusBarHeight + actionBarSize + 2, 0, 4);
+
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
-        
+        mDrawerList.setPadding(15, statusBarHeight + actionBarSize + 2, 0, 4);
+
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_navigation_drawer, R.string.drawer_open, R.string.drawer_close) {
         	// Called when drawer has settled in completely closed state
         	public void onDrawerClosed(View view) {
@@ -112,6 +125,14 @@ public class MainActivity extends FragmentActivity {
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
+    }
+
+    private int getActionBarSize() {
+        final TypedArray styledAttributes = getTheme().obtainStyledAttributes(
+                new int[] { android.R.attr.actionBarSize });
+        int actionBarSize = (int) styledAttributes.getDimension(0, 0);
+        styledAttributes.recycle();
+        return actionBarSize;
     }
 
     private void loadDrawerItems(List<DrawerItem> drawerItems) {
@@ -240,6 +261,15 @@ public class MainActivity extends FragmentActivity {
 //    		getActionBar().setTitle(mActionBarTitle);
     	}
     	
+    }
+
+    private int getStatusBarHeight() {
+        int result = 0;
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
     }
 
 
