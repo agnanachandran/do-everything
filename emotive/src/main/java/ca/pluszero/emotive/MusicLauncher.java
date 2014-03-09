@@ -100,7 +100,11 @@ public class MusicLauncher implements LoaderManager.LoaderCallbacks<Cursor> {
             adapter.changeCursor(cursor);
             int index = cursor.getColumnIndex(MediaStore.Audio.Media.DATA);
             while (cursor.moveToNext()) {
-                if (cursor.getPosition() == 1) {
+                // If there's only one result, play it; don't bring up the results.
+                if (cursor.getCount() == 1) {
+
+                }
+                if (cursor.getPosition() == 0) {
                     String songPath = cursor.getString(index);
                     startMusic(songPath);
                 }

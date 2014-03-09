@@ -24,29 +24,6 @@
         <item>Watch a movie</item> <!-- Watch a movie in some theatre -->
     </string-array>
 
-    <!-- Must be duplicated in Option.java -->
-    <string-array name="search_options">
-        <item>Anything</item>
-        <item>Web</item>
-        <item>Images</item>
-    </string-array>
-    <string-array name="find_me_options">
-        <item>Anything</item>
-        <item>Food</item>
-        <item>Theatre</item>
-    </string-array>
-    <string-array name="listen_to_options">
-        <item>On my device</item>
-        <item>On YouTube</item>
-        <item>On Grooveshark</item>
-    </string-array>
-    <string-array name="watch_a_movie_options">
-        <item>Near me</item>
-        <item>Near…</item>
-        <item>Watch a trailer</item>
-    </string-array>
-    <!-- Must be duplicated in Option.java -->
-
     <string name="placeholder_text">Placeholder</string>
 
     <string-array name="placeholder_where_options">

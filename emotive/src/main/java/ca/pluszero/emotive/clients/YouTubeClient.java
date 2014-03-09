@@ -1,4 +1,4 @@
-package ca.pluszero.emotive;
+package ca.pluszero.emotive.clients;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -9,6 +9,7 @@ import org.json.JSONObject;
 
 import java.util.List;
 
+import ca.pluszero.emotive.ApiKeys;
 import ca.pluszero.emotive.models.YouTubeVideo;
 
 public class YouTubeClient {

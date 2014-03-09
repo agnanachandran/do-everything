@@ -25,8 +25,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
                 android:layout_marginTop="70dp"
-                android:orientation="vertical"
-                android:padding="10dp">
+                android:orientation="vertical">
 
 
                 <TextView
@@ -44,7 +43,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/roundrect"
-                    android:padding="5dp">
+                    android:layout_marginBottom="10dp"
+                    >
 
                     <Button
                         android:id="@+id/bFirstOption"
@@ -62,21 +62,20 @@
                         android:id="@+id/bThirdOption"
                         style="@style/CustomTransparentButton"
                         android:background="@drawable/primary_blue_selector"
-                        android:text="Chilling" />
+                        android:text="Learning" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/horizontalButtonLinearLayout2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/roundrect"
-                    android:padding="5dp">
+                    android:background="@drawable/roundrect">
 
                     <Button
                         android:id="@+id/bFourthOption"
                         style="@style/CustomTransparentButton"
                         android:background="@drawable/primary_blue_selector"
-                        android:text="Lorem" />
+                        android:text="Watch" />
 
                     <Button
                         android:id="@+id/bFifthOption"
@@ -127,20 +126,19 @@
         </LinearLayout>
 
     </ScrollView>
-
     <LinearLayout
         android:id="@+id/ll_panel_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         android:visibility="gone">
 
         <ListView
             android:id="@+id/lvQueryResults"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="visible"
+            android:layout_height="wrap_content"
             tools:listitem="@layout/youtube_list_item" />
     </LinearLayout>
+
 
 </RelativeLayout>

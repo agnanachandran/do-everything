@@ -14,6 +14,8 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -37,9 +39,9 @@ import java.util.List;
 import ca.pluszero.emotive.MusicLauncher;
 import ca.pluszero.emotive.NetworkManager;
 import ca.pluszero.emotive.R;
-import ca.pluszero.emotive.YouTubeClient;
 import ca.pluszero.emotive.adapters.PlacesAutoCompleteAdapter;
 import ca.pluszero.emotive.adapters.YouTubeListAdapter;
+import ca.pluszero.emotive.clients.YouTubeClient;
 import ca.pluszero.emotive.models.Option;
 import ca.pluszero.emotive.models.YouTubeVideo;
 
@@ -67,6 +69,7 @@ public class MainSectionFragment extends Fragment implements View.OnClickListene
     private AutoCompleteTextView etSearchView;
     private View rootView;
     private TextView mainTextView;
+    private Animation slideUp;
 
     public MainSectionFragment() {
     }
@@ -78,6 +81,9 @@ public class MainSectionFragment extends Fragment implements View.OnClickListene
         lvQueryResults = (ListView) rootView.findViewById(R.id.lvQueryResults);
         mainTextView = (TextView) rootView.findViewById(R.id.mainTextview);
 
+        slideUp = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.slide_up);
+        // TODO: can this just be getActivity() instead of also getApplicationContext()?
+
         // tvSearchQuery.setText(Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER)));
         setupPrimaryButtons(rootView);
 
@@ -86,7 +92,7 @@ public class MainSectionFragment extends Fragment implements View.OnClickListene
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    performSearch(v.getText());
+                    performSearch(v.getText().toString());
                     return true;
                 }
                 return false;
@@ -99,15 +105,15 @@ public class MainSectionFragment extends Fragment implements View.OnClickListene
     }
 
     private void setupPrimaryButtons(View rootView) {
-        // Set up 3 primary search buttons
         bFirstButton = (Button) rootView.findViewById(R.id.bFirstOption);
         bSecondButton = (Button) rootView.findViewById(R.id.bSecondOption);
         bThirdButton = (Button) rootView.findViewById(R.id.bThirdOption);
-        bFourthButton = (Button) rootView.findViewById(R.id.bFirstOption);
-        bFifthButton = (Button) rootView.findViewById(R.id.bSecondOption);
-        bSixthButton = (Button) rootView.findViewById(R.id.bThirdOption);
+        bFourthButton = (Button) rootView.findViewById(R.id.bFourthOption);
+        bFifthButton = (Button) rootView.findViewById(R.id.bFifthOption);
+        bSixthButton = (Button) rootView.findViewById(R.id.bSixthOption);
 
         primaryButtons = new Button[]{bFirstButton, bSecondButton, bThirdButton, bFourthButton, bFifthButton, bSixthButton};
+
         for (Button b : primaryButtons) {
             b.setOnClickListener(this);
         }
@@ -118,11 +124,11 @@ public class MainSectionFragment extends Fragment implements View.OnClickListene
         etSearchView.setOnItemClickListener(null); // TODO: do this for other options
     }
 
-    private void placeFindMeOptions() {
+    private void setupFoodOptions() {
 //        setupSecondaryOptions(getResources().getStringArray(R.array.find_me_options), R.string.find_options_title_label);
-        ((AutoCompleteTextView) etSearchView).setAdapter(new PlacesAutoCompleteAdapter(
+        etSearchView.setAdapter(new PlacesAutoCompleteAdapter(
                 getActivity(), R.layout.simple_list_item));
-        ((AutoCompleteTextView) etSearchView).setOnItemClickListener(new OnItemClickListener() {
+        etSearchView.setOnItemClickListener(new OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
@@ -131,13 +137,15 @@ public class MainSectionFragment extends Fragment implements View.OnClickListene
         });
     }
 
-    private void performSearch(CharSequence query) {
-        if (mPrimaryOption == Option.Verb.SEARCH.val) {
-            startGoogleSearchAnything(query);
-        } else if (mPrimaryOption == Option.Verb.LISTEN_TO.val) {
-            startMusicSearchDevice(query.toString());
-        } else if (mPrimaryOption == Option.Verb.FIND_ME.val) {
+    private void performSearch(String query) {
+        if (mPrimaryOption == Option.Verb.FOOD.val) {
             startMapsSearch(query);
+        } else if (mPrimaryOption == Option.Verb.MUSIC.val) {
+            startMusicSearchDevice(query);
+        } else if (mPrimaryOption == Option.Verb.LEARN.val) {
+            startGoogleSearchAnything(query);
+        } else if (mPrimaryOption == Option.Verb.WATCH.val) {
+            startYouTubeSearch(query);
         }
     }
 
@@ -182,7 +190,6 @@ public class MainSectionFragment extends Fragment implements View.OnClickListene
                                         if (videoObject.equals(searchJsonItems.getJSONObject(searchJsonItems.length() - 1))) {
 
                                             bringUpListviewAndDismissKeyboard();
-                                            lvQueryResults.setVisibility(View.VISIBLE);
                                             lvQueryResults.setAdapter(new YouTubeListAdapter(
                                                     getActivity(), videos));
                                             lvQueryResults
@@ -231,8 +238,6 @@ public class MainSectionFragment extends Fragment implements View.OnClickListene
         startActivity(intent);
     }
 
-    // launches an activity that searches Google for the user's query in a
-    // browser
     private void startGoogleSearchAnything(CharSequence query) {
         Intent browserIntent = new Intent(Intent.ACTION_WEB_SEARCH);
         browserIntent.putExtra(SearchManager.QUERY, query.toString());
@@ -246,7 +251,8 @@ public class MainSectionFragment extends Fragment implements View.OnClickListene
         int[] mSongListItems = {R.id.tvQueryTitleCard};
         mAdapter = new SimpleCursorAdapter(getActivity(), R.layout.row_card, null, artistColumns,
                 mSongListItems);
-        lvQueryResults.setVisibility(View.VISIBLE);
+
+        bringUpListviewAndDismissKeyboard();
         lvQueryResults.setAdapter(mAdapter);
         lvQueryResults.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -266,8 +272,9 @@ public class MainSectionFragment extends Fragment implements View.OnClickListene
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(
                 Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(etSearchView.getWindowToken(), 0);
-
-        // TODO: Show listview
+        rootView.findViewById(R.id.ll_panel_container).setVisibility(View.VISIBLE);
+        rootView.findViewById(R.id.scroll_view_main_container).setVisibility(View.GONE);
+//        rootView.findViewById(R.id.ll_panel_container).startAnimation(slideUp);
     }
 
     @Override
@@ -276,6 +283,7 @@ public class MainSectionFragment extends Fragment implements View.OnClickListene
         switch (b.getId()) {
             case R.id.bFirstOption:
                 mPrimaryOption = 1;
+                setupFoodOptions();
                 break;
             case R.id.bSecondOption:
                 mPrimaryOption = 2;
@@ -301,7 +309,6 @@ public class MainSectionFragment extends Fragment implements View.OnClickListene
         rootView.findViewById(R.id.horizontalButtonLinearLayout1).setVisibility(View.GONE);
         rootView.findViewById(R.id.horizontalButtonLinearLayout2).setVisibility(View.GONE);
         mainTextView.setText(btnText);
-
     }
 
     public SimpleCursorAdapter getAdapter() {
