@@ -1,4 +1,4 @@
-package ca.pluszero.emotive.clients;
+package ca.pluszero.emotive.managers;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -15,12 +15,12 @@ import java.util.List;
 import ca.pluszero.emotive.ApiKeys;
 import ca.pluszero.emotive.models.YouTubeVideo;
 
-public class YouTubeClient {
+public class YouTubeManager {
 
     // private static final long NUMBER_OF_VIDEOS_RETURNED = 25;
     private static final String API_KEY = ApiKeys.GOOGLE_KEY;
     private static final String BASE_URL = "https://www.googleapis.com/youtube/v3";
-    private static YouTubeClient instance;
+    private static YouTubeManager instance;
     private static AsyncHttpClient client = new AsyncHttpClient();
     private OnFinishedListener listener;
     private JsonHttpResponseHandler firstResponse = new JsonHttpResponseHandler() {
@@ -38,7 +38,7 @@ public class YouTubeClient {
                     final String videoId = videoObject.getJSONObject("id").getString(
                             "videoId");
                     // Get statistics; specifically # of views
-                    YouTubeClient.getYouTubeVideo(videoId, new JsonHttpResponseHandler() {
+                    YouTubeManager.getYouTubeVideo(videoId, new JsonHttpResponseHandler() {
                         @Override
                         public void onStart() {
                         }
@@ -63,7 +63,7 @@ public class YouTubeClient {
         }
     };
 
-    private YouTubeClient(OnFinishedListener listener) {
+    private YouTubeManager(OnFinishedListener listener) {
         this.listener = listener;
     }
 
@@ -98,9 +98,9 @@ public class YouTubeClient {
         return BASE_URL + "/search/" + relativeUrl;
     }
 
-    public static YouTubeClient getInstance(OnFinishedListener listener) {
+    public static YouTubeManager getInstance(OnFinishedListener listener) {
         if (instance == null) {
-            instance = new YouTubeClient(listener);
+            instance = new YouTubeManager(listener);
         }
         return instance;
     }

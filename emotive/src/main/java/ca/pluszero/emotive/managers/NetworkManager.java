@@ -1,4 +1,4 @@
-package ca.pluszero.emotive;
+package ca.pluszero.emotive.managers;
 
 import android.content.Context;
 import android.net.ConnectivityManager;

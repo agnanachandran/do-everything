@@ -37,16 +37,16 @@ import com.google.android.youtube.player.YouTubeIntents;
 import java.io.File;
 import java.util.List;
 
-import ca.pluszero.emotive.MusicLauncher;
-import ca.pluszero.emotive.NetworkManager;
+import ca.pluszero.emotive.managers.MusicManager;
+import ca.pluszero.emotive.managers.NetworkManager;
 import ca.pluszero.emotive.R;
 import ca.pluszero.emotive.adapters.PlacesAutoCompleteAdapter;
 import ca.pluszero.emotive.adapters.YouTubeListAdapter;
-import ca.pluszero.emotive.clients.YouTubeClient;
+import ca.pluszero.emotive.managers.YouTubeManager;
 import ca.pluszero.emotive.models.PrimaryOption;
 import ca.pluszero.emotive.models.YouTubeVideo;
 
-public class MainSectionFragment extends Fragment implements View.OnClickListener, YouTubeClient.OnFinishedListener {
+public class MainSectionFragment extends Fragment implements View.OnClickListener, YouTubeManager.OnFinishedListener {
     /**
      * The fragment argument representing the section number for this fragment.
      */
@@ -191,7 +191,7 @@ public class MainSectionFragment extends Fragment implements View.OnClickListene
 
     private void startYouTubeSearch(CharSequence query) {
         if (NetworkManager.isConnected(getActivity())) {
-            YouTubeClient.getInstance(this).getYouTubeSearch(query.toString());
+            YouTubeManager.getInstance(this).getYouTubeSearch(query.toString());
         } else {
             // No interwebs; display Toast. TODO
         }
@@ -215,7 +215,7 @@ public class MainSectionFragment extends Fragment implements View.OnClickListene
     }
 
     private void startMusicSearchDevice(String query) {
-        MusicLauncher musicLauncher = MusicLauncher.getInstance(this);
+        MusicManager musicLauncher = MusicManager.getInstance(this);
         musicLauncher.searchMusic(query);
         String[] artistColumns = {MediaStore.Audio.Media.ARTIST};
         int[] mSongListItems = {R.id.tvQueryTitleCard};

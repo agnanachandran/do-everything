@@ -80,6 +80,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif"
+                    android:layout_marginLeft="5dp"
                     android:text="@string/placeholder_video_date_uploaded"
                     android:textColor="@color/LightGray" />
             </LinearLayout>

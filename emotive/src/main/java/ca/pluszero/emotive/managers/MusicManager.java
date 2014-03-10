@@ -1,4 +1,4 @@
-package ca.pluszero.emotive;
+package ca.pluszero.emotive.managers;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -16,23 +16,23 @@ import java.io.File;
 
 import ca.pluszero.emotive.fragments.MainSectionFragment;
 
-public class MusicLauncher implements LoaderManager.LoaderCallbacks<Cursor> {
+public class MusicManager implements LoaderManager.LoaderCallbacks<Cursor> {
 
     // Identifies a particular Loader
     private static final int URL_LOADER = 0;
-    private static MusicLauncher instance = null;
+    private static MusicManager instance = null;
     private final Fragment fragment;
     private String[] mSelectionArgs;
     private String[] mProjection;
     private String mSelectionClause;
 
-    private MusicLauncher(Fragment fragment) {
+    private MusicManager(Fragment fragment) {
         this.fragment = fragment;
     }
 
-    public static MusicLauncher getInstance(Fragment fragment) {
+    public static MusicManager getInstance(Fragment fragment) {
         if (instance == null) {
-            instance = new MusicLauncher(fragment);
+            instance = new MusicManager(fragment);
         }
         return instance;
     }

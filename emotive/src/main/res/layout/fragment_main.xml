@@ -33,9 +33,10 @@
             <LinearLayout
                 android:id="@+id/ll_primary_container"
                 android:layout_width="wrap_content"
-                android:layout_height="280dp"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="15dp"
+                android:paddingTop="20dp"
                 android:background="@drawable/bg_shadow_card"
                 android:orientation="vertical">
 
@@ -107,7 +108,7 @@
                         <Button
                             android:id="@+id/bFourthOption"
                             style="@style/CustomTransparentButton"
-                            android:text="Find" />
+                            android:text="Find"/>
                     </LinearLayout>
 
                     <LinearLayout
