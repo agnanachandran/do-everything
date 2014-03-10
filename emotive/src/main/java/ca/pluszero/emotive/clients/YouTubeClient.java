@@ -47,7 +47,7 @@ public class YouTubeClient {
                         public synchronized void onSuccess(JSONObject response) {
                             try {
                                 addYoutubeVideo(response, videoObject, videos, videoId);
-                                if (videoObject.equals(searchJsonItems.getJSONObject(searchJsonItems.length() - 1))) {
+                                if (videos.size() == searchJsonItems.length()) {
                                     listener.onYoutubeQueryFinished(videos);
                                 }
                             } catch (JSONException e) {
