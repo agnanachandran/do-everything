@@ -3,7 +3,7 @@
     android:id="@+id/FrameLayout1"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_shadow_card_no_padding" >
+    android:background="@drawable/bg_shadow_card" >
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -21,7 +21,7 @@
                 android:id="@+id/ivVideoThumbnail"
                 android:layout_width="100dp"
                 android:layout_height="75dp"
-                android:src="@drawable/ic_envelope" />
+                android:src="@drawable/google_icon" />
 
             <TextView
                 android:id="@+id/tvVideoTime"
@@ -49,7 +49,7 @@
                 android:id="@+id/tvVideoName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="sans-serif-condensed"
+                android:fontFamily="sans-serif-light"
                 android:maxLines="2"
                 android:text="@string/placeholder_video_title" />
 
@@ -57,7 +57,7 @@
                 android:id="@+id/tvChannelName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="sans-serif-condensed"
+                android:fontFamily="sans-serif"
                 android:text="@string/placeholder_video_channel_name"
                 android:textColor="@color/default_light_blue" />
 
@@ -71,7 +71,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="3dp"
-                    android:fontFamily="sans-serif-condensed"
+                    android:fontFamily="sans-serif-light"
                     android:text="@string/placeholder_video_view_count"
                     android:textColor="@color/LightGray" />
 
@@ -79,7 +79,7 @@
                     android:id="@+id/tvDateUploaded"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-condensed"
+                    android:fontFamily="sans-serif"
                     android:text="@string/placeholder_video_date_uploaded"
                     android:textColor="@color/LightGray" />
             </LinearLayout>

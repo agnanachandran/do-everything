@@ -1,17 +1,19 @@
 package ca.pluszero.emotive.adapters;
 
-import java.util.List;
-
 import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import ca.pluszero.emotive.R;
-import ca.pluszero.emotive.models.YouTubeVideo;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
+
+import java.text.NumberFormat;
+import java.util.List;
+
+import ca.pluszero.emotive.R;
+import ca.pluszero.emotive.models.YouTubeVideo;
 
 public class YouTubeListAdapter extends BaseArrayAdapter<YouTubeVideo> {
     
@@ -32,6 +34,7 @@ public class YouTubeListAdapter extends BaseArrayAdapter<YouTubeVideo> {
             viewHolder.thumbnail = (ImageView) rowView.findViewById(R.id.ivVideoThumbnail);
             viewHolder.channelName = (TextView) rowView.findViewById(R.id.tvChannelName);
             viewHolder.viewCount = (TextView) rowView.findViewById(R.id.tvViewCount);
+            viewHolder.duration = (TextView) rowView.findViewById(R.id.tvVideoTime);
             rowView.setTag(viewHolder);
         }
         ViewHolder holder = (ViewHolder) rowView.getTag();
@@ -39,7 +42,8 @@ public class YouTubeListAdapter extends BaseArrayAdapter<YouTubeVideo> {
         holder.videoName.setText(video.getName());
         imageLoader.displayImage(video.getThumbnailUrl(), holder.thumbnail);
         holder.channelName.setText(video.getChannelName());
-        holder.viewCount.setText(video.getViewCount()+"");
+        holder.viewCount.setText(NumberFormat.getIntegerInstance().format(video.getViewCount()));
+        holder.duration.setText(video.getDuration());
         return rowView;
     }
     
@@ -48,5 +52,6 @@ public class YouTubeListAdapter extends BaseArrayAdapter<YouTubeVideo> {
         ImageView thumbnail;
         TextView channelName;
         TextView viewCount;
+        TextView duration;
       }
 }

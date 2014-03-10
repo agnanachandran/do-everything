@@ -87,7 +87,7 @@ public class MainActivity extends FragmentActivity {
         PagerTitleStrip titleStrip = (PagerTitleStrip) findViewById(R.id.pager_title_strip);
 
         // TODO: adjust for non 4.4 phones
-        titleStrip.setPadding(0, statusBarHeight + actionBarSize + 2, 0, 4);
+        titleStrip.setPadding(0, statusBarHeight + actionBarSize + 2, 0, 7);
 
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
         mDrawerList.setPadding(15, statusBarHeight + actionBarSize + 2, 0, 4);
@@ -271,6 +271,5 @@ public class MainActivity extends FragmentActivity {
         }
         return result;
     }
-
 
 }

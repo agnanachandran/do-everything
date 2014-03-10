@@ -100,7 +100,7 @@ public class MusicLauncher implements LoaderManager.LoaderCallbacks<Cursor> {
             adapter.changeCursor(cursor);
             int index = cursor.getColumnIndex(MediaStore.Audio.Media.DATA);
             while (cursor.moveToNext()) {
-                // If there's only one result, play it; don't bring up the results.
+                // If there's only one result, play it; bring up the results.
                 if (cursor.getCount() == 1) {
 
                 }

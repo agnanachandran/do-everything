@@ -19,36 +19,31 @@
             android:paddingTop="@dimen/activity_vertical_margin"
             tools:context=".MainActivity$DummySectionFragment">
 
-            <TextView
+            <TextSwitcher
                 android:id="@+id/mainTextview"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="80dp"
+                android:layout_marginTop="60dp"
                 android:fontFamily="sans-serif-light"
-                android:shadowColor="@color/text_shadow"
-                android:shadowDx="-1"
-                android:shadowDy="-1"
-                android:shadowRadius="3"
-                android:text="How are you feeling?"
+                android:text="   Good evening, Anojh\nWhat do you want to do?"
                 android:textColor="@color/white"
                 android:textSize="25sp" />
 
             <LinearLayout
-                android:id="@+id/lvPrimaryContainer"
-                android:layout_width="match_parent"
+                android:id="@+id/ll_primary_container"
+                android:layout_width="wrap_content"
                 android:layout_height="280dp"
+                android:layout_gravity="center"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/bg_shadow_card"
                 android:orientation="vertical">
-
 
                 <LinearLayout
                     android:id="@+id/horizontalButtonLinearLayout1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:paddingLeft="5dp"
+                    android:weightSum="3"
                     android:background="@drawable/roundrect">
 
                     <LinearLayout
@@ -57,12 +52,12 @@
 
                         <ImageView android:id="@+id/imgFirstOption"
                             style="@style/circle_image"
-                            android:src="@drawable/primary_btn_selector" />
+                            android:src="@drawable/primary_food_selector" />
 
                         <Button
                             android:id="@+id/bFirstOption"
                             style="@style/CustomTransparentButton"
-                            android:text="@string/primary_hungry" />
+                            android:text="Eat" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -71,12 +66,12 @@
 
                         <ImageView android:id="@+id/imgSecondOption"
                             style="@style/circle_image"
-                            android:src="@drawable/primary_btn_selector" />
+                            android:src="@drawable/primary_music_selector" />
 
                         <Button
                             android:id="@+id/bSecondOption"
                             style="@style/CustomTransparentButton"
-                            android:text="Musical" />
+                            android:text="Listen" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -85,7 +80,7 @@
 
                         <ImageView android:id="@+id/imgThirdOption"
                             style="@style/circle_image"
-                            android:src="@drawable/primary_btn_selector" />
+                            android:src="@drawable/primary_google_selector" />
 
                         <Button
                             android:id="@+id/bThirdOption"
@@ -99,7 +94,6 @@
                     android:id="@+id/horizontalButtonLinearLayout2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
                     android:background="@drawable/roundrect">
 
                     <LinearLayout
@@ -108,12 +102,12 @@
 
                         <ImageView android:id="@+id/imgFourthOption"
                             style="@style/circle_image"
-                            android:src="@drawable/primary_btn_selector" />
+                            android:src="@drawable/primary_find_selector" />
 
                         <Button
                             android:id="@+id/bFourthOption"
                             style="@style/CustomTransparentButton"
-                            android:text="Watch" />
+                            android:text="Find" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -122,12 +116,12 @@
 
                         <ImageView android:id="@+id/imgFifthOption"
                             style="@style/circle_image"
-                            android:src="@drawable/primary_btn_selector" />
+                            android:src="@drawable/primary_watch_selector" />
 
                         <Button
                             android:id="@+id/bFifthOption"
                             style="@style/CustomTransparentButton"
-                            android:text="@string/primary_hungry" />
+                            android:text="Watch" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -136,12 +130,12 @@
 
                         <ImageView android:id="@+id/imgSixthOption"
                             style="@style/circle_image"
-                            android:src="@drawable/primary_btn_selector" />
+                            android:src="@drawable/primary_note_selector" />
 
                         <Button
                             android:id="@+id/bSixthOption"
                             style="@style/CustomTransparentButton"
-                            android:text="@string/primary_hungry" />
+                            android:text="Note" />
                     </LinearLayout>
 
                 </LinearLayout>
@@ -149,6 +143,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/ll_search_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
@@ -157,7 +152,7 @@
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
                 android:paddingTop="8dp"
-                android:visibility="visible">
+                android:visibility="gone">
 
                 <ImageView
                     android:id="@+id/imgSearchIcon"
@@ -189,14 +184,14 @@
     <LinearLayout
         android:id="@+id/ll_panel_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical"
         android:visibility="gone">
 
         <ListView
             android:id="@+id/lvQueryResults"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             tools:listitem="@layout/youtube_list_item" />
     </LinearLayout>
 

@@ -3,7 +3,7 @@
     <color name="android_green">#A4C639</color>
 
     <!-- Text shadows -->
-    <color name="text_shadow">#7F000000</color>
+    <color name="text_shadow">#AF000000</color>
 
     <!-- Default colours -->
     <color name="pager_title_strip_bg">#99000000</color>
@@ -20,7 +20,7 @@
     <color name="default_orange">#F4842D</color>
 
     <!-- Transparent styles -->
-    <color name="transparent_black">#dd3f3f3f</color>
+    <color name="transparent_black">#dd0f0f0f</color>
     <color name="transparent_light">#dde0e0e0</color>
 
     <!-- Primary option colours -->
@@ -78,7 +78,7 @@
     <color name="DarkGoldenrod">#B8860B</color>
     <color name="DarkKhaki">#BDB76B</color>
     <!-- Generic Light -->
-    <color name="LightGray">#D3D3D3</color>
+    <color name="LightGray">#B3B3B3</color>
     <color name="LightSteelBlue">#B0C4DE</color>
     <color name="LightBlue">#ADD8E6</color>
     <color name="LightPink">#FFB6C1</color>

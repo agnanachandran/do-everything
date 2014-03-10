@@ -1,33 +1,31 @@
 package ca.pluszero.emotive.models;
 
-public class PrimaryOption {
-	
-	private final int compoundDrawable;
-	private final int unselectedRes;
-	private final int selectedRes;
-	private final String text;
-	
-	public PrimaryOption(int compoundDrawable, int unselectedRes, int selectedRes, String text) {
-	    this.compoundDrawable = compoundDrawable;
-		this.unselectedRes = unselectedRes;
-		this.selectedRes = selectedRes;
-		this.text = text;
-	}
+public enum PrimaryOption {
+    FOOD("Eat", "What do you want to eat?", 1),
+    LISTEN("Listen", "Search for a song, artist, or album", 2),
+    GOOGLE("Learn", "Google search", 3),
+    FIND("Find", "Find a place", 4),
+    YOUTUBE("Watch", "Search YouTube", 5),
+    NOTE("Note", "Add a note to Google Keep", 6);
+    private final String mainInfo;
+    private final String title;
+    private final int optionNumber;
 
-	public int getCompoundDrawable() {
-        return compoundDrawable;
+    PrimaryOption(String title, String mainInfo, int optionNumber) {
+        this.title = title;
+        this.mainInfo = mainInfo;
+        this.optionNumber = optionNumber;
     }
 
-    public int getUnselectedRes() {
-		return unselectedRes;
-	}
+    public String getMainInfo() {
+        return mainInfo;
+    }
 
-	public int getSelectedRes() {
-		return selectedRes;
-	}
+    public String getTitle() {
+        return title;
+    }
 
-	public String getText() {
-		return text;
-	}
-
+    public int getOptionNumber() {
+        return optionNumber;
+    }
 }
