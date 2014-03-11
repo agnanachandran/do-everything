@@ -23,7 +23,13 @@ public class MusicManager implements LoaderManager.LoaderCallbacks<Cursor> {
     private static MusicManager instance = null;
     private final Fragment fragment;
     private String[] mSelectionArgs;
-    private String[] mProjection;
+    private String[] mProjection = new String[]{
+            MediaStore.Audio.Media.ARTIST,
+            MediaStore.Audio.Media.TITLE,
+            MediaStore.Audio.Media.DURATION,
+            MediaStore.Audio.Media.ALBUM,
+            MediaStore.Audio.Media.DATA,
+            MediaStore.Audio.Media._ID};
     private String mSelectionClause;
 
     private MusicManager(Fragment fragment) {
@@ -45,11 +51,15 @@ public class MusicManager implements LoaderManager.LoaderCallbacks<Cursor> {
     }
 
     public void searchMusic(String query) {
-        mSelectionArgs = new String[1];
-        mProjection = new String[]{MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.DATA,
-                MediaStore.Audio.Media._ID};
-        mSelectionClause = MediaStore.Audio.Media.TITLE + " LIKE ? COLLATE NOCASE";
+        // TODO: Search other fields, like artist, and album with AND clauses, and put
+        // TODO: the same thing in other 2 selectionArgs array
+        mSelectionClause = "((" + MediaStore.Audio.Media.TITLE + " LIKE ? COLLATE NOCASE) OR " +
+                "(" + MediaStore.Audio.Media.ALBUM + " LIKE ? COLLATE NOCASE) OR " +
+                "(" + MediaStore.Audio.Media.ARTIST + " LIKE ? COLLATE NOCASE))";
+        mSelectionArgs = new String[3];
         mSelectionArgs[0] = "%" + query + "%";
+        mSelectionArgs[1] = "%" + query + "%";
+        mSelectionArgs[2] = "%" + query + "%";
 
         this.fragment.getLoaderManager().initLoader(URL_LOADER, null, this);
         // Cursor mCursor =
@@ -72,13 +82,11 @@ public class MusicManager implements LoaderManager.LoaderCallbacks<Cursor> {
             case URL_LOADER:
                 // Returns a new CursorLoader
                 return new CursorLoader(fragment.getActivity(), // Parent activity context
-                        MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, // Table to
-                        // query
+                        MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, // Table to query
                         mProjection, // Projection to return
                         mSelectionClause, // selection clause
                         mSelectionArgs, // selection arguments
-                        MediaStore.Audio.Media.DEFAULT_SORT_ORDER // Default sort
-                        // order
+                        MediaStore.Audio.Media.DEFAULT_SORT_ORDER // Default sort order
                 );
             default:
                 // An invalid id was passed in
@@ -97,16 +105,17 @@ public class MusicManager implements LoaderManager.LoaderCallbacks<Cursor> {
         } else {
 
             SimpleCursorAdapter adapter = ((MainSectionFragment) fragment).getAdapter();
-            adapter.changeCursor(cursor);
+            adapter.swapCursor(cursor);
             int index = cursor.getColumnIndex(MediaStore.Audio.Media.DATA);
             while (cursor.moveToNext()) {
-                // If there's only one result, play it; bring up the results.
+                // If there's only one result, play it; TODO: bring up the results.
                 if (cursor.getCount() == 1) {
 
                 }
-                if (cursor.getPosition() == 0) {
+                if (cursor.getPosition() == 0 && cursor.getCount() == 1) {
                     String songPath = cursor.getString(index);
                     startMusic(songPath);
+                    break;
                 }
                 // MediaPlayer mp = new MediaPlayer();
                 // try {
@@ -122,8 +131,6 @@ public class MusicManager implements LoaderManager.LoaderCallbacks<Cursor> {
                 // e.printStackTrace();
                 // }
                 // mp.start();
-                break;
-
             }
         }
     }
@@ -134,12 +141,8 @@ public class MusicManager implements LoaderManager.LoaderCallbacks<Cursor> {
      */
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-
-        /*
-         * Clears out the adapter's reference to the Cursor. This prevents
-         * memory leaks.
-         */
-        ((MainSectionFragment) fragment).getAdapter().changeCursor(null);
+        // Clears out the adapter's reference to the Cursor. This prevents memory leaks.
+        ((MainSectionFragment) fragment).getAdapter().swapCursor(null);
     }
 
 }

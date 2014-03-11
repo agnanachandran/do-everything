@@ -105,7 +105,7 @@ public class MainSectionFragment extends Fragment implements View.OnClickListene
         setupAnimations();
         // TODO: can this just be getActivity() instead of also getApplicationContext()?
 
-        mSwitcher.setText("  Good morning, Anojh\n What do you want to do?");
+        mSwitcher.setText("  Good morning,\n What do you want to do?");
 
         // tvSearchQuery.setText(Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER)));
         setupPrimaryButtons(rootView);
@@ -217,9 +217,10 @@ public class MainSectionFragment extends Fragment implements View.OnClickListene
     private void startMusicSearchDevice(String query) {
         MusicManager musicLauncher = MusicManager.getInstance(this);
         musicLauncher.searchMusic(query);
-        String[] artistColumns = {MediaStore.Audio.Media.ARTIST};
-        int[] mSongListItems = {R.id.tvQueryTitleCard};
-        mAdapter = new SimpleCursorAdapter(getActivity(), R.layout.row_card, null, artistColumns,
+        String[] columns = {MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.DURATION, MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.ALBUM};
+
+        int[] mSongListItems = {R.id.tvMusicTitle, R.id.tvMusicDuration, R.id.tvMusicArtist, R.id.tvMusicAlbum};
+        mAdapter = new SimpleCursorAdapter(getActivity(), R.layout.music_row_card, null, columns,
                 mSongListItems);
 
         bringUpListviewAndDismissKeyboard();
@@ -251,6 +252,11 @@ public class MainSectionFragment extends Fragment implements View.OnClickListene
 
         rootView.findViewById(R.id.scroll_view_main_container).setVisibility(View.GONE);
 
+        LinearLayout searchContainer = (LinearLayout) rootView.findViewById(R.id.ll_search_container);
+        // TODO: Clean up
+        ((ViewGroup) rootView.findViewById(R.id.main_container)).removeView(searchContainer);
+        queryResultsContainer.removeView(searchContainer);
+        queryResultsContainer.addView(searchContainer, 0);
 //        rootView.findViewById(R.id.ll_panel_container).startAnimation(slideUp);
     }
 

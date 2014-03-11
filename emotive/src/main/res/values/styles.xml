@@ -44,7 +44,12 @@
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_marginLeft">5dp</item>
         <item name="android:layout_marginRight">5dp</item>
+    </style>
 
+    <style name="lightTextView">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:fontFamily">sans-serif-light</item>
     </style>
 
 </resources>

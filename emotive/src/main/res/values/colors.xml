@@ -78,7 +78,7 @@
     <color name="DarkGoldenrod">#B8860B</color>
     <color name="DarkKhaki">#BDB76B</color>
     <!-- Generic Light -->
-    <color name="LightGray">#B3B3B3</color>
+    <color name="LightGrayText">#B3B3B3</color>
     <color name="LightSteelBlue">#B0C4DE</color>
     <color name="LightBlue">#ADD8E6</color>
     <color name="LightPink">#FFB6C1</color>

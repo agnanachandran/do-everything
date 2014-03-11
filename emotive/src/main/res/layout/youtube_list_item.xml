@@ -73,7 +73,7 @@
                     android:layout_marginRight="3dp"
                     android:fontFamily="sans-serif-light"
                     android:text="@string/placeholder_video_view_count"
-                    android:textColor="@color/LightGray" />
+                    android:textColor="@color/LightGrayText" />
 
                 <TextView
                     android:id="@+id/tvDateUploaded"
@@ -82,7 +82,7 @@
                     android:fontFamily="sans-serif"
                     android:layout_marginLeft="5dp"
                     android:text="@string/placeholder_video_date_uploaded"
-                    android:textColor="@color/LightGray" />
+                    android:textColor="@color/LightGrayText" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
