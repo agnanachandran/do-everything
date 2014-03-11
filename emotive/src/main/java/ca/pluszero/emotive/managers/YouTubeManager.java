@@ -14,6 +14,7 @@ import java.util.List;
 
 import ca.pluszero.emotive.ApiKeys;
 import ca.pluszero.emotive.models.YouTubeVideo;
+import ca.pluszero.emotive.utils.DateTimeUtils;
 
 public class YouTubeManager {
 
@@ -122,15 +123,7 @@ public class YouTubeManager {
     }
 
     private String formatDuration(JSONObject item) throws JSONException {
-        String duration = item.getJSONObject("contentDetails").getString("duration");
-        duration = duration.replace("PT", "");
-        duration = duration.replace('H', ':');
-        duration = duration.replace('M', ':');
-        duration = duration.replace("S", "");
-        if (duration.length() == 2) {
-            duration = "0:" + duration;
-        }
-        return duration;
+        return DateTimeUtils.parseDuration(item.getJSONObject("contentDetails").getString("duration"));
     }
 
     public void getYouTubeSearch(String query) {

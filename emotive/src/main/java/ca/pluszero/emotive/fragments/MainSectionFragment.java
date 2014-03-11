@@ -244,7 +244,11 @@ public class MainSectionFragment extends Fragment implements View.OnClickListene
         imm.hideSoftInputFromWindow(etSearchView.getWindowToken(), 0);
         LinearLayout queryResultsContainer = (LinearLayout) rootView.findViewById(R.id.ll_panel_container);
         queryResultsContainer.setVisibility(View.VISIBLE);
-        queryResultsContainer.setPadding(0, 0, 0, getNavbarHeight());
+
+        // TODO: do only on 4.4
+        lvQueryResults.setPadding(0, 0, 0, getNavbarHeight());
+        lvQueryResults.setClipToPadding(false);
+
         rootView.findViewById(R.id.scroll_view_main_container).setVisibility(View.GONE);
 
 //        rootView.findViewById(R.id.ll_panel_container).startAnimation(slideUp);
