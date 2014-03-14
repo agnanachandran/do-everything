@@ -14,6 +14,7 @@
         <TextView
             android:id="@+id/tvMusicTitle"
             style="@style/lightTextView"
+            android:layout_toLeftOf="@+id/tvMusicDuration"
             android:layout_marginRight="2dp"
             android:text="@string/placeholder_text"
             android:textAppearance="?android:attr/textAppearanceSmall"
@@ -24,10 +25,12 @@
         <TextView
             android:id="@+id/tvMusicArtist"
             style="@style/lightTextView"
+            android:layout_toLeftOf="@+id/tvMusicAlbum"
             android:text="@string/placeholder_text"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@color/LightGrayText"
             android:layout_below="@+id/tvMusicTitle"
+            android:layout_alignParentStart="true"
             />
 
         <TextView
@@ -35,7 +38,6 @@
             style="@style/lightTextView"
             android:layout_gravity="right"
             android:layout_marginLeft="8dp"
-            android:layout_weight="1"
             android:textColor="@color/white"
             android:text="@string/placeholder_text"
             android:textAppearance="?android:attr/textAppearanceSmall"
