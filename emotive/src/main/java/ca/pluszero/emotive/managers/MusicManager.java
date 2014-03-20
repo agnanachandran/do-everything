@@ -11,10 +11,14 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 
 import java.io.File;
 
+import ca.pluszero.emotive.R;
 import ca.pluszero.emotive.fragments.MainFragment;
+import ca.pluszero.emotive.utils.DateTimeUtils;
 
 public class MusicManager implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -105,6 +109,16 @@ public class MusicManager implements LoaderManager.LoaderCallbacks<Cursor> {
         } else {
 
             SimpleCursorAdapter adapter = ((MainFragment) fragment).getAdapter();
+            adapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
+                @Override
+                public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
+                    if (view.getId() == R.id.tvMusicDuration) {
+                        ((TextView) view).setText(DateTimeUtils.formatMillis(cursor.getString(columnIndex)));
+                        return true;
+                    }
+                    return false;
+                }
+            });
             adapter.swapCursor(cursor);
             int index = cursor.getColumnIndex(MediaStore.Audio.Media.DATA);
             while (cursor.moveToNext()) {

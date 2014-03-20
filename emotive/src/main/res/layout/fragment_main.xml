@@ -24,7 +24,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:fontFamily="sans-serif-light"
-                android:text="    Good evening,\nWhat do you want to do?"
+                android:text="    Good morning,\nWhat do you want to do?"
                 android:textColor="@color/white"
                 android:textSize="25sp" />
 
@@ -35,8 +35,7 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="15dp"
                 android:background="@drawable/bg_shadow_card"
-                android:orientation="vertical"
-                android:paddingTop="20dp">
+                android:orientation="vertical">
 
                 <!-- TODO: put this in a separate layout file and include it;
                  use one for landscape (with 6 horizontal buttons instead maybe,
