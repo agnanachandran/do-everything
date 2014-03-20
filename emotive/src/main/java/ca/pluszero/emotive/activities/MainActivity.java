@@ -5,13 +5,8 @@ import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.PagerTitleStrip;
-import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,11 +21,9 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import ca.pluszero.emotive.R;
 import ca.pluszero.emotive.adapters.DrawerListAdapter;
-import ca.pluszero.emotive.fragments.MainSectionFragment;
 import ca.pluszero.emotive.models.DrawerItem;
 
 public class MainActivity extends FragmentActivity {
@@ -43,12 +36,6 @@ public class MainActivity extends FragmentActivity {
      * intensive, it may be best to switch to a
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
-    private SectionsPagerAdapter mSectionsPagerAdapter;
-
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
-    private ViewPager mViewPager;
 
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
@@ -83,15 +70,10 @@ public class MainActivity extends FragmentActivity {
         int statusBarHeight = getStatusBarHeight();
         int actionBarSize = getActionBarSize();
 
-        // Move down pagerTitleStrip and drawer
-        PagerTitleStrip titleStrip = (PagerTitleStrip) findViewById(R.id.pager_title_strip);
-
-        // TODO: adjust for non 4.4 phones
-        titleStrip.setPadding(0, statusBarHeight + actionBarSize + 2, 0, 7);
-
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
-        mDrawerList.setPadding(15, statusBarHeight + actionBarSize + 2, 0, 4);
+        mDrawerList.setPadding(15, statusBarHeight + actionBarSize, 0, 4);
 
+        findViewById(R.id.outermost_main_container).setPadding(0, statusBarHeight + actionBarSize + 30, 0, 0);
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_navigation_drawer, R.string.drawer_open, R.string.drawer_close) {
         	// Called when drawer has settled in completely closed state
         	public void onDrawerClosed(View view) {
@@ -117,14 +99,7 @@ public class MainActivity extends FragmentActivity {
         mDrawerList.setAdapter(new DrawerListAdapter(this, R.layout.drawer_list_item, mDrawerItems));
         
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
-        
-        // Create the adapter that will return a fragment for each of the three
-        // primary sections of the app.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
-        // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.pager);
-        mViewPager.setAdapter(mSectionsPagerAdapter);
     }
 
     private int getActionBarSize() {
@@ -176,50 +151,7 @@ public class MainActivity extends FragmentActivity {
     	// TODO: Probably nothing to do here at the moment http://developer.android.com/training/implementing-navigation/nav-drawer.html
     	return super.onPrepareOptionsMenu(menu);
     }
-    
-    /**
-     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
-     * one of the sections/tabs/pages.
-     */
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
-        public SectionsPagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a DummySectionFragment (defined as a static inner class
-            // below) with the page number as its lone argument.
-            Fragment fragment = new MainSectionFragment();
-            Bundle args = new Bundle();
-            args.putInt(MainSectionFragment.ARG_SECTION_NUMBER, position + 1);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        @Override
-        public int getCount() {
-            // Show 3 total pages.
-            return 3;
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            Locale l = Locale.getDefault();
-            switch (position) {
-                case 0:
-                    return getString(R.string.title_new_section).toUpperCase(l);
-                case 1:
-                    return getString(R.string.title_section2).toUpperCase(l);
-                case 2:
-                    return getString(R.string.title_section3).toUpperCase(l);
-            }
-            return null;
-        }
-    }
-    
     private class DrawerItemClickListener implements ListView.OnItemClickListener
     {
     	

@@ -14,7 +14,7 @@ import android.util.Log;
 
 import java.io.File;
 
-import ca.pluszero.emotive.fragments.MainSectionFragment;
+import ca.pluszero.emotive.fragments.MainFragment;
 
 public class MusicManager implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -104,7 +104,7 @@ public class MusicManager implements LoaderManager.LoaderCallbacks<Cursor> {
             Log.d(fragment.getTag(), "provider gave 0 results");
         } else {
 
-            SimpleCursorAdapter adapter = ((MainSectionFragment) fragment).getAdapter();
+            SimpleCursorAdapter adapter = ((MainFragment) fragment).getAdapter();
             adapter.swapCursor(cursor);
             int index = cursor.getColumnIndex(MediaStore.Audio.Media.DATA);
             while (cursor.moveToNext()) {
@@ -142,7 +142,7 @@ public class MusicManager implements LoaderManager.LoaderCallbacks<Cursor> {
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         // Clears out the adapter's reference to the Cursor. This prevents memory leaks.
-        ((MainSectionFragment) fragment).getAdapter().swapCursor(null);
+        ((MainFragment) fragment).getAdapter().swapCursor(null);
     }
 
 }

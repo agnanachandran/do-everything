@@ -1,5 +1,7 @@
 package ca.pluszero.emotive.utils;
 
+import android.text.format.Time;
+
 /**
  * Created by chronos on 2014-03-10.
  */
@@ -28,4 +30,22 @@ public abstract class DateTimeUtils {
         }
         return duration;
     }
+
+    public static int getCurrentTimeInHours() {
+        Time now = new Time();
+        now.setToNow();
+        return now.hour;
+    }
+
+    public static String getGreetingBasedOnTimeOfDay() {
+        int hours = getCurrentTimeInHours();
+        if (hours < 3 || hours > 18) {
+            return "Good evening";
+        } else if (hours >= 4 && hours < 12) {
+            return "Good morning";
+        } else {
+            return "Good afternoon";
+        }
+    }
+
 }

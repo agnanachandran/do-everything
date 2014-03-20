@@ -45,12 +45,9 @@ import ca.pluszero.emotive.adapters.YouTubeListAdapter;
 import ca.pluszero.emotive.managers.YouTubeManager;
 import ca.pluszero.emotive.models.PrimaryOption;
 import ca.pluszero.emotive.models.YouTubeVideo;
+import ca.pluszero.emotive.utils.DateTimeUtils;
 
-public class MainSectionFragment extends Fragment implements View.OnClickListener, YouTubeManager.OnFinishedListener {
-    /**
-     * The fragment argument representing the section number for this fragment.
-     */
-    public static final String ARG_SECTION_NUMBER = "section_number";
+public class MainFragment extends Fragment implements View.OnClickListener, YouTubeManager.OnFinishedListener {
 
     private Button[] primaryButtons;
 
@@ -94,18 +91,14 @@ public class MainSectionFragment extends Fragment implements View.OnClickListene
         }
     };
 
-    public MainSectionFragment() {
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
         lvQueryResults = (ListView) rootView.findViewById(R.id.lvQueryResults);
         setupAnimations();
-        // TODO: can this just be getActivity() instead of also getApplicationContext()?
 
-        mSwitcher.setText("  Good morning,\n What do you want to do?");
+        mSwitcher.setText(DateTimeUtils.getGreetingBasedOnTimeOfDay() + ",\n What do you want to do?");
 
         // tvSearchQuery.setText(Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER)));
         setupPrimaryButtons(rootView);
@@ -163,18 +156,26 @@ public class MainSectionFragment extends Fragment implements View.OnClickListene
 
         primaryButtons = new Button[]{bFirstButton, bSecondButton, bThirdButton, bFourthButton, bFifthButton, bSixthButton};
         primaryImages = new ImageView[]{imgFirstOption, imgSecondOption, imgThirdOption, imgFourthOption, imgFifthOption, imgSixthOption};
-        for (Button b : primaryButtons) {
-            b.setOnClickListener(this);
-        }
 
-        for (ImageView img : primaryImages) {
-            img.setOnClickListener(this);
+        PrimaryOption[] options = fetchOptions();
+        for (int i = 0; i < primaryButtons.length; i++) {
+            primaryButtons[i].setTag(R.string.option_key, options[i]);
+            primaryButtons[i].setOnClickListener(this);
+            primaryImages[i].setTag(R.string.option_key, options[i]);
+            primaryImages[i].setOnClickListener(this);
         }
     }
 
-    private void placeSearchOptions() {
-//        setupSecondaryOptions(getResources().getStringArray(R.array.search_options), R.string.search_options_title_label);
-        etSearchView.setOnItemClickListener(null); // TODO: do this for other options
+    private PrimaryOption[] fetchOptions() {
+        // TODO: retrieve from database and use algo. based on time of day, and user's past experiences with this app
+        return new PrimaryOption[]{
+                PrimaryOption.FOOD,
+                PrimaryOption.LISTEN,
+                PrimaryOption.GOOGLE,
+                PrimaryOption.FIND,
+                PrimaryOption.YOUTUBE,
+                PrimaryOption.NOTE
+        };
     }
 
     private void performSearch(String query) {
@@ -262,68 +263,38 @@ public class MainSectionFragment extends Fragment implements View.OnClickListene
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.bFirstOption:
-            case R.id.imgFirstOption:
+        PrimaryOption clickedOption = (PrimaryOption) v.getTag(R.string.option_key);
+        switch (clickedOption) {
+            case FOOD:
                 mPrimaryOption = PrimaryOption.FOOD;
                 setupFoodOptions();
                 break;
-            case R.id.bSecondOption:
-            case R.id.imgSecondOption:
+            case LISTEN:
                 mPrimaryOption = PrimaryOption.LISTEN;
                 setupListenOptions();
                 break;
-            case R.id.bThirdOption:
-            case R.id.imgThirdOption:
+            case GOOGLE:
                 mPrimaryOption = PrimaryOption.GOOGLE;
                 setupGoogleOptions();
                 break;
-            case R.id.bFourthOption:
-            case R.id.imgFourthOption:
+            case FIND:
                 mPrimaryOption = PrimaryOption.FIND;
                 setupFindOptions();
                 break;
-            case R.id.bFifthOption:
-            case R.id.imgFifthOption:
+            case YOUTUBE:
                 mPrimaryOption = PrimaryOption.YOUTUBE;
                 setupYoutubeOptions();
                 break;
-            case R.id.bSixthOption:
-            case R.id.imgSixthOption:
+            case NOTE:
                 mPrimaryOption = PrimaryOption.NOTE;
                 setupNoteOptions();
                 break;
         }
     }
 
-    private void setupFindOptions() {
-        setupButton(PrimaryOption.FIND);
-
-    }
-
-    private void setupYoutubeOptions() {
-        setupButton(PrimaryOption.YOUTUBE);
-
-    }
-
-    private void setupNoteOptions() {
-        setupButton(PrimaryOption.NOTE);
-
-    }
-
-    private void setupGoogleOptions() {
-        setupButton(PrimaryOption.GOOGLE);
-
-    }
-
-    private void setupListenOptions() {
-        setupButton(PrimaryOption.LISTEN);
-
-    }
-
     private void setupFoodOptions() {
 //        setupSecondaryOptions(getResources().getStringArray(R.array.find_me_options), R.string.find_options_title_label);
-        setupButton(PrimaryOption.FOOD);
+        setupButton();
         etSearchView.setAdapter(new PlacesAutoCompleteAdapter(
                 getActivity(), R.layout.simple_list_item));
         etSearchView.setOnItemClickListener(new OnItemClickListener() {
@@ -335,10 +306,29 @@ public class MainSectionFragment extends Fragment implements View.OnClickListene
         });
     }
 
-    private void setupButton(PrimaryOption option) {
+    private void setupListenOptions() {
+        setupButton();
+    }
+
+    private void setupGoogleOptions() {
+        setupButton();
+    }
+
+    private void setupFindOptions() {
+        setupButton();
+    }
+
+    private void setupYoutubeOptions() {
+        setupButton();
+    }
+
+    private void setupNoteOptions() { setupButton(); }
+
+
+    private void setupButton() {
         rootView.findViewById(R.id.ll_primary_container).setVisibility(View.GONE);
-        mSwitcher.setText(option.getTitle());
-        etSearchView.setHint(option.getMainInfo());
+        mSwitcher.setText(mPrimaryOption.getTitle());
+        etSearchView.setHint(mPrimaryOption.getMainInfo());
         etSearchView.setFocusableInTouchMode(true);
         etSearchView.requestFocus();
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -346,6 +336,10 @@ public class MainSectionFragment extends Fragment implements View.OnClickListene
         LinearLayout searchContainer = (LinearLayout) rootView.findViewById(R.id.ll_search_container);
         searchContainer.setVisibility(View.VISIBLE);
         searchContainer.startAnimation(slideUp);
+
+        if (mPrimaryOption != PrimaryOption.FIND) {
+            etSearchView.setOnItemClickListener(null); // TODO: do this for other options
+        }
     }
 
     private int getNavbarHeight() {
