@@ -30,6 +30,7 @@
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@color/LightGrayText"
             android:layout_below="@+id/tvMusicTitle"
+            android:layout_marginRight="16dp"
             android:layout_alignParentStart="true"
             />
 

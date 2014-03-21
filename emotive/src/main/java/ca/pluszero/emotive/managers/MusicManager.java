@@ -9,24 +9,23 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
-
-import java.io.File;
-
 import ca.pluszero.emotive.R;
+import ca.pluszero.emotive.adapters.MusicCursorAdapter;
 import ca.pluszero.emotive.fragments.MainFragment;
 import ca.pluszero.emotive.utils.DateTimeUtils;
+
+import java.io.File;
 
 public class MusicManager implements LoaderManager.LoaderCallbacks<Cursor> {
 
     // Identifies a particular Loader
-    private static final int URL_LOADER = 0;
+    private static final int MUSIC_URL_LOADER = 0;
     private static MusicManager instance = null;
     private final Fragment fragment;
-    private String[] mSelectionArgs;
+    private String[] mSelectionArgs = new String[3];
     private String[] mProjection = new String[]{
             MediaStore.Audio.Media.ARTIST,
             MediaStore.Audio.Media.TITLE,
@@ -55,20 +54,16 @@ public class MusicManager implements LoaderManager.LoaderCallbacks<Cursor> {
     }
 
     public void searchMusic(String query) {
-        // TODO: Search other fields, like artist, and album with AND clauses, and put
-        // TODO: the same thing in other 2 selectionArgs array
         mSelectionClause = "((" + MediaStore.Audio.Media.TITLE + " LIKE ? COLLATE NOCASE) OR " +
                 "(" + MediaStore.Audio.Media.ALBUM + " LIKE ? COLLATE NOCASE) OR " +
                 "(" + MediaStore.Audio.Media.ARTIST + " LIKE ? COLLATE NOCASE))";
-        mSelectionArgs = new String[3];
         mSelectionArgs[0] = "%" + query + "%";
         mSelectionArgs[1] = "%" + query + "%";
         mSelectionArgs[2] = "%" + query + "%";
 
-        this.fragment.getLoaderManager().initLoader(URL_LOADER, null, this);
-        // Cursor mCursor =
-        // getActivity().getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-        // projection, selectionClause, selectionArgs, );
+        this.fragment.getLoaderManager().initLoader(MUSIC_URL_LOADER, null, this);
+        // TODO: investigate how this should really work (with the restart, etc.
+        this.fragment.getLoaderManager().restartLoader(MUSIC_URL_LOADER, null, this);
     }
 
     /*
@@ -83,7 +78,7 @@ public class MusicManager implements LoaderManager.LoaderCallbacks<Cursor> {
          * Takes action based on the ID of the Loader that's being created
          */
         switch (loaderID) {
-            case URL_LOADER:
+            case MUSIC_URL_LOADER:
                 // Returns a new CursorLoader
                 return new CursorLoader(fragment.getActivity(), // Parent activity context
                         MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, // Table to query
@@ -108,8 +103,8 @@ public class MusicManager implements LoaderManager.LoaderCallbacks<Cursor> {
             Log.d(fragment.getTag(), "provider gave 0 results");
         } else {
 
-            SimpleCursorAdapter adapter = ((MainFragment) fragment).getAdapter();
-            adapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
+            MusicCursorAdapter adapter = ((MainFragment) fragment).getAdapter();
+            adapter.setViewBinder(new MusicCursorAdapter.ViewBinder() {
                 @Override
                 public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
                     if (view.getId() == R.id.tvMusicDuration) {
@@ -119,10 +114,12 @@ public class MusicManager implements LoaderManager.LoaderCallbacks<Cursor> {
                     return false;
                 }
             });
-            adapter.swapCursor(cursor);
+            adapter.changeCursor(cursor);
+            adapter.notifyDataSetChanged();
             int index = cursor.getColumnIndex(MediaStore.Audio.Media.DATA);
+            Log.d("TAG", cursor.getCount() + " is the count");
             while (cursor.moveToNext()) {
-                // If there's only one result, play it; TODO: bring up the results.
+                // If there's only one result, play it
                 if (cursor.getCount() == 1) {
 
                 }

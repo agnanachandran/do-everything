@@ -35,6 +35,7 @@ public class YouTubeListAdapter extends BaseArrayAdapter<YouTubeVideo> {
             viewHolder.channelName = (TextView) rowView.findViewById(R.id.tvChannelName);
             viewHolder.viewCount = (TextView) rowView.findViewById(R.id.tvViewCount);
             viewHolder.duration = (TextView) rowView.findViewById(R.id.tvVideoTime);
+            viewHolder.publishedDate = (TextView) rowView.findViewById(R.id.tvDateUploaded);
             rowView.setTag(viewHolder);
         }
         ViewHolder holder = (ViewHolder) rowView.getTag();
@@ -44,6 +45,7 @@ public class YouTubeListAdapter extends BaseArrayAdapter<YouTubeVideo> {
         holder.channelName.setText(video.getChannelName());
         holder.viewCount.setText(NumberFormat.getIntegerInstance().format(video.getViewCount()));
         holder.duration.setText(video.getDuration());
+        holder.publishedDate.setText(video.getPublishedDate());
         return rowView;
     }
     
@@ -53,5 +55,6 @@ public class YouTubeListAdapter extends BaseArrayAdapter<YouTubeVideo> {
         TextView channelName;
         TextView viewCount;
         TextView duration;
+        TextView publishedDate;
       }
 }

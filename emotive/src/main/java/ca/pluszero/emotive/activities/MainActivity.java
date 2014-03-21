@@ -14,17 +14,15 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
-
+import ca.pluszero.emotive.R;
+import ca.pluszero.emotive.adapters.DrawerListAdapter;
+import ca.pluszero.emotive.models.DrawerItem;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import ca.pluszero.emotive.R;
-import ca.pluszero.emotive.adapters.DrawerListAdapter;
-import ca.pluszero.emotive.models.DrawerItem;
 
 public class MainActivity extends FragmentActivity {
 
@@ -193,6 +191,12 @@ public class MainActivity extends FragmentActivity {
 //    		getActionBar().setTitle(mActionBarTitle);
     	}
     	
+    }
+
+    @Override
+    public void onBackPressed() {
+        // If on the start screen, back should just do super.onBackPressed(); otherwise, go back to start screen
+
     }
 
     private int getStatusBarHeight() {

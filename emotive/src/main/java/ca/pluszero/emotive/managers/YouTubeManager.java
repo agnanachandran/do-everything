@@ -116,10 +116,11 @@ public class YouTubeManager {
         String videoName = snippet.getString("title");
         String channelName = snippet.getString("channelTitle");
         // get # of views
+        String publishedISODate = snippet.getString("publishedAt");
         String thumbnailUrl = snippet.getJSONObject("thumbnails")
                 .getJSONObject("medium").getString("url");
         videos.add(new YouTubeVideo(videoId, videoName,
-                thumbnailUrl, viewCount, channelName, duration));
+                thumbnailUrl, viewCount, channelName, duration, publishedISODate.substring(0, publishedISODate.indexOf('T'))));
     }
 
     private String formatDuration(JSONObject item) throws JSONException {
