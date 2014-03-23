@@ -1,9 +1,9 @@
 package ca.pluszero.emotive.adapters;
 
-import java.util.List;
-
 import android.app.Activity;
 import android.widget.ArrayAdapter;
+
+import java.util.List;
 
 public abstract class BaseArrayAdapter<BaseModel> extends ArrayAdapter<BaseModel>{
 
@@ -30,5 +30,19 @@ public abstract class BaseArrayAdapter<BaseModel> extends ArrayAdapter<BaseModel
     public long getItemId(int position) {
         return position;
     }
-    
+
+    public void add(BaseModel item) {
+        this.items.add(item);
+    }
+
+    public void addItems(List<BaseModel> items) {
+        this.items.addAll(items);
+        notifyDataSetChanged();
+    }
+
+    @Override
+    public void clear() {
+        super.clear();
+        this.items.clear();
+    }
 }

@@ -4,6 +4,7 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -21,7 +22,7 @@ import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -36,9 +37,12 @@ import com.google.android.youtube.player.YouTubeIntents;
 import java.util.List;
 
 import ca.pluszero.emotive.R;
+import ca.pluszero.emotive.activities.MainActivity;
+import ca.pluszero.emotive.adapters.BaseArrayAdapter;
 import ca.pluszero.emotive.adapters.MusicCursorAdapter;
 import ca.pluszero.emotive.adapters.PlacesAutoCompleteAdapter;
 import ca.pluszero.emotive.adapters.YouTubeListAdapter;
+import ca.pluszero.emotive.listeners.EndlessScrollListener;
 import ca.pluszero.emotive.managers.MusicManager;
 import ca.pluszero.emotive.managers.NetworkManager;
 import ca.pluszero.emotive.managers.YouTubeManager;
@@ -46,8 +50,9 @@ import ca.pluszero.emotive.models.PrimaryOption;
 import ca.pluszero.emotive.models.YouTubeVideo;
 import ca.pluszero.emotive.utils.DateTimeUtils;
 
-public class MainFragment extends Fragment implements View.OnClickListener, YouTubeManager.OnFinishedListener {
+public class MainFragment extends Fragment implements View.OnClickListener, YouTubeManager.OnFinishedListener, MusicManager.IMusicLoadedListener {
 
+    public static String FRAGMENT_TAG = "main_fragment"; // set from activity_main xml
     private Button[] primaryButtons;
 
     private Button bFirstButton;
@@ -58,8 +63,6 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
     private Button bSixthButton;
 
     private ListView lvQueryResults;
-
-    private MusicCursorAdapter mAdapter;
 
     private PrimaryOption mPrimaryOption;
 
@@ -111,14 +114,20 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
         lvQueryResults = (ListView) rootView.findViewById(R.id.lvQueryResults);
+        etSearchView = (AutoCompleteTextView) rootView.findViewById(R.id.mainSearchView);
         setupAnimations();
 
-        mSwitcher.setText(DateTimeUtils.getGreetingBasedOnTimeOfDay() + ",\n What do you want to do?");
-
-        // tvSearchQuery.setText(Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER)));
+        setup();
         setupPrimaryButtons(rootView);
+        setHasOptionsMenu(true);
+        return rootView;
+    }
 
-        etSearchView = (AutoCompleteTextView) rootView.findViewById(R.id.mainSearchView);
+    public void setup() {
+        mSwitcher.setText(DateTimeUtils.getGreetingBasedOnTimeOfDay() + ",\n What do you want to do?");
+        rootView.findViewById(R.id.scroll_view_main_container).setVisibility(View.VISIBLE);
+        rootView.findViewById(R.id.ll_panel_container).setVisibility(View.GONE);
+
         etSearchView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -130,10 +139,15 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
             }
 
         });
+        lvQueryResults.setOnItemClickListener(null);
+        lvQueryResults.setOnScrollListener(null);
+        if (lvQueryResults.getAdapter() != null) {
+            if (lvQueryResults.getAdapter() instanceof BaseArrayAdapter) {
+                ((BaseArrayAdapter) lvQueryResults.getAdapter()).clear();
+            }
+        }
+        lvQueryResults.setAdapter(null);
 
-
-        setHasOptionsMenu(true);
-        return rootView;
     }
 
     private void setupAnimations() {
@@ -195,7 +209,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
     }
 
     private void performSearch(String query) {
-        if (mPrimaryOption == PrimaryOption.FOOD) {
+        if (mPrimaryOption == PrimaryOption.FIND) {
             startMapsSearch(query);
         } else if (mPrimaryOption == PrimaryOption.LISTEN) {
             dismissKeyboard();
@@ -208,10 +222,36 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
 
     private void startYouTubeSearch(CharSequence query) {
         if (NetworkManager.isConnected(getActivity())) {
-            YouTubeManager.getInstance(this).getYouTubeSearch(query.toString());
+            YouTubeManager manager = YouTubeManager.getInstance(this);
+            manager.clearNextPageToken();
+            manager.getYouTubeSearch(query.toString());
         } else {
             // No interwebs; display Toast. TODO
         }
+        if (lvQueryResults.getAdapter() != null) {
+            ((BaseArrayAdapter) lvQueryResults.getAdapter()).clear();
+        }
+        lvQueryResults
+                .setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(
+                            AdapterView<?> parent, View view,
+                            int position, long id) {
+                        String videoId = ((YouTubeVideo) lvQueryResults
+                                .getItemAtPosition(position))
+                                .getId();
+                        Intent intent = YouTubeIntents
+                                .createPlayVideoIntent(
+                                        getActivity(), videoId);
+                        startActivity(intent);
+                    }
+                });
+        lvQueryResults.setOnScrollListener(new EndlessScrollListener() {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+                YouTubeManager.getInstance(MainFragment.this).loadMoreDataFromApi();
+            }
+        });
         // Intent intent = new Intent(Intent.ACTION_SEARCH);
         // intent.setPackage("com.google_icon.android.youtube");
         // intent.putExtra("search_query", query);
@@ -232,15 +272,13 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
     }
 
     private void startMusicSearchDevice(String query) {
-        MusicManager musicLauncher = MusicManager.getInstance(this);
+        MusicManager musicLauncher = MusicManager.getInstance(this, this);
         if (!startedMusicSearch) {
             String[] columns = {MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.DURATION, MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.ALBUM};
             int[] mSongListItems = {R.id.tvMusicTitle, R.id.tvMusicDuration, R.id.tvMusicArtist, R.id.tvMusicAlbum};
-            mAdapter = new MusicCursorAdapter(getActivity(), R.layout.music_row_card, null, columns,
-                    mSongListItems);
-
-            lvQueryResults.setAdapter(mAdapter);
-            lvQueryResults.setOnItemClickListener(mAdapter);
+            MusicCursorAdapter adapter = new MusicCursorAdapter(getActivity(), R.layout.music_row_card, null, columns, mSongListItems);
+            lvQueryResults.setAdapter(adapter);
+            lvQueryResults.setOnItemClickListener(adapter);
             bringUpListView();
             startedMusicSearch = true;
         }
@@ -274,6 +312,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
     @Override
     public void onClick(View v) {
         PrimaryOption clickedOption = (PrimaryOption) v.getTag(R.string.option_key);
+        ((MainActivity) getActivity()).setOnHomePage(false);
         switch (clickedOption) {
             case FOOD:
                 mPrimaryOption = PrimaryOption.FOOD;
@@ -303,22 +342,11 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
     }
 
     private void setupFoodOptions() {
-//        setupSecondaryOptions(getResources().getStringArray(R.array.find_me_options), R.string.find_options_title_label);
         setupButton();
-        etSearchView.setAdapter(new PlacesAutoCompleteAdapter(
-                getActivity(), R.layout.simple_list_item));
-        etSearchView.setOnItemClickListener(new OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                etSearchView.setText((String) adapterView.getItemAtPosition(position));
-            }
-        });
     }
 
     private void setupListenOptions() {
         setupButton();
-        // TODO: refactor to music text watcher
         etSearchView.addTextChangedListener(musicTextWatcher);
     }
 
@@ -328,6 +356,15 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
 
     private void setupFindOptions() {
         setupButton();
+        etSearchView.setAdapter(new PlacesAutoCompleteAdapter(
+                getActivity(), R.layout.simple_list_item));
+        etSearchView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                etSearchView.setText((String) adapterView.getItemAtPosition(position));
+            }
+        });
     }
 
     private void setupYoutubeOptions() {
@@ -344,7 +381,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         rootView.findViewById(R.id.scroll_view_main_container).setVisibility(View.GONE);
         rootView.findViewById(R.id.ll_panel_container).setVisibility(View.VISIBLE);
 
-//        mSwitcher.setText(mPrimaryOption.getTitle());
+        etSearchView.setText(""); // Clear out old text
         etSearchView.setHint(mPrimaryOption.getMainInfo());
         etSearchView.setFocusableInTouchMode(true);
         etSearchView.requestFocus();
@@ -358,6 +395,9 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
 
         if (mPrimaryOption != PrimaryOption.FIND) {
             etSearchView.setOnItemClickListener(null);
+            if (etSearchView.getAdapter() != null) {
+                etSearchView.setAdapter((ArrayAdapter<String>) null);
+            }
         }
         if (mPrimaryOption != PrimaryOption.LISTEN) {
             etSearchView.removeTextChangedListener(musicTextWatcher);
@@ -373,31 +413,43 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         return 0;
     }
 
-    public MusicCursorAdapter getAdapter() {
-        return mAdapter;
-    }
-
     @Override
-    public void onYoutubeQueryFinished(List<YouTubeVideo> videos) {
+    public void onInitialYoutubeQueryFinished(List<YouTubeVideo> videos) {
         dismissKeyboard();
         bringUpListView();
         lvQueryResults.setAdapter(new YouTubeListAdapter(
                 getActivity(), videos));
-        lvQueryResults
-                .setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(
-                            AdapterView<?> parent, View view,
-                            int position, long id) {
-                        String videoId = ((YouTubeVideo) lvQueryResults
-                                .getItemAtPosition(position))
-                                .getId();
-                        Intent intent = YouTubeIntents
-                                .createPlayVideoIntent(
-                                        getActivity(), videoId);
-                        startActivity(intent);
-                    }
-                });
     }
 
+    @Override
+    public synchronized void onMoreVideosReceived(List<YouTubeVideo> videos) {
+        if (lvQueryResults.getAdapter() != null) {
+            ((BaseArrayAdapter) lvQueryResults.getAdapter()).addItems(videos);
+        }
+    }
+
+    @Override
+    public void onLoaderReset() {
+        // Clears out the adapter's reference to the Cursor. This prevents memory leaks.
+        ((MusicCursorAdapter) lvQueryResults.getAdapter()).swapCursor(null);
+    }
+
+    @Override
+    public void onLoadFinished(Cursor cursor) {
+        MusicCursorAdapter adapter = (MusicCursorAdapter) lvQueryResults.getAdapter();
+        if (adapter != null) {
+            adapter.setViewBinder(new MusicCursorAdapter.ViewBinder() {
+                @Override
+                public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
+                    if (view.getId() == R.id.tvMusicDuration) {
+                        ((TextView) view).setText(DateTimeUtils.formatMillis(cursor.getString(columnIndex)));
+                        return true;
+                    }
+                    return false;
+                }
+            });
+            adapter.changeCursor(cursor);
+            adapter.notifyDataSetChanged();
+        }
+    }
 }

@@ -10,12 +10,6 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.util.Log;
-import android.view.View;
-import android.widget.TextView;
-import ca.pluszero.emotive.R;
-import ca.pluszero.emotive.adapters.MusicCursorAdapter;
-import ca.pluszero.emotive.fragments.MainFragment;
-import ca.pluszero.emotive.utils.DateTimeUtils;
 
 import java.io.File;
 
@@ -25,6 +19,7 @@ public class MusicManager implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final int MUSIC_URL_LOADER = 0;
     private static MusicManager instance = null;
     private final Fragment fragment;
+    private final IMusicLoadedListener listener;
     private String[] mSelectionArgs = new String[3];
     private String[] mProjection = new String[]{
             MediaStore.Audio.Media.ARTIST,
@@ -35,13 +30,14 @@ public class MusicManager implements LoaderManager.LoaderCallbacks<Cursor> {
             MediaStore.Audio.Media._ID};
     private String mSelectionClause;
 
-    private MusicManager(Fragment fragment) {
+    private MusicManager(Fragment fragment, IMusicLoadedListener listener) {
         this.fragment = fragment;
+        this.listener = listener;
     }
 
-    public static MusicManager getInstance(Fragment fragment) {
+    public static MusicManager getInstance(Fragment fragment, IMusicLoadedListener listener) {
         if (instance == null) {
-            instance = new MusicManager(fragment);
+            instance = new MusicManager(fragment, listener);
         }
         return instance;
     }
@@ -102,20 +98,8 @@ public class MusicManager implements LoaderManager.LoaderCallbacks<Cursor> {
         } else if (cursor.getCount() < 1) {
             Log.d(fragment.getTag(), "provider gave 0 results");
         } else {
+            this.listener.onLoadFinished(cursor);
 
-            MusicCursorAdapter adapter = ((MainFragment) fragment).getAdapter();
-            adapter.setViewBinder(new MusicCursorAdapter.ViewBinder() {
-                @Override
-                public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
-                    if (view.getId() == R.id.tvMusicDuration) {
-                        ((TextView) view).setText(DateTimeUtils.formatMillis(cursor.getString(columnIndex)));
-                        return true;
-                    }
-                    return false;
-                }
-            });
-            adapter.changeCursor(cursor);
-            adapter.notifyDataSetChanged();
             int index = cursor.getColumnIndex(MediaStore.Audio.Media.DATA);
             Log.d("TAG", cursor.getCount() + " is the count");
             while (cursor.moveToNext()) {
@@ -152,8 +136,12 @@ public class MusicManager implements LoaderManager.LoaderCallbacks<Cursor> {
      */
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        // Clears out the adapter's reference to the Cursor. This prevents memory leaks.
-        ((MainFragment) fragment).getAdapter().swapCursor(null);
+        this.listener.onLoaderReset();
+    }
+
+    public static interface IMusicLoadedListener {
+        public void onLoaderReset();
+        public void onLoadFinished(Cursor cursor);
     }
 
 }

@@ -1,5 +1,7 @@
 package ca.pluszero.emotive.managers;
 
+import android.util.Log;
+
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -9,7 +11,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import ca.pluszero.emotive.ApiKeys;
@@ -23,17 +29,23 @@ public class YouTubeManager {
     private static final String BASE_URL = "https://www.googleapis.com/youtube/v3";
     private static YouTubeManager instance;
     private static AsyncHttpClient client = new AsyncHttpClient();
+    private static DateFormat ISO_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
     private OnFinishedListener listener;
-    private JsonHttpResponseHandler firstResponse = new JsonHttpResponseHandler() {
+    private String nextPageToken = "";
+    String currentQuery;
+
+    private JsonHttpResponseHandler firstResponseHandler = new JsonHttpResponseHandler() {
         @Override
         public void onStart() {
         }
 
         @Override
         public void onSuccess(JSONObject response) {
-            final List<YouTubeVideo> videos = new ArrayList<YouTubeVideo>();
             try {
                 final JSONArray searchJsonItems = response.getJSONArray("items");
+                final String currentNextPageToken = nextPageToken;
+                nextPageToken = response.getString("nextPageToken");
+                final List<YouTubeVideo> moreVideos = new ArrayList<YouTubeVideo>();
                 for (int i = 0; i < searchJsonItems.length(); i++) {
                     final JSONObject videoObject = searchJsonItems.getJSONObject(i);
                     final String videoId = videoObject.getJSONObject("id").getString(
@@ -47,9 +59,14 @@ public class YouTubeManager {
                         @Override
                         public synchronized void onSuccess(JSONObject response) {
                             try {
-                                addYoutubeVideo(response, videoObject, videos, videoId);
-                                if (videos.size() == searchJsonItems.length()) {
-                                    listener.onYoutubeQueryFinished(videos);
+                                addYoutubeVideo(response, videoObject, moreVideos, videoId);
+                                if (moreVideos.size() == searchJsonItems.length()) {
+                                    // If next token is empty string, there are no more videos to load
+                                    if (currentNextPageToken.isEmpty()) {
+                                        listener.onInitialYoutubeQueryFinished(moreVideos);
+                                    } else {
+                                        listener.onMoreVideosReceived(moreVideos);
+                                    }
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -106,7 +123,7 @@ public class YouTubeManager {
         return instance;
     }
 
-    private void addYoutubeVideo(JSONObject response, JSONObject videoObject, List<YouTubeVideo> videos, String videoId) throws JSONException {
+    private void addYoutubeVideo(JSONObject response, JSONObject videoObject, List<YouTubeVideo> moreVideos, String videoId) throws JSONException {
         JSONArray jsonItems = response.getJSONArray("items");
         JSONObject item = jsonItems.getJSONObject(0);
         String duration = formatDuration(item);
@@ -117,10 +134,17 @@ public class YouTubeManager {
         String channelName = snippet.getString("channelTitle");
         // get # of views
         String publishedISODate = snippet.getString("publishedAt");
+        try {
+            Date publishedDate = ISO_DATE_FORMAT.parse(publishedISODate);
+            publishedISODate = DateFormat.getDateInstance().format(publishedDate);
+        } catch (ParseException e) {
+            // Failed to parse.
+            Log.d("TAG", "noo");
+        }
         String thumbnailUrl = snippet.getJSONObject("thumbnails")
                 .getJSONObject("medium").getString("url");
-        videos.add(new YouTubeVideo(videoId, videoName,
-                thumbnailUrl, viewCount, channelName, duration, publishedISODate.substring(0, publishedISODate.indexOf('T'))));
+        moreVideos.add(new YouTubeVideo(videoId, videoName,
+                thumbnailUrl, viewCount, channelName, duration, publishedISODate));
     }
 
     private String formatDuration(JSONObject item) throws JSONException {
@@ -128,13 +152,25 @@ public class YouTubeManager {
     }
 
     public void getYouTubeSearch(String query) {
+        currentQuery = query;
         RequestParams params = new RequestParams();
         params.put("part", "snippet");
-        params.put("q", query); // Specify query param
+        params.put("q", currentQuery); // Specify query param
         params.put("type", "video");
-        get("", params, firstResponse, Type.SEARCH);
+        if (!nextPageToken.isEmpty()) {
+            params.put("pageToken", nextPageToken);
+        }
+        get("", params, firstResponseHandler, Type.SEARCH);
         // TODO: filter using fields to get only the fields required
         // https://developers.google_icon.com/youtube/v3/getting-started#part
+    }
+
+    public void loadMoreDataFromApi() {
+        getYouTubeSearch(currentQuery);
+    }
+
+    public void clearNextPageToken() {
+        nextPageToken = "";
     }
 
     private static enum Type {
@@ -142,6 +178,8 @@ public class YouTubeManager {
     }
 
     public interface OnFinishedListener {
-        public void onYoutubeQueryFinished(List<YouTubeVideo> videos);
+        public void onInitialYoutubeQueryFinished(List<YouTubeVideo> videos);
+
+        public void onMoreVideosReceived(List<YouTubeVideo> videos);
     }
 }

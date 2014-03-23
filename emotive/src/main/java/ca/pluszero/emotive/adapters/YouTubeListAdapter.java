@@ -23,7 +23,7 @@ public class YouTubeListAdapter extends BaseArrayAdapter<YouTubeVideo> {
         super(context, R.layout.youtube_list_item, items);
         this.imageLoader = ImageLoader.getInstance();
     }
-    
+
     public View getView (int position, View convertView, ViewGroup parent) {
         View rowView = convertView;
         if (rowView == null) {
