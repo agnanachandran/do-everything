@@ -381,7 +381,6 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         rootView.findViewById(R.id.scroll_view_main_container).setVisibility(View.GONE);
         rootView.findViewById(R.id.ll_panel_container).setVisibility(View.VISIBLE);
 
-        etSearchView.setText(""); // Clear out old text
         etSearchView.setHint(mPrimaryOption.getMainInfo());
         etSearchView.setFocusableInTouchMode(true);
         etSearchView.requestFocus();
@@ -402,6 +401,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         if (mPrimaryOption != PrimaryOption.LISTEN) {
             etSearchView.removeTextChangedListener(musicTextWatcher);
         }
+        etSearchView.setText(""); // Clear out old text
     }
 
     private int getNavbarHeight() {
