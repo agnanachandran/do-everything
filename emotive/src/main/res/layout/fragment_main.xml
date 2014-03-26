@@ -137,12 +137,12 @@
                         <ImageView
                             android:id="@+id/imgSixthOption"
                             style="@style/circle_image"
-                            android:src="@drawable/primary_note_selector" />
+                            android:src="@drawable/primary_weather_selector" />
 
                         <Button
                             android:id="@+id/bSixthOption"
                             style="@style/CustomTransparentButton"
-                            android:text="Note" />
+                            android:text="Weather" />
                     </LinearLayout>
 
                 </LinearLayout>

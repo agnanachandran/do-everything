@@ -6,7 +6,7 @@ public enum PrimaryOption {
     GOOGLE("Learn", "Google search", 3),
     FIND("Find", "Find a place", 4),
     YOUTUBE("Watch", "Search YouTube", 5),
-    NOTE("Note", "Add a note to Google Keep", 6);
+    WEATHER("Note", "Add a note to Google Keep", 6);
     private final String mainInfo;
     private final String title;
     private final int optionNumber;

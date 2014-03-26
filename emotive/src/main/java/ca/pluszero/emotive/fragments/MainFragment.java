@@ -204,7 +204,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
                 PrimaryOption.GOOGLE,
                 PrimaryOption.FIND,
                 PrimaryOption.YOUTUBE,
-                PrimaryOption.NOTE
+                PrimaryOption.WEATHER
         };
     }
 
@@ -334,9 +334,9 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
                 mPrimaryOption = PrimaryOption.YOUTUBE;
                 setupYoutubeOptions();
                 break;
-            case NOTE:
-                mPrimaryOption = PrimaryOption.NOTE;
-                setupNoteOptions();
+            case WEATHER:
+                mPrimaryOption = PrimaryOption.WEATHER;
+                setupWeatherOptions();
                 break;
         }
     }
@@ -371,7 +371,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         setupButton();
     }
 
-    private void setupNoteOptions() {
+    private void setupWeatherOptions() {
         setupButton();
     }
 
