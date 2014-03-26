@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:drawable="@drawable/note_icon"
-        android:top="100dp"
+        android:drawable="@drawable/weather_icon"
+        android:top="120dp"
         android:left="100dp"
         android:right="100dp"
-        android:bottom="100dp"
+        android:bottom="120dp"
         />
     <item android:drawable="@drawable/outer_circle" />
 </layer-list>
