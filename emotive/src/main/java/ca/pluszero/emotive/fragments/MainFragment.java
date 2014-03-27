@@ -46,7 +46,7 @@ import ca.pluszero.emotive.listeners.EndlessScrollListener;
 import ca.pluszero.emotive.managers.MusicManager;
 import ca.pluszero.emotive.managers.NetworkManager;
 import ca.pluszero.emotive.managers.YouTubeManager;
-import ca.pluszero.emotive.models.PrimaryOption;
+import ca.pluszero.emotive.models.Choice;
 import ca.pluszero.emotive.models.YouTubeVideo;
 import ca.pluszero.emotive.utils.DateTimeUtils;
 
@@ -64,7 +64,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
 
     private ListView lvQueryResults;
 
-    private PrimaryOption mPrimaryOption;
+    private Choice mPrimaryOption;
 
     private AutoCompleteTextView etSearchView;
     private View rootView;
@@ -187,7 +187,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         primaryButtons = new Button[]{bFirstButton, bSecondButton, bThirdButton, bFourthButton, bFifthButton, bSixthButton};
         primaryImages = new ImageView[]{imgFirstOption, imgSecondOption, imgThirdOption, imgFourthOption, imgFifthOption, imgSixthOption};
 
-        PrimaryOption[] options = fetchOptions();
+        Choice[] options = fetchOptions();
         for (int i = 0; i < primaryButtons.length; i++) {
             primaryButtons[i].setTag(R.string.option_key, options[i]);
             primaryButtons[i].setOnClickListener(this);
@@ -196,26 +196,26 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         }
     }
 
-    private PrimaryOption[] fetchOptions() {
+    private Choice[] fetchOptions() {
         // TODO: use algo. based on time of day, and user's past experiences with this app
-        return new PrimaryOption[]{
-                PrimaryOption.FOOD,
-                PrimaryOption.LISTEN,
-                PrimaryOption.GOOGLE,
-                PrimaryOption.FIND,
-                PrimaryOption.YOUTUBE,
-                PrimaryOption.WEATHER
+        return new Choice[]{
+                Choice.FOOD,
+                Choice.LISTEN,
+                Choice.GOOGLE,
+                Choice.FIND,
+                Choice.YOUTUBE,
+                Choice.WEATHER
         };
     }
 
     private void performSearch(String query) {
-        if (mPrimaryOption == PrimaryOption.FIND) {
+        if (mPrimaryOption == Choice.FIND) {
             startMapsSearch(query);
-        } else if (mPrimaryOption == PrimaryOption.LISTEN) {
+        } else if (mPrimaryOption == Choice.LISTEN) {
             dismissKeyboard();
-        } else if (mPrimaryOption == PrimaryOption.GOOGLE) {
+        } else if (mPrimaryOption == Choice.GOOGLE) {
             startGoogleSearchAnything(query);
-        } else if (mPrimaryOption == PrimaryOption.YOUTUBE) {
+        } else if (mPrimaryOption == Choice.YOUTUBE) {
             startYouTubeSearch(query);
         }
     }
@@ -311,31 +311,31 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
 
     @Override
     public void onClick(View v) {
-        PrimaryOption clickedOption = (PrimaryOption) v.getTag(R.string.option_key);
+        Choice clickedOption = (Choice) v.getTag(R.string.option_key);
         ((MainActivity) getActivity()).setOnHomePage(false);
         switch (clickedOption) {
             case FOOD:
-                mPrimaryOption = PrimaryOption.FOOD;
+                mPrimaryOption = Choice.FOOD;
                 setupFoodOptions();
                 break;
             case LISTEN:
-                mPrimaryOption = PrimaryOption.LISTEN;
+                mPrimaryOption = Choice.LISTEN;
                 setupListenOptions();
                 break;
             case GOOGLE:
-                mPrimaryOption = PrimaryOption.GOOGLE;
+                mPrimaryOption = Choice.GOOGLE;
                 setupGoogleOptions();
                 break;
             case FIND:
-                mPrimaryOption = PrimaryOption.FIND;
+                mPrimaryOption = Choice.FIND;
                 setupFindOptions();
                 break;
             case YOUTUBE:
-                mPrimaryOption = PrimaryOption.YOUTUBE;
+                mPrimaryOption = Choice.YOUTUBE;
                 setupYoutubeOptions();
                 break;
             case WEATHER:
-                mPrimaryOption = PrimaryOption.WEATHER;
+                mPrimaryOption = Choice.WEATHER;
                 setupWeatherOptions();
                 break;
         }
@@ -392,13 +392,13 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         searchContainer.setVisibility(View.VISIBLE);
         searchContainer.startAnimation(slideUp);
 
-        if (mPrimaryOption != PrimaryOption.FIND) {
+        if (mPrimaryOption != Choice.FIND) {
             etSearchView.setOnItemClickListener(null);
             if (etSearchView.getAdapter() != null) {
                 etSearchView.setAdapter((ArrayAdapter<String>) null);
             }
         }
-        if (mPrimaryOption != PrimaryOption.LISTEN) {
+        if (mPrimaryOption != Choice.LISTEN) {
             etSearchView.removeTextChangedListener(musicTextWatcher);
         }
         etSearchView.setText(""); // Clear out old text
