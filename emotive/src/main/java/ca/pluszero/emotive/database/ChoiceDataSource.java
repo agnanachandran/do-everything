@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import ca.pluszero.emotive.models.Choice;
 
@@ -32,21 +34,34 @@ public class ChoiceDataSource {
         // database = null; // TODO: Should I do this?
     }
 
-    public Choice updateChoice(Choice choice) {
+    public int updateChoice(Choice choice) {
         ContentValues values = new ContentValues();
         values.put(DatabaseHelper.COLUMN_TIMES_TAPPED, choice.getTimesTapped());
-        String insertId = String.valueOf(database.insert(DatabaseHelper.CHOICE_TABLE_NAME, null, values));
-        database.update(DatabaseHelper.CHOICE_TABLE_NAME, values, DatabaseHelper.COLUMN_ID + " = ?", new String[]{choice.getId()});
-        Cursor cursor = database.query(DatabaseHelper.CHOICE_TABLE_NAME, allColumns, DatabaseHelper.COLUMN_ID + " = ?" , new String[] {insertId}, null, null, null);
+//        String insertId = String.valueOf(database.insert(DatabaseHelper.TABLE_CHOICES, null, values));
+        return database.update(DatabaseHelper.TABLE_CHOICES, values, DatabaseHelper.COLUMN_TITLE + " = ?", new String[]{choice.getTitle()});
+//        Cursor cursor = database.query(DatabaseHelper.TABLE_CHOICES, allColumns, DatabaseHelper.COLUMN_ID + " = ?" , new String[] {insertId}, null, null, null);
+//        cursor.moveToFirst();
+//        Choice databaseChoice = cursorToChoice(cursor);
+//        cursor.close();
+//        return databaseChoice;
+    }
+
+    public List<Choice> getAllChoices() {
+        List<Choice> choices = new ArrayList<Choice>();
+
+        Cursor cursor = database.query(DatabaseHelper.TABLE_CHOICES, allColumns, null, null, null, null, null);
         cursor.moveToFirst();
-        Choice databaseChoice = cursorToChoice(cursor);
+        while (!cursor.isAfterLast()) {
+            choices.add(cursorToChoice(cursor));
+            cursor.moveToNext();
+        }
         cursor.close();
-        return databaseChoice;
+        return choices;
     }
 
     private Choice cursorToChoice(Cursor cursor) {
-        Choice choice = Choice.getEnumForTitle(cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_NAME)));
-        choice.setId(cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_ID)));
+        Choice choice = Choice.getEnumForTitle(cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_TITLE)));
+//        choice.setId(cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_ID)));
         return choice;
     }
 }

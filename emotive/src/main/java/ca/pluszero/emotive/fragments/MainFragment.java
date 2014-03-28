@@ -3,7 +3,6 @@ package ca.pluszero.emotive.fragments;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Typeface;
 import android.net.Uri;
@@ -12,6 +11,7 @@ import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -34,6 +34,9 @@ import android.widget.ViewSwitcher;
 
 import com.google.android.youtube.player.YouTubeIntents;
 
+import java.sql.SQLException;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import ca.pluszero.emotive.R;
@@ -42,6 +45,7 @@ import ca.pluszero.emotive.adapters.BaseArrayAdapter;
 import ca.pluszero.emotive.adapters.MusicCursorAdapter;
 import ca.pluszero.emotive.adapters.PlacesAutoCompleteAdapter;
 import ca.pluszero.emotive.adapters.YouTubeListAdapter;
+import ca.pluszero.emotive.database.ChoiceDataSource;
 import ca.pluszero.emotive.listeners.EndlessScrollListener;
 import ca.pluszero.emotive.managers.MusicManager;
 import ca.pluszero.emotive.managers.NetworkManager;
@@ -49,11 +53,11 @@ import ca.pluszero.emotive.managers.YouTubeManager;
 import ca.pluszero.emotive.models.Choice;
 import ca.pluszero.emotive.models.YouTubeVideo;
 import ca.pluszero.emotive.utils.DateTimeUtils;
+import ca.pluszero.emotive.utils.ScreenUtils;
 
 public class MainFragment extends Fragment implements View.OnClickListener, YouTubeManager.OnFinishedListener, MusicManager.IMusicLoadedListener {
 
     public static String FRAGMENT_TAG = "main_fragment"; // set from activity_main xml
-    private Button[] primaryButtons;
 
     private Button bFirstButton;
     private Button bSecondButton;
@@ -61,6 +65,16 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
     private Button bFourthButton;
     private Button bFifthButton;
     private Button bSixthButton;
+
+    private ImageView imgFirstOption;
+    private ImageView imgSecondOption;
+    private ImageView imgThirdOption;
+    private ImageView imgFourthOption;
+    private ImageView imgFifthOption;
+    private ImageView imgSixthOption;
+
+    private Button[] primaryButtons;
+    private ImageView[] primaryImages;
 
     private ListView lvQueryResults;
 
@@ -70,13 +84,6 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
     private View rootView;
     private TextSwitcher mSwitcher;
     private Animation slideUp;
-    private ImageView imgFirstOption;
-    private ImageView imgSecondOption;
-    private ImageView imgThirdOption;
-    private ImageView imgFourthOption;
-    private ImageView imgFifthOption;
-    private ImageView imgSixthOption;
-    private ImageView[] primaryImages;
     private boolean startedMusicSearch;
 
     private ViewSwitcher.ViewFactory mFactory = new ViewSwitcher.ViewFactory() {
@@ -125,8 +132,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
 
     public void setup() {
         mSwitcher.setText(DateTimeUtils.getGreetingBasedOnTimeOfDay() + ",\n What do you want to do?");
-        rootView.findViewById(R.id.scroll_view_main_container).setVisibility(View.VISIBLE);
-        rootView.findViewById(R.id.ll_panel_container).setVisibility(View.GONE);
+        showPanel(false);
 
         etSearchView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -150,12 +156,22 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
 
     }
 
+    private void showPanel(boolean shouldShowPanel) {
+        if (shouldShowPanel) {
+            rootView.findViewById(R.id.scroll_view_main_container).setVisibility(View.GONE);
+            rootView.findViewById(R.id.ll_panel_container).setVisibility(View.VISIBLE);
+        } else {
+            rootView.findViewById(R.id.scroll_view_main_container).setVisibility(View.VISIBLE);
+            rootView.findViewById(R.id.ll_panel_container).setVisibility(View.GONE);
+        }
+    }
+
     private void setupAnimations() {
         mSwitcher = (TextSwitcher) rootView.findViewById(R.id.mainTextview);
         // Set the factory used to create TextViews to switch between.
         mSwitcher.setFactory(mFactory);
 
-                /*
+        /*
          * Set the in and out animations. Using the fade_in/out animations
          * provided by the framework.
          */
@@ -187,25 +203,44 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         primaryButtons = new Button[]{bFirstButton, bSecondButton, bThirdButton, bFourthButton, bFifthButton, bSixthButton};
         primaryImages = new ImageView[]{imgFirstOption, imgSecondOption, imgThirdOption, imgFourthOption, imgFifthOption, imgSixthOption};
 
-        Choice[] options = fetchOptions();
+        Choice[] choices = fetchChoices();
         for (int i = 0; i < primaryButtons.length; i++) {
-            primaryButtons[i].setTag(R.string.option_key, options[i]);
+            Choice choice = choices[i];
+            primaryButtons[i].setText(choice.getTitle());
+            primaryButtons[i].setTag(R.string.option_key, choice);
             primaryButtons[i].setOnClickListener(this);
-            primaryImages[i].setTag(R.string.option_key, options[i]);
+
+            primaryImages[i].setImageDrawable(getResources().getDrawable(choice.getSelector()));
+            primaryImages[i].setTag(R.string.option_key, choice);
             primaryImages[i].setOnClickListener(this);
         }
     }
 
-    private Choice[] fetchOptions() {
+    private Choice[] fetchChoices() {
         // TODO: use algo. based on time of day, and user's past experiences with this app
-        return new Choice[]{
-                Choice.FOOD,
-                Choice.LISTEN,
-                Choice.GOOGLE,
-                Choice.FIND,
-                Choice.YOUTUBE,
-                Choice.WEATHER
-        };
+        ChoiceDataSource dataSource = new ChoiceDataSource(getActivity());
+        try {
+            dataSource.open();
+            List<Choice> choices = dataSource.getAllChoices();
+            Collections.sort(choices, new Comparator<Choice>() {
+                @Override
+                public int compare(Choice lhs, Choice rhs) {
+                    return rhs.getTimesTapped() - lhs.getTimesTapped();
+                }
+            });
+            return (Choice[]) choices.toArray();
+        } catch (SQLException e) {
+            Log.e(MainFragment.class.getName(), "SQLException: " + e.getMessage());
+            return new Choice[]{
+                    Choice.FOOD,
+                    Choice.LISTEN,
+                    Choice.GOOGLE,
+                    Choice.FIND,
+                    Choice.YOUTUBE,
+                    Choice.WEATHER
+            };
+        }
+
     }
 
     private void performSearch(String query) {
@@ -290,7 +325,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         queryResultsContainer.setVisibility(View.VISIBLE);
 
         // TODO: do only on 4.4
-        lvQueryResults.setPadding(0, 0, 0, getNavbarHeight());
+        lvQueryResults.setPadding(0, 0, 0, ScreenUtils.getNavbarHeight(getResources()));
         lvQueryResults.setClipToPadding(false);
 
 //        LinearLayout searchContainer = (LinearLayout) rootView.findViewById(R.id.ll_search_container);
@@ -378,8 +413,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
 
     private void setupButton() {
         LinearLayout searchContainer = (LinearLayout) rootView.findViewById(R.id.ll_search_container);
-        rootView.findViewById(R.id.scroll_view_main_container).setVisibility(View.GONE);
-        rootView.findViewById(R.id.ll_panel_container).setVisibility(View.VISIBLE);
+        showPanel(true);
 
         etSearchView.setHint(mPrimaryOption.getMainInfo());
         etSearchView.setFocusableInTouchMode(true);
@@ -402,15 +436,6 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
             etSearchView.removeTextChangedListener(musicTextWatcher);
         }
         etSearchView.setText(""); // Clear out old text
-    }
-
-    private int getNavbarHeight() {
-        Resources resources = getResources();
-        int resourceId = resources.getIdentifier("navigation_bar_height", "dimen", "android");
-        if (resourceId > 0) {
-            return resources.getDimensionPixelSize(resourceId);
-        }
-        return 0;
     }
 
     @Override
