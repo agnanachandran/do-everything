@@ -10,7 +10,7 @@ public enum Choice {
 
     private final String mainInfo;
     private final String title;
-    private int id;
+    private String id;
     private int timesTapped;
 
     Choice(String title, String mainInfo) {
@@ -26,11 +26,11 @@ public enum Choice {
         return title;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

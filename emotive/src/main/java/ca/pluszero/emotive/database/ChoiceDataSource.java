@@ -15,6 +15,7 @@ public class ChoiceDataSource {
             DatabaseHelper.COLUMN_ID,
             DatabaseHelper.COLUMN_TIMES_TAPPED
     };
+
     private SQLiteDatabase database;
     private DatabaseHelper dbHelper;
 
@@ -31,10 +32,11 @@ public class ChoiceDataSource {
         // database = null; // TODO: Should I do this?
     }
 
-    public Choice createChoice(Choice choice) {
+    public Choice updateChoice(Choice choice) {
         ContentValues values = new ContentValues();
         values.put(DatabaseHelper.COLUMN_TIMES_TAPPED, choice.getTimesTapped());
         String insertId = String.valueOf(database.insert(DatabaseHelper.CHOICE_TABLE_NAME, null, values));
+        database.update(DatabaseHelper.CHOICE_TABLE_NAME, values, DatabaseHelper.COLUMN_ID + " = ?", new String[]{choice.getId()});
         Cursor cursor = database.query(DatabaseHelper.CHOICE_TABLE_NAME, allColumns, DatabaseHelper.COLUMN_ID + " = ?" , new String[] {insertId}, null, null, null);
         cursor.moveToFirst();
         Choice databaseChoice = cursorToChoice(cursor);
@@ -44,6 +46,7 @@ public class ChoiceDataSource {
 
     private Choice cursorToChoice(Cursor cursor) {
         Choice choice = Choice.getEnumForTitle(cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_NAME)));
+        choice.setId(cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_ID)));
         return choice;
     }
 }
