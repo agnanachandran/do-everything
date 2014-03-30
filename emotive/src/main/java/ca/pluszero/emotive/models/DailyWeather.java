@@ -34,4 +34,8 @@ public class DailyWeather {
     public int getApparentTemperatureInFahrenheit() {
         return apparentTemperatureInFahrenheit;
     }
+
+    public int getApparentTemperatureInCelsius() {
+        return ConversionUtils.fahrenheitToCelsius(apparentTemperatureInFahrenheit);
+    }
 }

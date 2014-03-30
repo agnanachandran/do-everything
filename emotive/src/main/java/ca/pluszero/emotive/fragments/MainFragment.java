@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -157,6 +158,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         });
         lvQueryResults.setOnItemClickListener(null);
         lvQueryResults.setOnScrollListener(null);
+        lvQueryResults.setVisibility(View.GONE);
         if (lvQueryResults.getAdapter() != null) {
             if (lvQueryResults.getAdapter() instanceof BaseArrayAdapter) {
                 ((BaseArrayAdapter) lvQueryResults.getAdapter()).clear();
@@ -173,6 +175,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         } else {
             rootView.findViewById(R.id.scroll_view_main_container).setVisibility(View.VISIBLE);
             rootView.findViewById(R.id.ll_panel_container).setVisibility(View.GONE);
+            rootView.findViewById(R.id.weather_container).setVisibility(View.GONE);
         }
     }
 
@@ -270,6 +273,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
 
     private void startWeatherSearch() {
 //        Toast.makeText(MainFragment.this.getActivity(), "Please select an item from the dropdown instead.", Toast.LENGTH_LONG).show();
+        dismissKeyboard();
         PlaceDetailsManager placeManager = PlaceDetailsManager.getInstance(this);
         placeManager.getPlaceDetailsQuery(place.getReference());
     }
@@ -346,6 +350,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         // TODO: do only on 4.4
         lvQueryResults.setPadding(0, 0, 0, ScreenUtils.getNavbarHeight(getResources()));
         lvQueryResults.setClipToPadding(false);
+        lvQueryResults.setVisibility(View.VISIBLE);
 
 //        LinearLayout searchContainer = (LinearLayout) rootView.findViewById(R.id.ll_search_container);
 //        ((ViewGroup) rootView.findViewById(R.id.main_container)).removeView(searchContainer);
@@ -525,6 +530,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         // TODO: do only on 4.4
         weatherContainer.setPadding(0, 0, 0, ScreenUtils.getNavbarHeight(getResources()));
         ((TextView) rootView.findViewById(R.id.weather_temp)).setText(String.valueOf(weatherData.getTemperatureInCelsius()) + DEGREE_SYMBOL);
+        ((TextView) rootView.findViewById(R.id.weather_feels_like)).setText(getString(R.string.feels_like, String.valueOf(weatherData.getApparentTemperatureInCelsius())));
         ((TextView) rootView.findViewById(R.id.weather_status)).setText(weatherData.getSummary());
         TextView tvCountryName = (TextView) rootView.findViewById(R.id.weather_country);
 
@@ -543,5 +549,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         if (!countryName.isEmpty()) {
             tvCountryName.setText(countryName);
         }
+        Drawable weatherIcon = getResources().getDrawable(weatherData.getIcon().getDrawableId());
+        ((ImageView) rootView.findViewById(R.id.weather_now_icon)).setImageDrawable(weatherIcon);
     }
 }
