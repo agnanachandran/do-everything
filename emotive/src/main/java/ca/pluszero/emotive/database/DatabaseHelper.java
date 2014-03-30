@@ -29,7 +29,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_CHOICE_TABLE_ON_CREATE);
         for (Choice choice : Choice.values()) {
-            Log.d("TAGLOLGF", choice.getTitle());
             db.execSQL(String.format(INCOMPLETE_INSERT_CHOICES_STATEMENT, "0", choice.getTitle(), choice.getMainInfo())); // Insert 0 for times tapped column
         }
     }

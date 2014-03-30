@@ -19,9 +19,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ca.pluszero.emotive.ApiKeys;
+import ca.pluszero.emotive.models.Place;
 
 public class PlacesAutoCompleteAdapter extends ArrayAdapter<String> implements Filterable {
-    private List<String> resultList;
+    private List<Place> resultList;
     private boolean onlyQueryCities; // Recall instance var. booleans default to false
 
     public PlacesAutoCompleteAdapter(Context context, int textViewResourceId) {
@@ -40,7 +41,7 @@ public class PlacesAutoCompleteAdapter extends ArrayAdapter<String> implements F
 
     @Override
     public String getItem(int index) {
-        return resultList.get(index);
+        return resultList.get(index).getDescription();
     }
 
     @Override
@@ -72,8 +73,8 @@ public class PlacesAutoCompleteAdapter extends ArrayAdapter<String> implements F
         return filter;
     }
 
-    private List<String> autocomplete(String input) {
-        List<String> resultList = null;
+    private List<Place> autocomplete(String input) {
+        List<Place> resultList = null;
         final String PLACES_API_BASE = "https://maps.googleapis.com/maps/api/place";
         final String TYPE_AUTOCOMPLETE = "/autocomplete";
         final String OUT_JSON = "/json";
@@ -114,14 +115,21 @@ public class PlacesAutoCompleteAdapter extends ArrayAdapter<String> implements F
             JSONArray predsJsonArray = jsonObj.getJSONArray("predictions");
 
             // Extract the Place descriptions from the results
-            resultList = new ArrayList<String>(predsJsonArray.length());
+            resultList = new ArrayList<Place>(predsJsonArray.length());
             for (int i = 0; i < predsJsonArray.length(); i++) {
-                resultList.add(predsJsonArray.getJSONObject(i).getString("description"));
+                JSONObject prediction = predsJsonArray.getJSONObject(i);
+                String description = prediction.getString("description");
+                String reference = prediction.getString("reference");
+                resultList.add(new Place(description, reference));
             }
         } catch (JSONException e) {
         }
 
         return resultList;
+    }
+
+    public Place getItemForPosition(int position) {
+        return resultList.get(position);
     }
 
 }

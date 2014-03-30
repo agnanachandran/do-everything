@@ -50,13 +50,18 @@ import ca.pluszero.emotive.database.ChoiceDataSource;
 import ca.pluszero.emotive.listeners.EndlessScrollListener;
 import ca.pluszero.emotive.managers.MusicManager;
 import ca.pluszero.emotive.managers.NetworkManager;
+import ca.pluszero.emotive.managers.PlaceDetailsManager;
+import ca.pluszero.emotive.managers.WeatherManager;
 import ca.pluszero.emotive.managers.YouTubeManager;
 import ca.pluszero.emotive.models.Choice;
+import ca.pluszero.emotive.models.DailyWeather;
+import ca.pluszero.emotive.models.Place;
+import ca.pluszero.emotive.models.PlaceDetails;
 import ca.pluszero.emotive.models.YouTubeVideo;
 import ca.pluszero.emotive.utils.DateTimeUtils;
 import ca.pluszero.emotive.utils.ScreenUtils;
 
-public class MainFragment extends Fragment implements View.OnClickListener, YouTubeManager.OnFinishedListener, MusicManager.IMusicLoadedListener {
+public class MainFragment extends Fragment implements View.OnClickListener, YouTubeManager.OnFinishedListener, MusicManager.IMusicLoadedListener, PlaceDetailsManager.OnFinishedListener, WeatherManager.OnFinishedListener {
 
     public static String FRAGMENT_TAG = "main_fragment"; // set from activity_main xml
 
@@ -86,6 +91,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
     private TextSwitcher mSwitcher;
     private Animation slideUp;
     private boolean startedMusicSearch;
+    private Place place;
 
     private ViewSwitcher.ViewFactory mFactory = new ViewSwitcher.ViewFactory() {
 
@@ -139,7 +145,9 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    performSearch(v.getText().toString());
+                    String query = v.getText().toString();
+
+                    performSearch(query);
                     return true;
                 }
                 return false;
@@ -253,7 +261,15 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
             startGoogleSearchAnything(query);
         } else if (mPrimaryOption == Choice.YOUTUBE) {
             startYouTubeSearch(query);
+        } else if (mPrimaryOption == Choice.WEATHER) {
+            startWeatherSearch();
         }
+    }
+
+    private void startWeatherSearch() {
+//        Toast.makeText(MainFragment.this.getActivity(), "Please select an item from the dropdown instead.", Toast.LENGTH_LONG).show();
+        PlaceDetailsManager placeManager = PlaceDetailsManager.getInstance(this);
+        placeManager.getPlaceDetailsQuery(place.getReference());
     }
 
     private void startYouTubeSearch(CharSequence query) {
@@ -417,6 +433,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 setTextAndCursorOfSearchEditText(adapterView, position);
+                place = ((PlacesAutoCompleteAdapter) etSearchView.getAdapter()).getItemForPosition(position);
             }
         });
     }
@@ -494,4 +511,13 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         etSearchView.setSelection(selectionText.length());
     }
 
+    @Override
+    public void onPlaceDetailsQueryFinished(PlaceDetails placeDetails) {
+        WeatherManager.getInstance(this).getWeatherQuery(placeDetails);
+    }
+
+    @Override
+    public void onWeatherQueryFinished(DailyWeather weatherData) {
+        getActivity().getActionBar().setTitle(weatherData.getSummary());
+    }
 }

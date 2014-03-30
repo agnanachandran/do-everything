@@ -16,7 +16,7 @@ public class NetworkManager {
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         boolean isConnected = networkInfo != null && networkInfo.isConnected();
         if (!isConnected) {
-            Toast.makeText(ctx, "Make sure you are connected to the internet.", Toast.LENGTH_LONG);
+            Toast.makeText(ctx, "Make sure you are connected to the internet.", Toast.LENGTH_LONG).show();
         }
         return isConnected;
     }
