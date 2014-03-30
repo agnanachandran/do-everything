@@ -6,10 +6,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/**
- * Created by chronos on 2014-03-10.
- */
-public abstract class DateTimeUtils {
+public final class DateTimeUtils {
     public static String parseDuration(String duration) {
         duration = duration.replace("PT", "");
         duration = duration.replace('H', ':');

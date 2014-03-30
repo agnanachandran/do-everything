@@ -11,6 +11,7 @@ import org.json.JSONObject;
 import ca.pluszero.emotive.ApiKeys;
 import ca.pluszero.emotive.models.DailyWeather;
 import ca.pluszero.emotive.models.PlaceDetails;
+import ca.pluszero.emotive.models.WeatherIcon;
 
 public class WeatherManager {
     private static final String API_KEY = ApiKeys.FORECAST_KEY;
@@ -29,7 +30,12 @@ public class WeatherManager {
             try {
                 JSONObject currently = response.getJSONObject("currently");
                 String summary = currently.getString("summary");
-                listener.onWeatherQueryFinished(new DailyWeather(summary));
+                int temperatureInFahrenheit = (int) Math.round(currently.getDouble("temperature"));
+                int apparentTemperatureInFahrenheit = (int) Math.round(currently.getDouble("apparentTemperature"));
+                String iconName = currently.getString("icon");
+                WeatherIcon weatherIcon = WeatherIcon.getEnumForString(iconName);
+
+                listener.onWeatherQueryFinished(new DailyWeather(summary, temperatureInFahrenheit, apparentTemperatureInFahrenheit, weatherIcon));
             } catch (JSONException e) {
                 e.printStackTrace();
             }

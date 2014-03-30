@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_primary_container"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:layout_marginTop="15dp"
+    android:background="@drawable/bg_shadow_card"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/horizontalButtonLinearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/roundrect"
+        android:weightSum="3">
+
+        <LinearLayout
+            style="@style/primaryBtnContainer"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/imgFirstOption"
+                style="@style/circle_image"
+                android:src="@drawable/primary_food_selector" />
+
+            <Button
+                android:id="@+id/bFirstOption"
+                style="@style/CustomTransparentButton"
+                android:text="Eat" />
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/primaryBtnContainer"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/imgSecondOption"
+                style="@style/circle_image"
+                android:src="@drawable/primary_music_selector" />
+
+            <Button
+                android:id="@+id/bSecondOption"
+                style="@style/CustomTransparentButton"
+                android:text="Listen" />
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/primaryBtnContainer"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/imgThirdOption"
+                style="@style/circle_image"
+                android:src="@drawable/primary_google_selector" />
+
+            <Button
+                android:id="@+id/bThirdOption"
+                style="@style/CustomTransparentButton"
+                android:text="Learn" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/horizontalButtonLinearLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/roundrect">
+
+        <LinearLayout
+            style="@style/primaryBtnContainer"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/imgFourthOption"
+                style="@style/circle_image"
+                android:src="@drawable/primary_find_selector" />
+
+            <Button
+                android:id="@+id/bFourthOption"
+                style="@style/CustomTransparentButton"
+                android:text="Find" />
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/primaryBtnContainer"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/imgFifthOption"
+                style="@style/circle_image"
+                android:src="@drawable/primary_watch_selector" />
+
+            <Button
+                android:id="@+id/bFifthOption"
+                style="@style/CustomTransparentButton"
+                android:text="Watch" />
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/primaryBtnContainer"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/imgSixthOption"
+                style="@style/circle_image"
+                android:src="@drawable/primary_weather_selector" />
+
+            <Button
+                android:id="@+id/bSixthOption"
+                style="@style/CustomTransparentButton"
+                android:text="Weather" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

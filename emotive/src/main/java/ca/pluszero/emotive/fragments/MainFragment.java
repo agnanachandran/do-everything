@@ -63,8 +63,8 @@ import ca.pluszero.emotive.utils.ScreenUtils;
 
 public class MainFragment extends Fragment implements View.OnClickListener, YouTubeManager.OnFinishedListener, MusicManager.IMusicLoadedListener, PlaceDetailsManager.OnFinishedListener, WeatherManager.OnFinishedListener {
 
+    private static final String DEGREE_SYMBOL = "°";
     public static String FRAGMENT_TAG = "main_fragment"; // set from activity_main xml
-
     private Button bFirstButton;
     private Button bSecondButton;
     private Button bThirdButton;
@@ -92,6 +92,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
     private Animation slideUp;
     private boolean startedMusicSearch;
     private Place place;
+    private String currentQuery;
 
     private ViewSwitcher.ViewFactory mFactory = new ViewSwitcher.ViewFactory() {
 
@@ -253,6 +254,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
     }
 
     private void performSearch(String query) {
+        currentQuery = query;
         if (mPrimaryOption == Choice.FIND) {
             startMapsSearch(query);
         } else if (mPrimaryOption == Choice.LISTEN) {
@@ -338,8 +340,8 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
     }
 
     private void bringUpListView() {
-        LinearLayout queryResultsContainer = (LinearLayout) rootView.findViewById(R.id.ll_panel_container);
-        queryResultsContainer.setVisibility(View.VISIBLE);
+        LinearLayout resultsContainer = (LinearLayout) rootView.findViewById(R.id.ll_panel_container);
+        resultsContainer.setVisibility(View.VISIBLE);
 
         // TODO: do only on 4.4
         lvQueryResults.setPadding(0, 0, 0, ScreenUtils.getNavbarHeight(getResources()));
@@ -347,9 +349,9 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
 
 //        LinearLayout searchContainer = (LinearLayout) rootView.findViewById(R.id.ll_search_container);
 //        ((ViewGroup) rootView.findViewById(R.id.main_container)).removeView(searchContainer);
-//        queryResultsContainer.removeView(searchContainer);
-//        queryResultsContainer.addView(searchContainer, 0);
-//        etSearchView = (AutoCompleteTextView) queryResultsContainer.findViewById(R.id.mainSearchView);
+//        resultsContainer.removeView(searchContainer);
+//        resultsContainer.addView(searchContainer, 0);
+//        etSearchView = (AutoCompleteTextView) resultsContainer.findViewById(R.id.mainSearchView);
 //        etSearchView.requestFocus();
 //        etSearchView.setSelection(etSearchView.length());
 //        rootView.findViewById(R.id.ll_panel_container).startAnimation(slideUp);
@@ -518,6 +520,28 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
 
     @Override
     public void onWeatherQueryFinished(DailyWeather weatherData) {
-        getActivity().getActionBar().setTitle(weatherData.getSummary());
+        View weatherContainer = rootView.findViewById(R.id.weather_container);
+        weatherContainer.setVisibility(View.VISIBLE);
+        // TODO: do only on 4.4
+        weatherContainer.setPadding(0, 0, 0, ScreenUtils.getNavbarHeight(getResources()));
+        ((TextView) rootView.findViewById(R.id.weather_temp)).setText(String.valueOf(weatherData.getTemperatureInCelsius()) + DEGREE_SYMBOL);
+        ((TextView) rootView.findViewById(R.id.weather_status)).setText(weatherData.getSummary());
+        TextView tvCountryName = (TextView) rootView.findViewById(R.id.weather_country);
+
+        String cityName = "";
+        String countryName = "";
+
+        if (currentQuery != null && !currentQuery.isEmpty() && currentQuery.contains(", ")) {
+            String[] querySplit = currentQuery.split(", ");
+            cityName = querySplit[0];
+            countryName = currentQuery.substring(currentQuery.indexOf(',') + 2);
+        } else {
+            cityName = currentQuery;
+            tvCountryName.setVisibility(View.GONE);
+        }
+        ((TextView) rootView.findViewById(R.id.weather_city)).setText(cityName);
+        if (!countryName.isEmpty()) {
+            tvCountryName.setText(countryName);
+        }
     }
 }
