@@ -398,7 +398,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
 
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                etSearchView.setText((String) adapterView.getItemAtPosition(position));
+                setTextAndCursorOfSearchEditText(adapterView, position);
             }
         });
     }
@@ -409,8 +409,17 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
 
     private void setupWeatherOptions() {
         setupButton();
-    }
 
+        etSearchView.setAdapter(new PlacesAutoCompleteAdapter(
+                getActivity(), R.layout.simple_list_item, true));
+        etSearchView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                setTextAndCursorOfSearchEditText(adapterView, position);
+            }
+        });
+    }
 
     private void setupButton() {
         LinearLayout searchContainer = (LinearLayout) rootView.findViewById(R.id.ll_search_container);
@@ -478,4 +487,11 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
             adapter.notifyDataSetChanged();
         }
     }
+
+    private void setTextAndCursorOfSearchEditText(AdapterView<?> adapterView, int position) {
+        String selectionText = (String) adapterView.getItemAtPosition(position);
+        etSearchView.setText(selectionText);
+        etSearchView.setSelection(selectionText.length());
+    }
+
 }

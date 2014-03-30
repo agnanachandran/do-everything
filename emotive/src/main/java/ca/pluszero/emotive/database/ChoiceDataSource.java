@@ -39,13 +39,7 @@ public class ChoiceDataSource {
     public int updateChoice(Choice choice) {
         ContentValues values = new ContentValues();
         values.put(DatabaseHelper.COLUMN_TIMES_TAPPED, choice.getTimesTapped());
-//        String insertId = String.valueOf(database.insert(DatabaseHelper.TABLE_CHOICES, null, values));
         return database.update(DatabaseHelper.TABLE_CHOICES, values, DatabaseHelper.COLUMN_TITLE + " = ?", new String[]{choice.getTitle()});
-//        Cursor cursor = database.query(DatabaseHelper.TABLE_CHOICES, allColumns, DatabaseHelper.COLUMN_ID + " = ?" , new String[] {insertId}, null, null, null);
-//        cursor.moveToFirst();
-//        Choice databaseChoice = cursorToChoice(cursor);
-//        cursor.close();
-//        return databaseChoice;
     }
 
     public List<Choice> getAllChoices() {
@@ -63,7 +57,6 @@ public class ChoiceDataSource {
 
     private Choice cursorToChoice(Cursor cursor) {
         Choice choice = Choice.getEnumForTitle(cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_TITLE)));
-//        choice.setId(cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_ID)));
         return choice;
     }
 }

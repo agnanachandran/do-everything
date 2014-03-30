@@ -22,7 +22,7 @@ import ca.pluszero.emotive.ApiKeys;
 
 public class PlacesAutoCompleteAdapter extends ArrayAdapter<String> implements Filterable {
     private List<String> resultList;
-    private boolean onlyQueryCities;
+    private boolean onlyQueryCities; // Recall instance var. booleans default to false
 
     public PlacesAutoCompleteAdapter(Context context, int textViewResourceId) {
         super(context, textViewResourceId);
@@ -85,7 +85,7 @@ public class PlacesAutoCompleteAdapter extends ArrayAdapter<String> implements F
             sb.append("?sensor=true&key=" + API_KEY);
             sb.append("&input=" + URLEncoder.encode(input, "utf8"));
             if (onlyQueryCities) {
-                sb.append("&type=(regions)");
+                sb.append("&types=(cities)");
             }
 
             URL url = new URL(sb.toString());

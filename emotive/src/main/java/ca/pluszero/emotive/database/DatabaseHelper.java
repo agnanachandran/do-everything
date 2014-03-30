@@ -24,9 +24,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
+    // Create Choices table and insert all the primary choices
     @Override
     public void onCreate(SQLiteDatabase db) {
-        // Create Choices table and insert all the primary choices
         db.execSQL(CREATE_CHOICE_TABLE_ON_CREATE);
         for (Choice choice : Choice.values()) {
             Log.d("TAGLOLGF", choice.getTitle());
