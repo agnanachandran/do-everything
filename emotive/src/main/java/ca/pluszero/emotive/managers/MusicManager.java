@@ -101,7 +101,6 @@ public class MusicManager implements LoaderManager.LoaderCallbacks<Cursor> {
             this.listener.onLoadFinished(cursor);
 
             int index = cursor.getColumnIndex(MediaStore.Audio.Media.DATA);
-            Log.d("TAG", cursor.getCount() + " is the count");
             while (cursor.moveToNext()) {
                 // If there's only one result, play it
                 if (cursor.getCount() == 1) {

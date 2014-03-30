@@ -1,7 +1,5 @@
 package ca.pluszero.emotive.managers;
 
-import android.util.Log;
-
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -138,8 +136,7 @@ public class YouTubeManager {
             Date publishedDate = ISO_DATE_FORMAT.parse(publishedISODate);
             publishedISODate = DateFormat.getDateInstance().format(publishedDate);
         } catch (ParseException e) {
-            // Failed to parse.
-            Log.d("TAG", "noo");
+            // TODO: Failed to parse.
         }
         String thumbnailUrl = snippet.getJSONObject("thumbnails")
                 .getJSONObject("medium").getString("url");

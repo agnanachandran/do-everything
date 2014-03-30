@@ -13,8 +13,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_TITLE = "title";
     public static final String COLUMN_MAIN_INFO = "main_info";
-    private static final String INCOMPLETE_INSERT_CHOICES_STATEMENT = "INSERT INTO " + TABLE_CHOICES + " (" + COLUMN_TITLE + ", " + COLUMN_MAIN_INFO + ", " + COLUMN_MAIN_INFO + ") VALUES (%s, %s, %s);";
     public static final String COLUMN_TIMES_TAPPED = "times_tapped";
+    private static final String INCOMPLETE_INSERT_CHOICES_STATEMENT = "INSERT INTO " + TABLE_CHOICES + " (" + COLUMN_TIMES_TAPPED + ", " + COLUMN_TITLE + ", " + COLUMN_MAIN_INFO + ") VALUES ('%s', '%s', '%s');";
     private static final String CREATE_CHOICE_TABLE_ON_CREATE = "CREATE TABLE " + TABLE_CHOICES + "("
             + COLUMN_ID + " integer primary key autoincrement, " + COLUMN_TIMES_TAPPED + " integer not null, " + COLUMN_TITLE + " text not null, " + COLUMN_MAIN_INFO + " text not null);";
     private static final String DATABASE_NAME = "emotive.db";
@@ -29,7 +29,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // Create Choices table and insert all the primary choices
         db.execSQL(CREATE_CHOICE_TABLE_ON_CREATE);
         for (Choice choice : Choice.values()) {
-            db.execSQL(String.format(INCOMPLETE_INSERT_CHOICES_STATEMENT, choice.getTitle(), choice.getMainInfo(), "0")); // Insert 0 for times tapped column
+            Log.d("TAGLOLGF", choice.getTitle());
+            db.execSQL(String.format(INCOMPLETE_INSERT_CHOICES_STATEMENT, "0", choice.getTitle(), choice.getMainInfo())); // Insert 0 for times tapped column
         }
     }
 

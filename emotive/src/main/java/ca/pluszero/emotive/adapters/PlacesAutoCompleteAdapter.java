@@ -1,5 +1,14 @@
 package ca.pluszero.emotive.adapters;
 
+import android.content.Context;
+import android.widget.ArrayAdapter;
+import android.widget.Filter;
+import android.widget.Filterable;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -9,21 +18,19 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import android.content.Context;
-import android.widget.ArrayAdapter;
-import android.widget.Filter;
-import android.widget.Filterable;
 import ca.pluszero.emotive.ApiKeys;
 
 public class PlacesAutoCompleteAdapter extends ArrayAdapter<String> implements Filterable {
     private List<String> resultList;
+    private boolean onlyQueryCities;
 
     public PlacesAutoCompleteAdapter(Context context, int textViewResourceId) {
         super(context, textViewResourceId);
+    }
+
+    public PlacesAutoCompleteAdapter(Context context, int textViewResourceId, boolean onlyQueryCities) {
+        super(context, textViewResourceId);
+        this.onlyQueryCities = onlyQueryCities;
     }
 
     @Override
@@ -64,9 +71,9 @@ public class PlacesAutoCompleteAdapter extends ArrayAdapter<String> implements F
             }};
         return filter;
     }
-    
-    private ArrayList<String> autocomplete(String input) {
-        ArrayList<String> resultList = null;
+
+    private List<String> autocomplete(String input) {
+        List<String> resultList = null;
         final String PLACES_API_BASE = "https://maps.googleapis.com/maps/api/place";
         final String TYPE_AUTOCOMPLETE = "/autocomplete";
         final String OUT_JSON = "/json";
@@ -77,6 +84,9 @@ public class PlacesAutoCompleteAdapter extends ArrayAdapter<String> implements F
             StringBuilder sb = new StringBuilder(PLACES_API_BASE + TYPE_AUTOCOMPLETE + OUT_JSON);
             sb.append("?sensor=true&key=" + API_KEY);
             sb.append("&input=" + URLEncoder.encode(input, "utf8"));
+            if (onlyQueryCities) {
+                sb.append("&type=(regions)");
+            }
 
             URL url = new URL(sb.toString());
             conn = (HttpURLConnection) url.openConnection();

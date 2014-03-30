@@ -24,11 +24,11 @@ public enum Choice {
 
     public static Choice getEnumForTitle(String title) {
         for (Choice value : Choice.values()) {
-            if (title.equals(title)) {
+            if (value.getTitle().equals(title)) {
                 return value;
             }
         }
-        return FOOD;
+        return FOOD; // Default; should never ever happen.
     }
 
     public String getMainInfo() {

@@ -35,6 +35,7 @@ import android.widget.ViewSwitcher;
 import com.google.android.youtube.player.YouTubeIntents;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -203,9 +204,9 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         primaryButtons = new Button[]{bFirstButton, bSecondButton, bThirdButton, bFourthButton, bFifthButton, bSixthButton};
         primaryImages = new ImageView[]{imgFirstOption, imgSecondOption, imgThirdOption, imgFourthOption, imgFifthOption, imgSixthOption};
 
-        Choice[] choices = fetchChoices();
+        List<Choice> choices = fetchChoices();
         for (int i = 0; i < primaryButtons.length; i++) {
-            Choice choice = choices[i];
+            Choice choice = choices.get(i);
             primaryButtons[i].setText(choice.getTitle());
             primaryButtons[i].setTag(R.string.option_key, choice);
             primaryButtons[i].setOnClickListener(this);
@@ -216,7 +217,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         }
     }
 
-    private Choice[] fetchChoices() {
+    private List<Choice> fetchChoices() {
         // TODO: use algo. based on time of day, and user's past experiences with this app
         ChoiceDataSource dataSource = new ChoiceDataSource(getActivity());
         try {
@@ -228,17 +229,17 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
                     return rhs.getTimesTapped() - lhs.getTimesTapped();
                 }
             });
-            return (Choice[]) choices.toArray();
+            return Collections.unmodifiableList(choices);
         } catch (SQLException e) {
             Log.e(MainFragment.class.getName(), "SQLException: " + e.getMessage());
-            return new Choice[]{
-                    Choice.FOOD,
-                    Choice.LISTEN,
-                    Choice.GOOGLE,
-                    Choice.FIND,
-                    Choice.YOUTUBE,
-                    Choice.WEATHER
-            };
+            List<Choice> choices = new ArrayList<Choice>();
+            choices.add(Choice.FOOD);
+            choices.add(Choice.LISTEN);
+            choices.add(Choice.GOOGLE);
+            choices.add(Choice.FIND);
+            choices.add(Choice.YOUTUBE);
+            choices.add(Choice.WEATHER);
+            return choices;
         }
 
     }

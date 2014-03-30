@@ -1,7 +1,6 @@
 package ca.pluszero.emotive.utils;
 
 import android.text.format.Time;
-import android.util.Log;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -44,7 +43,6 @@ public abstract class DateTimeUtils {
 
     public static String getGreetingBasedOnTimeOfDay() {
         int hours = getCurrentTimeInHours();
-        Log.d("TAG", hours + "");
         if (hours <= 3 || hours >= 18) {
             return "Good evening";
         } else if (hours >= 4 && hours <= 11) {

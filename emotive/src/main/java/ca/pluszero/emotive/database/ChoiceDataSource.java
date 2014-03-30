@@ -15,7 +15,9 @@ public class ChoiceDataSource {
 
     private final String[] allColumns = {
             DatabaseHelper.COLUMN_ID,
-            DatabaseHelper.COLUMN_TIMES_TAPPED
+            DatabaseHelper.COLUMN_TIMES_TAPPED,
+            DatabaseHelper.COLUMN_TITLE,
+            DatabaseHelper.COLUMN_MAIN_INFO
     };
 
     private SQLiteDatabase database;
