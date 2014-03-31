@@ -64,28 +64,24 @@
                 android:textSize="24sp" />
 
             <TextView
-                android:id="@+id/weather_humidity"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
+                android:id="@+id/weather_precipitation"
                 android:layout_below="@id/weather_status"
-                android:layout_marginTop="5dp"
-                android:fontFamily="sans-serif-light"
-                android:text="Humidity: 57%"
-                android:textColor="@color/WhiteSmoke"
-                android:textSize="21sp" />
+                android:text="Precip: 30%"
+                style="@style/weather_right_aligned_info" />
 
             <TextView
+                style="@style/weather_right_aligned_info"
+                android:id="@+id/weather_humidity"
+                android:layout_below="@id/weather_precipitation"
+                android:text="Humidity: 57%"
+/>
+
+            <TextView
+                style="@style/weather_right_aligned_info"
                 android:id="@+id/weather_feels_like"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
                 android:layout_below="@id/weather_humidity"
-                android:layout_marginTop="5dp"
-                android:fontFamily="sans-serif-light"
                 android:text="Feels like: 17°"
-                android:textColor="@color/WhiteSmoke"
-                android:textSize="21sp" />
+                />
 
             <TextView
                 android:id="@+id/weather_temp"

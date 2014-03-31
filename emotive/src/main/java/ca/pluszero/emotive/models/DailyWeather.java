@@ -6,12 +6,16 @@ public class DailyWeather {
     private final String summary;
     private final int temperatureInFahrenheit;
     private final int apparentTemperatureInFahrenheit;
+    private final int humidity;
+    private final int precipitationPercentage;
     private WeatherIcon icon;
 
-    public DailyWeather(String summary, int temperatureInFahrenheit, int apparentTemperatureInFahrenheit, WeatherIcon icon) {
+    public DailyWeather(String summary, int temperatureInFahrenheit, int apparentTemperatureInFahrenheit, int humidity, int precip, WeatherIcon icon) {
         this.summary = summary;
         this.temperatureInFahrenheit = temperatureInFahrenheit;
         this.apparentTemperatureInFahrenheit = apparentTemperatureInFahrenheit;
+        this.humidity = humidity;
+        this.precipitationPercentage = precip;
         this.icon = icon;
     }
 
@@ -37,5 +41,13 @@ public class DailyWeather {
 
     public int getApparentTemperatureInCelsius() {
         return ConversionUtils.fahrenheitToCelsius(apparentTemperatureInFahrenheit);
+    }
+
+    public int getHumidity() {
+        return humidity;
+    }
+
+    public int getPrecipitationPercentage() {
+        return precipitationPercentage;
     }
 }

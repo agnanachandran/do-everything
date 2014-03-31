@@ -103,9 +103,6 @@ public class MusicManager implements LoaderManager.LoaderCallbacks<Cursor> {
             int index = cursor.getColumnIndex(MediaStore.Audio.Media.DATA);
             while (cursor.moveToNext()) {
                 // If there's only one result, play it
-                if (cursor.getCount() == 1) {
-
-                }
                 if (cursor.getPosition() == 0 && cursor.getCount() == 1) {
                     String songPath = cursor.getString(index);
                     startMusic(songPath);

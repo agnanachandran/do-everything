@@ -32,10 +32,12 @@ public class WeatherManager {
                 String summary = currently.getString("summary");
                 int temperatureInFahrenheit = (int) Math.round(currently.getDouble("temperature"));
                 int apparentTemperatureInFahrenheit = (int) Math.round(currently.getDouble("apparentTemperature"));
+                int humidity = (int) Math.round(100 * currently.getDouble("humidity"));
+                int precipitation = (int) Math.round(100 * currently.getDouble("precipProbability"));
                 String iconName = currently.getString("icon");
                 WeatherIcon weatherIcon = WeatherIcon.getEnumForString(iconName);
 
-                listener.onWeatherQueryFinished(new DailyWeather(summary, temperatureInFahrenheit, apparentTemperatureInFahrenheit, weatherIcon));
+                listener.onWeatherQueryFinished(new DailyWeather(summary, temperatureInFahrenheit, apparentTemperatureInFahrenheit, humidity, precipitation, weatherIcon));
             } catch (JSONException e) {
                 e.printStackTrace();
             }

@@ -48,5 +48,7 @@
     <string name="placeholder_video_view_count">1,512,341</string>
     <string name="option_key">OPTION_KEY</string>
     <string name="feels_like">Feels like: %s°</string>
+    <string name="humidity">Humidity: %s%%</string>
+    <string name="precipitation">Precip: %s%%</string>
 
 </resources>

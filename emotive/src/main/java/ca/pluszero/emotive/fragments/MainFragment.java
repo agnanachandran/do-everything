@@ -31,6 +31,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import com.google.android.youtube.player.YouTubeIntents;
@@ -94,6 +95,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
     private boolean startedMusicSearch;
     private Place place;
     private String currentQuery;
+    private MusicCursorAdapter musicCursorAdapter;
 
     private ViewSwitcher.ViewFactory mFactory = new ViewSwitcher.ViewFactory() {
 
@@ -272,10 +274,17 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
     }
 
     private void startWeatherSearch() {
-//        Toast.makeText(MainFragment.this.getActivity(), "Please select an item from the dropdown instead.", Toast.LENGTH_LONG).show();
         dismissKeyboard();
         PlaceDetailsManager placeManager = PlaceDetailsManager.getInstance(this);
-        placeManager.getPlaceDetailsQuery(place.getReference());
+        if (NetworkManager.isConnected(getActivity())) {
+            if (place != null) {
+                placeManager.getPlaceDetailsQuery(place.getReference());
+            } else {
+                Toast.makeText(MainFragment.this.getActivity(), "Please type a query and select an item from the dropdown.", Toast.LENGTH_LONG).show();
+            }
+        } else {
+            Toast.makeText(getActivity(), "Please make sure you are connected to the internet.", Toast.LENGTH_LONG).show();
+        }
     }
 
     private void startYouTubeSearch(CharSequence query) {
@@ -334,12 +343,12 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         if (!startedMusicSearch) {
             String[] columns = {MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.DURATION, MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.ALBUM};
             int[] mSongListItems = {R.id.tvMusicTitle, R.id.tvMusicDuration, R.id.tvMusicArtist, R.id.tvMusicAlbum};
-            MusicCursorAdapter adapter = new MusicCursorAdapter(getActivity(), R.layout.music_row_card, null, columns, mSongListItems);
-            lvQueryResults.setAdapter(adapter);
-            lvQueryResults.setOnItemClickListener(adapter);
-            bringUpListView();
+            musicCursorAdapter = new MusicCursorAdapter(getActivity(), R.layout.music_row_card, null, columns, mSongListItems);
             startedMusicSearch = true;
+            bringUpListView();
         }
+        lvQueryResults.setAdapter(musicCursorAdapter);
+        lvQueryResults.setOnItemClickListener(musicCursorAdapter);
         musicLauncher.searchMusic(query);
     }
 
@@ -432,7 +441,6 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
 
     private void setupWeatherOptions() {
         setupButton();
-
         etSearchView.setAdapter(new PlacesAutoCompleteAdapter(
                 getActivity(), R.layout.simple_list_item, true));
         etSearchView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -490,7 +498,10 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
     @Override
     public void onLoaderReset() {
         // Clears out the adapter's reference to the Cursor. This prevents memory leaks.
-        ((MusicCursorAdapter) lvQueryResults.getAdapter()).swapCursor(null);
+        MusicCursorAdapter adapter = (MusicCursorAdapter) lvQueryResults.getAdapter();
+        if (adapter != null) {
+            adapter.swapCursor(null);
+        }
     }
 
     @Override
@@ -529,9 +540,20 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         weatherContainer.setVisibility(View.VISIBLE);
         // TODO: do only on 4.4
         weatherContainer.setPadding(0, 0, 0, ScreenUtils.getNavbarHeight(getResources()));
+
         ((TextView) rootView.findViewById(R.id.weather_temp)).setText(String.valueOf(weatherData.getTemperatureInCelsius()) + DEGREE_SYMBOL);
         ((TextView) rootView.findViewById(R.id.weather_feels_like)).setText(getString(R.string.feels_like, String.valueOf(weatherData.getApparentTemperatureInCelsius())));
         ((TextView) rootView.findViewById(R.id.weather_status)).setText(weatherData.getSummary());
+        ((TextView) rootView.findViewById(R.id.weather_precipitation)).setText(getString(R.string.precipitation, String.valueOf(weatherData.getPrecipitationPercentage())));
+        ((TextView) rootView.findViewById(R.id.weather_humidity)).setText(getString(R.string.humidity, String.valueOf(weatherData.getHumidity())));
+
+        setupCityCountryWeatherInfo();
+
+        Drawable weatherIcon = getResources().getDrawable(weatherData.getIcon().getDrawableId());
+        ((ImageView) rootView.findViewById(R.id.weather_now_icon)).setImageDrawable(weatherIcon);
+    }
+
+    private void setupCityCountryWeatherInfo() {
         TextView tvCountryName = (TextView) rootView.findViewById(R.id.weather_country);
 
         String cityName = "";
@@ -549,7 +571,5 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         if (!countryName.isEmpty()) {
             tvCountryName.setText(countryName);
         }
-        Drawable weatherIcon = getResources().getDrawable(weatherData.getIcon().getDrawableId());
-        ((ImageView) rootView.findViewById(R.id.weather_now_icon)).setImageDrawable(weatherIcon);
     }
 }
