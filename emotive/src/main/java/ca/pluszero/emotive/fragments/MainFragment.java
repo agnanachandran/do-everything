@@ -6,6 +6,9 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -124,6 +127,28 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
 
         @Override
         public void afterTextChanged(Editable s) {
+        }
+    };
+    private final LocationListener locationListener = new LocationListener() {
+        public void onLocationChanged(Location location) {
+            double longitude = location.getLongitude();
+            double latitude = location.getLatitude();
+            WeatherManager.getInstance(MainFragment.this).getWeatherQuery(new PlaceDetails(String.valueOf(latitude), String.valueOf(longitude)));
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+
         }
     };
 
@@ -451,6 +476,20 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
                 place = ((PlacesAutoCompleteAdapter) etSearchView.getAdapter()).getItemForPosition(position);
             }
         });
+        if (NetworkManager.isConnected(getActivity())) {
+            LocationManager lm = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+            Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 10, locationListener);
+
+            if (location != null) {
+                double longitude = location.getLongitude();
+                double latitude = location.getLatitude();
+                WeatherManager.getInstance(this).getWeatherQuery(new PlaceDetails(String.valueOf(latitude), String.valueOf(longitude)));
+            }
+        } else {
+            Toast.makeText(getActivity(), "Please make sure you are connected to the internet.", Toast.LENGTH_LONG).show();
+        }
+
     }
 
     private void setupButton() {
@@ -576,7 +615,11 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
             cityName = querySplit[0];
             countryName = currentQuery.substring(currentQuery.indexOf(',') + 2);
         } else {
-            cityName = currentQuery;
+            if (currentQuery == null) {
+                cityName = "My Location";
+            } else {
+                cityName = currentQuery;
+            }
             tvCountryName.setVisibility(View.GONE);
         }
         ((TextView) rootView.findViewById(R.id.weather_city)).setText(cityName);

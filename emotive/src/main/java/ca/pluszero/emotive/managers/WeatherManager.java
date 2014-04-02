@@ -84,7 +84,7 @@ public class WeatherManager {
     }
 
     public void getWeatherQuery(PlaceDetails placeDetails) {
-        get(BASE_URL + placeDetails.getLatitude()+","+placeDetails.getLongitude(), null, responseHandler);
+        get(BASE_URL + placeDetails.getLatitude() + "," + placeDetails.getLongitude(), null, responseHandler);
     }
 
     public interface OnFinishedListener {
