@@ -56,7 +56,7 @@ import ca.pluszero.emotive.managers.PlaceDetailsManager;
 import ca.pluszero.emotive.managers.WeatherManager;
 import ca.pluszero.emotive.managers.YouTubeManager;
 import ca.pluszero.emotive.models.Choice;
-import ca.pluszero.emotive.models.DailyWeather;
+import ca.pluszero.emotive.models.Forecast;
 import ca.pluszero.emotive.models.Place;
 import ca.pluszero.emotive.models.PlaceDetails;
 import ca.pluszero.emotive.models.YouTubeVideo;
@@ -535,13 +535,13 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
     }
 
     @Override
-    public void onWeatherQueryFinished(DailyWeather weatherData) {
+    public void onWeatherQueryFinished(Forecast weatherData) {
         View weatherContainer = rootView.findViewById(R.id.weather_container);
         weatherContainer.setVisibility(View.VISIBLE);
         // TODO: do only on 4.4
         weatherContainer.setPadding(0, 0, 0, ScreenUtils.getNavbarHeight(getResources()));
 
-        ((TextView) rootView.findViewById(R.id.weather_temp)).setText(String.valueOf(weatherData.getTemperatureInCelsius()) + DEGREE_SYMBOL);
+        ((TextView) rootView.findViewById(R.id.weather_temp)).setText(weatherData.getTemperatureInCelsius() + DEGREE_SYMBOL);
         ((TextView) rootView.findViewById(R.id.weather_feels_like)).setText(getString(R.string.feels_like, String.valueOf(weatherData.getApparentTemperatureInCelsius())));
         ((TextView) rootView.findViewById(R.id.weather_status)).setText(weatherData.getSummary());
         ((TextView) rootView.findViewById(R.id.weather_precipitation)).setText(getString(R.string.precipitation, String.valueOf(weatherData.getPrecipitationPercentage())));
@@ -551,6 +551,18 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
 
         Drawable weatherIcon = getResources().getDrawable(weatherData.getIcon().getDrawableId());
         ((ImageView) rootView.findViewById(R.id.weather_now_icon)).setImageDrawable(weatherIcon);
+
+        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        ViewGroup weatherHourlyContainer = (ViewGroup) rootView.findViewById(R.id.weather_hourly_container);
+        for (Forecast.HourlyWeather weather : weatherData.getHourlyWeatherList()) {
+            LinearLayout weatherTimeCardContainer = (LinearLayout) inflater.inflate(R.layout.weather_time_mini_card, weatherHourlyContainer, false);
+            weatherHourlyContainer.addView(weatherTimeCardContainer);
+            ((TextView) weatherTimeCardContainer.findViewById(R.id.weather_hour_of_day)).setText(weather.getHourAsString());
+            int hourlyWeatherIconId = weather.getIcon().getDrawableId();
+            ((ImageView) weatherTimeCardContainer.findViewById(R.id.weather_hourly_icon)).setImageDrawable(
+                    getResources().getDrawable(hourlyWeatherIconId));
+            ((TextView) weatherTimeCardContainer.findViewById(R.id.weather_hourly_temp)).setText(weather.getTemp().toCelsius() + DEGREE_SYMBOL);
+        }
     }
 
     private void setupCityCountryWeatherInfo() {

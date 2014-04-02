@@ -4,7 +4,9 @@ import android.text.format.Time;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 public final class DateTimeUtils {
     public static String parseDuration(String duration) {
@@ -54,5 +56,21 @@ public final class DateTimeUtils {
         Date date = new Date(total);
         DateFormat formatter = new SimpleDateFormat("m:ss");
         return formatter.format(date);
+    }
+
+    public static String formatMillisToHourOfDay(int timeInMs) {
+        Date date = new Date(timeInMs);
+        Calendar calendar = GregorianCalendar.getInstance(); // creates a new calendar instance
+        calendar.setTime(date);   // assigns calendar to given date
+        int hourOfDay = calendar.get(Calendar.HOUR_OF_DAY); // 24 hrs
+        int hour = calendar.get(Calendar.HOUR); // 12 hrs
+        String ampm = " am";
+        if (hourOfDay >= 12) {
+            ampm = " pm";
+        }
+        if (hourOfDay == 0 || hourOfDay == 12) {
+            hour = 12;
+        }
+        return hour + ampm;
     }
 }
