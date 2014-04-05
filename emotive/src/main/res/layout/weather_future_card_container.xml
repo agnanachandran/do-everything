@@ -10,20 +10,20 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/weather_hour_of_day"
+        android:id="@+id/weather_card_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="18sp"
         android:text="12 PM" />
 
     <ImageView
-        android:id="@+id/weather_hourly_icon"
+        android:id="@+id/weather_card_icon"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:src="@drawable/weather_fog" />
 
     <TextView
-        android:id="@+id/weather_hourly_temp"
+        android:id="@+id/weather_card_temp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="20sp"

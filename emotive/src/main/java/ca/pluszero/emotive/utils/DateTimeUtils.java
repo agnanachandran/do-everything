@@ -59,9 +59,7 @@ public final class DateTimeUtils {
     }
 
     public static String formatMillisToHourOfDay(int timeInMs) {
-        Date date = new Date(timeInMs);
-        Calendar calendar = GregorianCalendar.getInstance(); // creates a new calendar instance
-        calendar.setTime(date);   // assigns calendar to given date
+        Calendar calendar = getCalendarFromTimeInMs(timeInMs);
         int hourOfDay = calendar.get(Calendar.HOUR_OF_DAY); // 24 hrs
         int hour = calendar.get(Calendar.HOUR); // 12 hrs
         String ampm = " am";
@@ -72,5 +70,44 @@ public final class DateTimeUtils {
             hour = 12;
         }
         return hour + ampm;
+    }
+
+    public static String formatMillisToDayOfWeek(int timeInMs) {
+        Calendar calendar = getCalendarFromTimeInMs(timeInMs);
+        int day = calendar.get(Calendar.DAY_OF_WEEK); // 24 hrs
+        String dayOfWeek;
+        switch (day) {
+            case Calendar.SUNDAY:
+                dayOfWeek = "SUN";
+                break;
+            case Calendar.MONDAY:
+                dayOfWeek = "MON";
+                break;
+            case Calendar.TUESDAY:
+                dayOfWeek = "TUE";
+                break;
+            case Calendar.WEDNESDAY:
+                dayOfWeek = "WED";
+                break;
+            case Calendar.THURSDAY:
+                dayOfWeek = "THU";
+                break;
+            case Calendar.FRIDAY:
+                dayOfWeek = "FRI";
+                break;
+            case Calendar.SATURDAY:
+                dayOfWeek = "SAT";
+                break;
+            default:
+                dayOfWeek = "";
+        }
+        return dayOfWeek;
+    }
+
+    private static Calendar getCalendarFromTimeInMs(int timeInMs) {
+        Date date = new Date(timeInMs);
+        Calendar calendar = GregorianCalendar.getInstance();
+        calendar.setTime(date);
+        return calendar;
     }
 }

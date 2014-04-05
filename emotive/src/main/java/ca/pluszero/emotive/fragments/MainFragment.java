@@ -70,27 +70,44 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
 
     private static final String DEGREE_SYMBOL = "°";
     public static String FRAGMENT_TAG = "main_fragment"; // set from activity_main xml
+    private final LocationListener locationListener = new LocationListener() {
+        public void onLocationChanged(Location location) {
+            double longitude = location.getLongitude();
+            double latitude = location.getLatitude();
+            WeatherManager.getInstance(MainFragment.this).getWeatherQuery(new PlaceDetails(String.valueOf(latitude), String.valueOf(longitude)));
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+
+        }
+    };
     private Button bFirstButton;
     private Button bSecondButton;
     private Button bThirdButton;
     private Button bFourthButton;
     private Button bFifthButton;
     private Button bSixthButton;
-
     private ImageView imgFirstOption;
     private ImageView imgSecondOption;
     private ImageView imgThirdOption;
     private ImageView imgFourthOption;
     private ImageView imgFifthOption;
     private ImageView imgSixthOption;
-
     private Button[] primaryButtons;
     private ImageView[] primaryImages;
-
     private ListView lvQueryResults;
-
     private Choice mPrimaryOption;
-
     private AutoCompleteTextView etSearchView;
     private View rootView;
     private TextSwitcher mSwitcher;
@@ -99,7 +116,6 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
     private Place place;
     private String currentQuery;
     private MusicCursorAdapter musicCursorAdapter;
-
     private ViewSwitcher.ViewFactory mFactory = new ViewSwitcher.ViewFactory() {
 
         @Override
@@ -127,28 +143,6 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
 
         @Override
         public void afterTextChanged(Editable s) {
-        }
-    };
-    private final LocationListener locationListener = new LocationListener() {
-        public void onLocationChanged(Location location) {
-            double longitude = location.getLongitude();
-            double latitude = location.getLatitude();
-            WeatherManager.getInstance(MainFragment.this).getWeatherQuery(new PlaceDetails(String.valueOf(latitude), String.valueOf(longitude)));
-        }
-
-        @Override
-        public void onStatusChanged(String provider, int status, Bundle extras) {
-
-        }
-
-        @Override
-        public void onProviderEnabled(String provider) {
-
-        }
-
-        @Override
-        public void onProviderDisabled(String provider) {
-
         }
     };
 
@@ -476,20 +470,11 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
                 place = ((PlacesAutoCompleteAdapter) etSearchView.getAdapter()).getItemForPosition(position);
             }
         });
+
         if (NetworkManager.isConnected(getActivity())) {
             LocationManager lm = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-            Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 10, locationListener);
-
-            if (location != null) {
-                double longitude = location.getLongitude();
-                double latitude = location.getLatitude();
-                WeatherManager.getInstance(this).getWeatherQuery(new PlaceDetails(String.valueOf(latitude), String.valueOf(longitude)));
-            }
-        } else {
-            Toast.makeText(getActivity(), "Please make sure you are connected to the internet.", Toast.LENGTH_LONG).show();
         }
-
     }
 
     private void setupButton() {
@@ -592,15 +577,31 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         ((ImageView) rootView.findViewById(R.id.weather_now_icon)).setImageDrawable(weatherIcon);
 
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
         ViewGroup weatherHourlyContainer = (ViewGroup) rootView.findViewById(R.id.weather_hourly_container);
-        for (Forecast.HourlyWeather weather : weatherData.getHourlyWeatherList()) {
-            LinearLayout weatherTimeCardContainer = (LinearLayout) inflater.inflate(R.layout.weather_time_mini_card, weatherHourlyContainer, false);
-            weatherHourlyContainer.addView(weatherTimeCardContainer);
-            ((TextView) weatherTimeCardContainer.findViewById(R.id.weather_hour_of_day)).setText(weather.getHourAsString());
+        weatherHourlyContainer.removeAllViews();
+
+        for (Forecast.FutureWeather weather : weatherData.getHourlyWeatherList()) {
+            LinearLayout weatherHourlyCardContainer = (LinearLayout) inflater.inflate(R.layout.weather_future_card_container, weatherHourlyContainer, false);
+            weatherHourlyContainer.addView(weatherHourlyCardContainer);
+            ((TextView) weatherHourlyCardContainer.findViewById(R.id.weather_card_time)).setText(weather.getHourAsString());
             int hourlyWeatherIconId = weather.getIcon().getDrawableId();
-            ((ImageView) weatherTimeCardContainer.findViewById(R.id.weather_hourly_icon)).setImageDrawable(
+            ((ImageView) weatherHourlyCardContainer.findViewById(R.id.weather_card_icon)).setImageDrawable(
                     getResources().getDrawable(hourlyWeatherIconId));
-            ((TextView) weatherTimeCardContainer.findViewById(R.id.weather_hourly_temp)).setText(weather.getTemp().toCelsius() + DEGREE_SYMBOL);
+            ((TextView) weatherHourlyCardContainer.findViewById(R.id.weather_card_temp)).setText(weather.getTemp().toCelsius() + DEGREE_SYMBOL);
+        }
+
+        ViewGroup weatherDailyContainer = (ViewGroup) rootView.findViewById(R.id.weather_daily_container);
+        weatherDailyContainer.removeAllViews();
+
+        for (Forecast.FutureWeather weather : weatherData.getDailyWeatherList()) {
+            LinearLayout weatherDailyCardContainer = (LinearLayout) inflater.inflate(R.layout.weather_future_card_container, weatherHourlyContainer, false);
+            weatherDailyContainer.addView(weatherDailyCardContainer);
+            ((TextView) weatherDailyCardContainer.findViewById(R.id.weather_card_time)).setText(weather.getDayAsString());
+            int hourlyWeatherIconId = weather.getIcon().getDrawableId();
+            ((ImageView) weatherDailyCardContainer.findViewById(R.id.weather_card_icon)).setImageDrawable(
+                    getResources().getDrawable(hourlyWeatherIconId));
+            ((TextView) weatherDailyCardContainer.findViewById(R.id.weather_card_temp)).setText(weather.getTemp().toCelsius() + DEGREE_SYMBOL);
         }
     }
 
@@ -625,6 +626,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         ((TextView) rootView.findViewById(R.id.weather_city)).setText(cityName);
         if (!countryName.isEmpty()) {
             tvCountryName.setText(countryName);
+            tvCountryName.setVisibility(View.VISIBLE);
         }
     }
 }

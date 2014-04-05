@@ -41,10 +41,9 @@ public class WeatherManager {
                 String iconName = currently.getString("icon");
                 WeatherIcon weatherIcon = WeatherIcon.getEnumForString(iconName);
 
+                List<Forecast.FutureWeather> hourlyWeatherList = new ArrayList<Forecast.FutureWeather>();
+                List<Forecast.FutureWeather> dailyWeatherList = new ArrayList<Forecast.FutureWeather>();
 
-                List<Forecast.HourlyWeather> hourlyWeatherList = new ArrayList<Forecast.HourlyWeather>();
-
-                // Deal with hourly forecast
                 JSONArray hourlyData = response.getJSONObject("hourly").getJSONArray("data");
                 // TODO: check for exceptions; stop when no more data left. Or rather, safeguard against it (also; just retrieve a few, i.e., make i go up to 10 or so).
                 for (int i = 0; i < 15; i++) {
@@ -53,10 +52,21 @@ public class WeatherManager {
                     String hourlyIconName = hourData.getString("icon");
                     WeatherIcon hourlyWeatherIcon = WeatherIcon.getEnumForString(hourlyIconName);
                     int timestamp = 1000 * hourData.getInt("time"); // time in seconds needs to be converted to ms
-                    hourlyWeatherList.add(new Forecast.HourlyWeather(temperature, hourlyWeatherIcon, timestamp));
+                    hourlyWeatherList.add(new Forecast.FutureWeather(temperature, hourlyWeatherIcon, timestamp));
                 }
 
-                listener.onWeatherQueryFinished(new Forecast(summary, temperatureInFahrenheit, apparentTemperatureInFahrenheit, humidity, precipitation, hourlyWeatherList, weatherIcon));
+                JSONArray dailyData = response.getJSONObject("daily").getJSONArray("data");
+                // TODO: check for exceptions; stop when no more data left. Or rather, safeguard against it (also; just retrieve a few, i.e., make i go up to 10 or so).
+                for (int i = 0; i < 6; i++) {
+                    JSONObject dayData = dailyData.getJSONObject(i);
+                    Forecast.Temperature temperature = new Forecast.Temperature((int) Math.round(dayData.getDouble("temperatureMax")));
+                    String dailyIconName = dayData.getString("icon");
+                    WeatherIcon dailyWeatherIcon = WeatherIcon.getEnumForString(dailyIconName);
+                    int timestamp = 1000 * dayData.getInt("time"); // time in seconds needs to be converted to ms
+                    dailyWeatherList.add(new Forecast.FutureWeather(temperature, dailyWeatherIcon, timestamp));
+                }
+
+                listener.onWeatherQueryFinished(new Forecast(summary, temperatureInFahrenheit, apparentTemperatureInFahrenheit, humidity, precipitation, hourlyWeatherList, dailyWeatherList, weatherIcon));
             } catch (JSONException e) {
                 e.printStackTrace();
             }

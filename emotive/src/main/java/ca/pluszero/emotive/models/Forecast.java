@@ -1,5 +1,6 @@
 package ca.pluszero.emotive.models;
 
+import java.util.Collections;
 import java.util.List;
 
 import ca.pluszero.emotive.utils.ConversionUtils;
@@ -11,16 +12,18 @@ public class Forecast {
     private final Temperature apparentTemperature;
     private final int humidity;
     private final int precipitationPercentage;
-    private final List<HourlyWeather> hourlyWeatherList;
+    private final List<FutureWeather> hourlyWeatherList;
+    private final List<FutureWeather> dailyWeatherList;
     private WeatherIcon icon;
 
-    public Forecast(String summary, int temperatureInFahrenheit, int apparentTemperatureInFahrenheit, int humidity, int precip, List<HourlyWeather> hourlyWeatherList, WeatherIcon icon) {
+    public Forecast(String summary, int temperatureInFahrenheit, int apparentTemperatureInFahrenheit, int humidity, int precip, List<FutureWeather> hourlyWeatherList, List<FutureWeather> dailyWeatherList, WeatherIcon icon) {
         this.summary = summary;
         this.temperature = new Temperature(temperatureInFahrenheit);
         this.apparentTemperature = new Temperature(apparentTemperatureInFahrenheit);
         this.humidity = humidity;
         this.precipitationPercentage = precip;
         this.hourlyWeatherList = hourlyWeatherList;
+        this.dailyWeatherList = dailyWeatherList;
         this.icon = icon;
     }
 
@@ -56,20 +59,24 @@ public class Forecast {
         return precipitationPercentage;
     }
 
-    public List<HourlyWeather> getHourlyWeatherList() {
-        return hourlyWeatherList;
+    public List<FutureWeather> getHourlyWeatherList() {
+        return Collections.unmodifiableList(hourlyWeatherList);
     }
 
-    public static class HourlyWeather {
+    public List<FutureWeather> getDailyWeatherList() {
+        return Collections.unmodifiableList(dailyWeatherList);
+    }
+
+    public static class FutureWeather {
 
         private final Temperature temp;
         private final WeatherIcon icon;
-        private final String hourAsString;
+        private final int timeInMs;
 
-        public HourlyWeather(Temperature temp, WeatherIcon icon, int timeInMs) {
+        public FutureWeather(Temperature temp, WeatherIcon icon, int timeInMs) {
             this.temp = temp;
             this.icon = icon;
-            this.hourAsString = DateTimeUtils.formatMillisToHourOfDay(timeInMs);
+            this.timeInMs = timeInMs;
         }
 
         public Temperature getTemp() {
@@ -81,7 +88,11 @@ public class Forecast {
         }
 
         public String getHourAsString() {
-            return hourAsString;
+            return DateTimeUtils.formatMillisToHourOfDay(timeInMs);
+        }
+
+        public String getDayAsString() {
+            return DateTimeUtils.formatMillisToDayOfWeek(timeInMs);
         }
     }
 

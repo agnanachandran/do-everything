@@ -126,21 +126,13 @@
             android:gravity="center">
 
             <LinearLayout
+                android:id="@+id/weather_daily_container"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:orientation="horizontal">
 
-                <include layout="@layout/weather_time_mini_card" />
+                <!--<include layout="@layout/weather_time_mini_card" />-->
 
-                <include layout="@layout/weather_time_mini_card" />
-
-                <include layout="@layout/weather_time_mini_card" />
-
-                <include layout="@layout/weather_time_mini_card" />
-
-                <include layout="@layout/weather_time_mini_card" />
-
-                <include layout="@layout/weather_time_mini_card" />
             </LinearLayout>
         </HorizontalScrollView>
     </LinearLayout>
