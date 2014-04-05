@@ -1,5 +1,6 @@
 package ca.pluszero.emotive.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
@@ -11,6 +12,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -25,19 +27,12 @@ import java.util.List;
 import ca.pluszero.emotive.R;
 import ca.pluszero.emotive.adapters.DrawerListAdapter;
 import ca.pluszero.emotive.fragments.MainFragment;
+import ca.pluszero.emotive.models.Choice;
 import ca.pluszero.emotive.models.DrawerItem;
 
 public class MainActivity extends FragmentActivity {
 
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
-     * fragments for each of the sections. We use a
-     * {@link android.support.v4.app.FragmentPagerAdapter} derivative, which
-     * will keep every loaded fragment in memory. If this becomes too memory
-     * intensive, it may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
-     */
-
+    public static final String PRESSED_OPTION = "pressed option";
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private CharSequence mActionBarTitle;
@@ -102,6 +97,14 @@ public class MainActivity extends FragmentActivity {
 
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
+        if (getIntent().hasExtra(PRESSED_OPTION)) {
+            Choice choice = (Choice) getIntent().getSerializableExtra(PRESSED_OPTION);
+            MainFragment fragment = (MainFragment) getSupportFragmentManager().findFragmentByTag(MainFragment.FRAGMENT_TAG);
+            fragment.clickOption(choice);
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(findViewById(R.id.mainSearchView), InputMethodManager.SHOW_IMPLICIT);
+        }
+
     }
 
     private int getActionBarSize() {
@@ -124,6 +127,7 @@ public class MainActivity extends FragmentActivity {
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         mDrawerToggle.syncState();
+
     }
 
     public void onConfigurationChanged(Configuration newConfig) {
@@ -183,7 +187,6 @@ public class MainActivity extends FragmentActivity {
 
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
 
-        @SuppressWarnings("rawtypes")
         @Override
         public void onItemClick(AdapterView parent, View view, int position, long id) {
             selectItem(position);

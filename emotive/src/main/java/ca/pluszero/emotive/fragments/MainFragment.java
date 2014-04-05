@@ -399,6 +399,10 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
     @Override
     public void onClick(View v) {
         Choice clickedOption = (Choice) v.getTag(R.string.option_key);
+        clickOption(clickedOption);
+    }
+
+    public void clickOption(Choice clickedOption) {
         ((MainActivity) getActivity()).setOnHomePage(false);
         switch (clickedOption) {
             case FOOD:
@@ -485,10 +489,6 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         etSearchView.setFocusableInTouchMode(true);
         etSearchView.requestFocus();
 
-        // Show keyboard
-        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.showSoftInput(etSearchView, InputMethodManager.SHOW_IMPLICIT);
-
         searchContainer.setVisibility(View.VISIBLE);
         searchContainer.startAnimation(slideUp);
 
@@ -502,6 +502,10 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
             etSearchView.removeTextChangedListener(musicTextWatcher);
         }
         etSearchView.setText(""); // Clear out old text
+
+        // Show keyboard
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInput(etSearchView, InputMethodManager.SHOW_IMPLICIT);
     }
 
     @Override

@@ -72,6 +72,7 @@
                 android:gravity="center_vertical"
                 android:hint="@string/placeholder_mainSearchView"
                 android:imeOptions="actionSearch"
+                android:focusable="true"
                 android:inputType="text"
                 android:textColor="@color/white"
                 android:textColorHint="@color/LightGrayText" />

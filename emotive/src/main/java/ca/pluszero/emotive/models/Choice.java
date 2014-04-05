@@ -32,6 +32,15 @@ public enum Choice {
         return FOOD; // Default; should never ever happen.
     }
 
+    public static Choice getEnumForString(String enumValueString) {
+        for (Choice value : Choice.values()) {
+            if (value.toString().equals(enumValueString)) {
+                return value;
+            }
+        }
+        return FOOD; // Default; should never ever happen.
+    }
+
     public String getMainInfo() {
         return mainInfo;
     }
