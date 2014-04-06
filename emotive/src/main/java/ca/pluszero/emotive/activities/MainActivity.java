@@ -95,6 +95,7 @@ public class MainActivity extends FragmentActivity {
         mDrawerList.setAdapter(new DrawerListAdapter(this, R.layout.drawer_list_item, mDrawerItems));
 
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+        getSupportFragmentManager().findFragmentByTag(MainFragment.FRAGMENT_TAG).onAttach(this);
 
         getPressedOptionFromWidget();
     }

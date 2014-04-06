@@ -70,7 +70,7 @@ public class WeatherManager {
                     dailyWeatherList.add(new Forecast.FutureWeather(temperature, dailyWeatherIcon, timestamp));
                 }
 
-                if (fragment.isAdded()) {
+                if (true) {
                     listener.onWeatherQueryFinished(new Forecast(summary, temperatureInFahrenheit, apparentTemperatureInFahrenheit, humidity, precipitation, hourlyWeatherList, dailyWeatherList, weatherIcon));
                 }
             } catch (JSONException e) {

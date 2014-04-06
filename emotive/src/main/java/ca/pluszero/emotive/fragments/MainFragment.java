@@ -534,7 +534,9 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
 
     @Override
     public void onInitialYoutubeQueryFinished(List<YouTubeVideo> videos) {
-        if (isAdded()) {
+        Log.d("INITIAL FINISHED", "method start");
+        if (true) {
+            Log.d("INITIAL FINISHED", "isAdded");
             dismissKeyboard();
             dismissProgressBar();
             bringUpListView();
@@ -544,10 +546,12 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
     }
 
     @Override
-    public synchronized void onMoreVideosReceived(List<YouTubeVideo> videos) {
-        if (lvQueryResults.getAdapter() != null) {
-            ((BaseArrayAdapter) lvQueryResults.getAdapter()).addItems(videos);
-            dismissProgressBar();
+    public void onMoreVideosReceived(List<YouTubeVideo> videos) {
+        if (true) {
+            if (lvQueryResults.getAdapter() != null) {
+                ((BaseArrayAdapter) lvQueryResults.getAdapter()).addItems(videos);
+                dismissProgressBar();
+            }
         }
     }
 

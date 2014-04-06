@@ -18,7 +18,6 @@ import java.util.List;
 
 import ca.pluszero.emotive.ApiKeys;
 import ca.pluszero.emotive.R;
-import ca.pluszero.emotive.fragments.MainFragment;
 import ca.pluszero.emotive.models.YouTubeVideo;
 import ca.pluszero.emotive.utils.DateTimeUtils;
 
@@ -61,16 +60,11 @@ public class YouTubeManager {
                             try {
                                 addYoutubeVideo(response, videoObject, moreVideos, videoId);
                                 if (moreVideos.size() == searchJsonItems.length()) {
-                                    // Should always be true
-                                    if (listener instanceof MainFragment) {
-                                        // Only perform callback if fragment is added.
-                                        if (((MainFragment) listener).isAdded()) {
-                                            if (currentNextPageToken.isEmpty()) {
-                                                listener.onInitialYoutubeQueryFinished(moreVideos);
-                                            } else {
-                                                listener.onMoreVideosReceived(moreVideos);
-                                            }
-                                        }
+                                    // If next token is empty string, there are no more videos to load
+                                    if (currentNextPageToken.isEmpty()) {
+                                        listener.onInitialYoutubeQueryFinished(moreVideos);
+                                    } else {
+                                        listener.onMoreVideosReceived(moreVideos);
                                     }
                                 }
                             } catch (JSONException e) {
