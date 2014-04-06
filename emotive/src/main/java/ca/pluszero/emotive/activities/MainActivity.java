@@ -69,7 +69,6 @@ public class MainActivity extends FragmentActivity {
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
         mDrawerList.setPadding(15, statusBarHeight + actionBarSize, 0, 4);
 
-        findViewById(R.id.outermost_main_container).setPadding(0, statusBarHeight + actionBarSize + 30, 0, 0);
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_navigation_drawer, R.string.drawer_open, R.string.drawer_close) {
             // Called when drawer has settled in completely closed state
             public void onDrawerClosed(View view) {
@@ -95,7 +94,6 @@ public class MainActivity extends FragmentActivity {
         mDrawerList.setAdapter(new DrawerListAdapter(this, R.layout.drawer_list_item, mDrawerItems));
 
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
-        getSupportFragmentManager().findFragmentByTag(MainFragment.FRAGMENT_TAG).onAttach(this);
 
         getPressedOptionFromWidget();
     }
@@ -137,7 +135,7 @@ public class MainActivity extends FragmentActivity {
         );
     }
 
-    private int getActionBarSize() {
+    public int getActionBarSize() {
         final TypedArray styledAttributes = getTheme().obtainStyledAttributes(
                 new int[]{android.R.attr.actionBarSize});
         int actionBarSize = (int) styledAttributes.getDimension(0, 0);
@@ -203,7 +201,7 @@ public class MainActivity extends FragmentActivity {
 
     }
 
-    private int getStatusBarHeight() {
+    public int getStatusBarHeight() {
         int result = 0;
         int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
         if (resourceId > 0) {

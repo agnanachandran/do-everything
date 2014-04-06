@@ -93,6 +93,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
 
         }
     };
+
     private SmoothProgressBar progressBar;
     private Button bFirstButton;
     private Button bSecondButton;
@@ -148,9 +149,15 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         }
     };
 
+    public MainFragment() {
+        super();
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_main, container, false);
+        rootView.findViewById(R.id.outermost_main_container).setPadding(0, ((MainActivity) getActivity()).getStatusBarHeight()
+                + ((MainActivity) getActivity()).getActionBarSize() + 30, 0, 0);
 
         lvQueryResults = (ListView) rootView.findViewById(R.id.lvQueryResults);
         progressBar = (SmoothProgressBar) rootView.findViewById(R.id.progress_bar);
