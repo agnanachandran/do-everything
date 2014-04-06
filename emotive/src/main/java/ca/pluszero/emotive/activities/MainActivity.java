@@ -23,6 +23,8 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import ca.pluszero.emotive.R;
 import ca.pluszero.emotive.adapters.DrawerListAdapter;
@@ -33,6 +35,7 @@ import ca.pluszero.emotive.models.DrawerItem;
 public class MainActivity extends FragmentActivity {
 
     public static final String PRESSED_OPTION = "pressed option";
+    private static int[] backgrounds = {R.drawable.dark_sun_landscape};
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private CharSequence mActionBarTitle;
@@ -50,11 +53,10 @@ public class MainActivity extends FragmentActivity {
         getActionBar().setHomeButtonEnabled(true);
 
         // Set up image cacher/retriever
-        DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder().cacheInMemory(true)
-                .cacheOnDisc(true).build();
-        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(
-                getApplicationContext()).defaultDisplayImageOptions(defaultOptions).build();
-        ImageLoader.getInstance().init(config);
+        setUpImageLoader();
+
+        int statusBarHeight = getStatusBarHeight();
+        int actionBarSize = getActionBarSize();
 
         // Initialize non-view instance vars
         mActionBarTitle = mDrawerTitle = getTitle();
@@ -63,9 +65,6 @@ public class MainActivity extends FragmentActivity {
 
         // set a custom shadow that overlays the main content when the drawer opens
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
-
-        int statusBarHeight = getStatusBarHeight();
-        int actionBarSize = getActionBarSize();
 
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
         mDrawerList.setPadding(15, statusBarHeight + actionBarSize, 0, 4);
@@ -97,14 +96,44 @@ public class MainActivity extends FragmentActivity {
 
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
+        getPressedOptionFromWidget();
+    }
+
+    private void setUpBackground() {
+        int background = backgrounds[(int) (Math.random() * backgrounds.length)];
+        mDrawerLayout.setBackgroundResource(background);
+    }
+
+    private void getPressedOptionFromWidget() {
         if (getIntent().hasExtra(PRESSED_OPTION)) {
             Choice choice = (Choice) getIntent().getSerializableExtra(PRESSED_OPTION);
             MainFragment fragment = (MainFragment) getSupportFragmentManager().findFragmentByTag(MainFragment.FRAGMENT_TAG);
             fragment.clickOption(choice);
-            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.showSoftInput(findViewById(R.id.mainSearchView), InputMethodManager.SHOW_IMPLICIT);
+            hugeTimerHackToShowKeyboard();
         }
+    }
 
+    private void setUpImageLoader() {
+        DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder().cacheInMemory(true)
+                .cacheOnDisc(true).build();
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(
+                getApplicationContext()).defaultDisplayImageOptions(defaultOptions).build();
+        ImageLoader.getInstance().init(config);
+    }
+
+    // TODO: change this if possible.
+    private void hugeTimerHackToShowKeyboard() {
+        new Timer().schedule(
+                new TimerTask() {
+                    @Override
+                    public void run() {
+
+                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.showSoftInput(findViewById(R.id.mainSearchView), InputMethodManager.SHOW_IMPLICIT);
+                    }
+                },
+                500
+        );
     }
 
     private int getActionBarSize() {
@@ -166,6 +195,7 @@ public class MainActivity extends FragmentActivity {
             // resetUi
             MainFragment fragment = (MainFragment) getSupportFragmentManager().findFragmentByTag(MainFragment.FRAGMENT_TAG);
             fragment.setup();
+            fragment.dismissProgressBar();
             onHomePage = true;
         }
         // If on the start screen, back should just do super.onBackPressed(); otherwise, go back to start screen

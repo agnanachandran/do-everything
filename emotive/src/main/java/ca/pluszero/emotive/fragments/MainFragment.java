@@ -65,16 +65,18 @@ import ca.pluszero.emotive.models.PlaceDetails;
 import ca.pluszero.emotive.models.YouTubeVideo;
 import ca.pluszero.emotive.utils.DateTimeUtils;
 import ca.pluszero.emotive.utils.ScreenUtils;
+import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 
 public class MainFragment extends Fragment implements View.OnClickListener, YouTubeManager.OnFinishedListener, MusicManager.IMusicLoadedListener, PlaceDetailsManager.OnFinishedListener, WeatherManager.OnFinishedListener {
 
     private static final String DEGREE_SYMBOL = "°";
+    private SmoothProgressBar progressBar;
     public static String FRAGMENT_TAG = "main_fragment"; // set from activity_main xml
     private final LocationListener locationListener = new LocationListener() {
         public void onLocationChanged(Location location) {
             double longitude = location.getLongitude();
             double latitude = location.getLatitude();
-            WeatherManager.getInstance(MainFragment.this).getWeatherQuery(new PlaceDetails(String.valueOf(latitude), String.valueOf(longitude)));
+            WeatherManager.getInstance(MainFragment.this, MainFragment.this).getWeatherQuery(new PlaceDetails(String.valueOf(latitude), String.valueOf(longitude)));
         }
 
         @Override
@@ -151,6 +153,12 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
         lvQueryResults = (ListView) rootView.findViewById(R.id.lvQueryResults);
+        progressBar = (SmoothProgressBar) rootView.findViewById(R.id.progress_bar);
+
+        // TODO: do only on 4.4
+        lvQueryResults.setPadding(0, 0, 0, ScreenUtils.getNavbarHeight(getResources()));
+        lvQueryResults.setClipToPadding(false);
+
         etSearchView = (AutoCompleteTextView) rootView.findViewById(R.id.mainSearchView);
         setupAnimations();
 
@@ -286,10 +294,28 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         } else if (mPrimaryOption == Choice.GOOGLE) {
             startGoogleSearchAnything(query);
         } else if (mPrimaryOption == Choice.YOUTUBE) {
+            showProgressBar();
             startYouTubeSearch(query);
         } else if (mPrimaryOption == Choice.WEATHER) {
+            showProgressBar();
             startWeatherSearch();
         }
+    }
+
+    private void showProgressBar() {
+        if (mPrimaryOption == Choice.YOUTUBE) {
+            progressBar.setSmoothProgressDrawableColors(getResources().getIntArray(R.array.youtube_colors));
+        } else if (mPrimaryOption == Choice.WEATHER) {
+            progressBar.setSmoothProgressDrawableColors(getResources().getIntArray(R.array.weather_colors));
+        }
+        progressBar.progressiveStop();
+        progressBar.setVisibility(View.VISIBLE);
+        progressBar.progressiveStart();
+    }
+
+    public void dismissProgressBar() {
+        progressBar.progressiveStop();
+        progressBar.setVisibility(View.GONE);
     }
 
     private void startWeatherSearch() {
@@ -336,6 +362,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
                 YouTubeManager.getInstance(MainFragment.this).loadMoreDataFromApi();
+                showProgressBar();
             }
         });
         // Intent intent = new Intent(Intent.ACTION_SEARCH);
@@ -375,9 +402,6 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         LinearLayout resultsContainer = (LinearLayout) rootView.findViewById(R.id.ll_panel_container);
         resultsContainer.setVisibility(View.VISIBLE);
 
-        // TODO: do only on 4.4
-        lvQueryResults.setPadding(0, 0, 0, ScreenUtils.getNavbarHeight(getResources()));
-        lvQueryResults.setClipToPadding(false);
         lvQueryResults.setVisibility(View.VISIBLE);
 
 //        LinearLayout searchContainer = (LinearLayout) rootView.findViewById(R.id.ll_search_container);
@@ -511,6 +535,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
     @Override
     public void onInitialYoutubeQueryFinished(List<YouTubeVideo> videos) {
         dismissKeyboard();
+        dismissProgressBar();
         bringUpListView();
         lvQueryResults.setAdapter(new YouTubeListAdapter(
                 getActivity(), videos));
@@ -520,6 +545,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
     public synchronized void onMoreVideosReceived(List<YouTubeVideo> videos) {
         if (lvQueryResults.getAdapter() != null) {
             ((BaseArrayAdapter) lvQueryResults.getAdapter()).addItems(videos);
+            dismissProgressBar();
         }
     }
 
@@ -559,11 +585,13 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
 
     @Override
     public void onPlaceDetailsQueryFinished(PlaceDetails placeDetails) {
-        WeatherManager.getInstance(this).getWeatherQuery(placeDetails);
+        WeatherManager.getInstance(this, this).getWeatherQuery(placeDetails);
     }
 
+    // TODO: Refactor into WeatherViewManager (singleton?)
     @Override
     public void onWeatherQueryFinished(Forecast weatherData) {
+        dismissProgressBar();
         View weatherContainer = rootView.findViewById(R.id.weather_container);
         weatherContainer.setVisibility(View.VISIBLE);
         // TODO: do only on 4.4

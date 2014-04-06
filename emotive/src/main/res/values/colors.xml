@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:app="http://schemas.android.com/apk/res-auto">
     <color name="android_green">#A4C639</color>
 
     <!-- Text shadows -->
@@ -226,4 +226,15 @@
     <color name="YellowGreen">#9ACD32</color>
     <!-- z -->
 
+    <integer-array name="youtube_colors">
+       <item name="red">@color/red</item>
+        <item name="darker_red">@color/win8_red</item>
+        <item name="lighter_red">@color/IndianRed</item>
+    </integer-array>
+
+    <integer-array name="weather_colors">
+        <item name="blue">@color/win8_blue</item>
+        <item name="light_blue">@color/default_light_blue</item>
+        <item name="lighter_blue">@color/AliceBlue</item>
+    </integer-array>
 </resources>

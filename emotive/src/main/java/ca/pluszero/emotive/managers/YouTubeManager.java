@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.List;
 
 import ca.pluszero.emotive.ApiKeys;
+import ca.pluszero.emotive.R;
 import ca.pluszero.emotive.models.YouTubeVideo;
 import ca.pluszero.emotive.utils.DateTimeUtils;
 
@@ -25,6 +26,7 @@ public class YouTubeManager {
     // private static final long NUMBER_OF_VIDEOS_RETURNED = 25;
     private static final String API_KEY = ApiKeys.GOOGLE_KEY;
     private static final String BASE_URL = "https://www.googleapis.com/youtube/v3";
+    public static final int[] COLORS = {R.color.red, R.color.win8_pink};
     private static YouTubeManager instance;
     private static AsyncHttpClient client = new AsyncHttpClient();
     private static DateFormat ISO_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
