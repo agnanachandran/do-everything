@@ -70,7 +70,6 @@ import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 public class MainFragment extends Fragment implements View.OnClickListener, YouTubeManager.OnFinishedListener, MusicManager.IMusicLoadedListener, PlaceDetailsManager.OnFinishedListener, WeatherManager.OnFinishedListener {
 
     private static final String DEGREE_SYMBOL = "°";
-    private SmoothProgressBar progressBar;
     public static String FRAGMENT_TAG = "main_fragment"; // set from activity_main xml
     private final LocationListener locationListener = new LocationListener() {
         public void onLocationChanged(Location location) {
@@ -94,6 +93,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
 
         }
     };
+    private SmoothProgressBar progressBar;
     private Button bFirstButton;
     private Button bSecondButton;
     private Button bThirdButton;
@@ -534,11 +534,13 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
 
     @Override
     public void onInitialYoutubeQueryFinished(List<YouTubeVideo> videos) {
-        dismissKeyboard();
-        dismissProgressBar();
-        bringUpListView();
-        lvQueryResults.setAdapter(new YouTubeListAdapter(
-                getActivity(), videos));
+        if (isAdded()) {
+            dismissKeyboard();
+            dismissProgressBar();
+            bringUpListView();
+            lvQueryResults.setAdapter(new YouTubeListAdapter(
+                    getActivity(), videos));
+        }
     }
 
     @Override
