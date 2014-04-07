@@ -22,7 +22,6 @@ import ca.pluszero.emotive.models.WeatherIcon;
 public class WeatherManager {
     private static final String API_KEY = ApiKeys.FORECAST_KEY;
     private static final String BASE_URL = "https://api.forecast.io/forecast/" + API_KEY + "/";
-    private static WeatherManager instance;
 
     private static AsyncHttpClient client = new AsyncHttpClient();
     private final OnFinishedListener listener;
@@ -70,7 +69,7 @@ public class WeatherManager {
                     dailyWeatherList.add(new Forecast.FutureWeather(temperature, dailyWeatherIcon, timestamp));
                 }
 
-                if (true) {
+                if (fragment.isAdded()) {
                     listener.onWeatherQueryFinished(new Forecast(summary, temperatureInFahrenheit, apparentTemperatureInFahrenheit, humidity, precipitation, hourlyWeatherList, dailyWeatherList, weatherIcon));
                 }
             } catch (JSONException e) {
@@ -79,7 +78,7 @@ public class WeatherManager {
         }
     };
 
-    private WeatherManager(Fragment fragment, OnFinishedListener listener) {
+    public WeatherManager(Fragment fragment, OnFinishedListener listener) {
         this.fragment = fragment;
         this.listener = listener;
     }
@@ -90,15 +89,12 @@ public class WeatherManager {
         client.get(url, params, responseHandler);
     }
 
-    // GET request with API endpoint signified by url, and params
-    // other than the API key specified as a RequestParams
-
-    public static WeatherManager getInstance(Fragment fragment, OnFinishedListener listener) {
-        if (instance == null) {
-            instance = new WeatherManager(fragment, listener);
-        }
-        return instance;
-    }
+//    public static WeatherManager getInstance(Fragment fragment, OnFinishedListener listener) {
+//        if (instance == null) {
+//            instance = new WeatherManager(fragment, listener);
+//        }
+//        return instance;
+//    }
 
     public void getWeatherQuery(PlaceDetails placeDetails) {
         get(BASE_URL + placeDetails.getLatitude() + "," + placeDetails.getLongitude(), null, responseHandler);

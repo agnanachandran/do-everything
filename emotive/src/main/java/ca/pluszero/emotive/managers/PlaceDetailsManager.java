@@ -16,7 +16,6 @@ import ca.pluszero.emotive.models.PlaceDetails;
 public class PlaceDetailsManager {
     private static final String API_KEY = ApiKeys.GOOGLE_KEY;
     private static final String BASE_URL = "https://maps.googleapis.com/maps/api/place/details/json";
-    private static PlaceDetailsManager instance;
     private static AsyncHttpClient client = new AsyncHttpClient();
     private final OnFinishedListener listener;
 
@@ -41,7 +40,7 @@ public class PlaceDetailsManager {
         }
     };
 
-    private PlaceDetailsManager(OnFinishedListener listener) {
+    public PlaceDetailsManager(OnFinishedListener listener) {
         this.listener = listener;
     }
 
@@ -49,13 +48,6 @@ public class PlaceDetailsManager {
                            AsyncHttpResponseHandler responseHandler) {
 
         client.get(url, params, responseHandler);
-    }
-
-    public static PlaceDetailsManager getInstance(OnFinishedListener listener) {
-        if (instance == null) {
-            instance = new PlaceDetailsManager(listener);
-        }
-        return instance;
     }
 
     public void getPlaceDetailsQuery(String reference) {

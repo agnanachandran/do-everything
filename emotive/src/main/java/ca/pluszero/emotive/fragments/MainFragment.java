@@ -70,12 +70,12 @@ import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 public class MainFragment extends Fragment implements View.OnClickListener, YouTubeManager.OnFinishedListener, MusicManager.IMusicLoadedListener, PlaceDetailsManager.OnFinishedListener, WeatherManager.OnFinishedListener {
 
     private static final String DEGREE_SYMBOL = "°";
-    public static String FRAGMENT_TAG = "main_fragment"; // set from activity_main xml
+    public static final String FRAGMENT_TAG = "main_fragment";
     private final LocationListener locationListener = new LocationListener() {
         public void onLocationChanged(Location location) {
             double longitude = location.getLongitude();
             double latitude = location.getLatitude();
-            WeatherManager.getInstance(MainFragment.this, MainFragment.this).getWeatherQuery(new PlaceDetails(String.valueOf(latitude), String.valueOf(longitude)));
+            new WeatherManager(MainFragment.this, MainFragment.this).getWeatherQuery(new PlaceDetails(String.valueOf(latitude), String.valueOf(longitude)));
         }
 
         @Override
@@ -148,10 +148,6 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         public void afterTextChanged(Editable s) {
         }
     };
-
-    public MainFragment() {
-        super();
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -327,7 +323,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
 
     private void startWeatherSearch() {
         dismissKeyboard();
-        PlaceDetailsManager placeManager = PlaceDetailsManager.getInstance(this);
+        PlaceDetailsManager placeManager = new PlaceDetailsManager(this);
         if (NetworkManager.isConnected(getActivity())) {
             if (place != null) {
                 placeManager.getPlaceDetailsQuery(place.getReference());
@@ -340,8 +336,8 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
     }
 
     private void startYouTubeSearch(CharSequence query) {
+        final YouTubeManager manager = new YouTubeManager(this);
         if (NetworkManager.isConnected(getActivity())) {
-            YouTubeManager manager = YouTubeManager.getInstance(this);
             manager.clearNextPageToken();
             manager.getYouTubeSearch(query.toString());
         } else {
@@ -368,7 +364,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         lvQueryResults.setOnScrollListener(new EndlessScrollListener() {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
-                YouTubeManager.getInstance(MainFragment.this).loadMoreDataFromApi();
+                manager.loadMoreDataFromApi();
                 showProgressBar();
             }
         });
@@ -392,7 +388,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
     }
 
     private void startMusicSearchDevice(String query) {
-        MusicManager musicLauncher = MusicManager.getInstance(this, this);
+        MusicManager musicLauncher = new MusicManager(this, this);
         if (!startedMusicSearch) {
             String[] columns = {MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.DURATION, MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.ALBUM};
             int[] mSongListItems = {R.id.tvMusicTitle, R.id.tvMusicDuration, R.id.tvMusicArtist, R.id.tvMusicAlbum};
@@ -542,7 +538,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
     @Override
     public void onInitialYoutubeQueryFinished(List<YouTubeVideo> videos) {
         Log.d("INITIAL FINISHED", "method start");
-        if (true) {
+        if (isAdded()) {
             Log.d("INITIAL FINISHED", "isAdded");
             dismissKeyboard();
             dismissProgressBar();
@@ -554,7 +550,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
 
     @Override
     public void onMoreVideosReceived(List<YouTubeVideo> videos) {
-        if (true) {
+        if (isAdded()) {
             if (lvQueryResults.getAdapter() != null) {
                 ((BaseArrayAdapter) lvQueryResults.getAdapter()).addItems(videos);
                 dismissProgressBar();
@@ -598,7 +594,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
 
     @Override
     public void onPlaceDetailsQueryFinished(PlaceDetails placeDetails) {
-        WeatherManager.getInstance(this, this).getWeatherQuery(placeDetails);
+        new WeatherManager(this, this).getWeatherQuery(placeDetails);
     }
 
     // TODO: Refactor into WeatherViewManager (singleton?)

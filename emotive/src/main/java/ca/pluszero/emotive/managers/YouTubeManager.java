@@ -27,7 +27,6 @@ public class YouTubeManager {
     // private static final long NUMBER_OF_VIDEOS_RETURNED = 25;
     private static final String API_KEY = ApiKeys.GOOGLE_KEY;
     private static final String BASE_URL = "https://www.googleapis.com/youtube/v3";
-    private static YouTubeManager instance;
     private static AsyncHttpClient client = new AsyncHttpClient();
     private static DateFormat ISO_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
     String currentQuery;
@@ -80,7 +79,7 @@ public class YouTubeManager {
         }
     };
 
-    private YouTubeManager(OnFinishedListener listener) {
+    public YouTubeManager(OnFinishedListener listener) {
         this.listener = listener;
     }
 
@@ -115,12 +114,12 @@ public class YouTubeManager {
         return BASE_URL + "/search/" + relativeUrl;
     }
 
-    public static YouTubeManager getInstance(OnFinishedListener listener) {
-        if (instance == null) {
-            instance = new YouTubeManager(listener);
-        }
-        return instance;
-    }
+//    public static YouTubeManager getInstance(OnFinishedListener listener) {
+//        if (instance == null) {
+//            instance = new YouTubeManager(listener);
+//        }
+//        return instance;
+//    }
 
     private void addYoutubeVideo(JSONObject response, JSONObject videoObject, List<YouTubeVideo> moreVideos, String videoId) throws JSONException {
         JSONArray jsonItems = response.getJSONArray("items");

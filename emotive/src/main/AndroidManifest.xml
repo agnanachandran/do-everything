@@ -37,7 +37,7 @@
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="ca.pluszero.swift.MainActivity" />
+                android:value="ca.pluszero.emotive.MainActivity" />
         </activity>
 
         <receiver android:name="ca.pluszero.emotive.widgets.EmotiveAppWidgetProvider">

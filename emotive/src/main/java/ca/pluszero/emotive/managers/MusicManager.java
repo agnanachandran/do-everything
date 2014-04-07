@@ -17,7 +17,6 @@ public class MusicManager implements LoaderManager.LoaderCallbacks<Cursor> {
 
     // Identifies a particular Loader
     private static final int MUSIC_URL_LOADER = 0;
-    private static MusicManager instance = null;
     private final Fragment fragment;
     private final IMusicLoadedListener listener;
     private String[] mSelectionArgs = new String[3];
@@ -30,16 +29,9 @@ public class MusicManager implements LoaderManager.LoaderCallbacks<Cursor> {
             MediaStore.Audio.Media._ID};
     private String mSelectionClause;
 
-    private MusicManager(Fragment fragment, IMusicLoadedListener listener) {
+    public MusicManager(Fragment fragment, IMusicLoadedListener listener) {
         this.fragment = fragment;
         this.listener = listener;
-    }
-
-    public static MusicManager getInstance(Fragment fragment, IMusicLoadedListener listener) {
-        if (instance == null) {
-            instance = new MusicManager(fragment, listener);
-        }
-        return instance;
     }
 
     public void startMusic(String songFileName) {

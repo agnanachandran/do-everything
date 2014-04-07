@@ -9,6 +9,7 @@ import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -96,6 +97,13 @@ public class MainActivity extends FragmentActivity {
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
         getPressedOptionFromWidget();
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+//        getSupportFragmentManager().beginTransaction().attach(getSupportFragmentManager().getFragments().get(0)).commit();
     }
 
     private void setUpBackground() {
@@ -188,6 +196,7 @@ public class MainActivity extends FragmentActivity {
 
     @Override
     public void onBackPressed() {
+        Log.d("TAGG", "" + onHomePage);
         if (onHomePage) {
             super.onBackPressed();
         } else {
