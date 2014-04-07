@@ -114,13 +114,6 @@ public class YouTubeManager {
         return BASE_URL + "/search/" + relativeUrl;
     }
 
-//    public static YouTubeManager getInstance(OnFinishedListener listener) {
-//        if (instance == null) {
-//            instance = new YouTubeManager(listener);
-//        }
-//        return instance;
-//    }
-
     private void addYoutubeVideo(JSONObject response, JSONObject videoObject, List<YouTubeVideo> moreVideos, String videoId) throws JSONException {
         JSONArray jsonItems = response.getJSONArray("items");
         JSONObject item = jsonItems.getJSONObject(0);

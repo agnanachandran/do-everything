@@ -89,13 +89,6 @@ public class WeatherManager {
         client.get(url, params, responseHandler);
     }
 
-//    public static WeatherManager getInstance(Fragment fragment, OnFinishedListener listener) {
-//        if (instance == null) {
-//            instance = new WeatherManager(fragment, listener);
-//        }
-//        return instance;
-//    }
-
     public void getWeatherQuery(PlaceDetails placeDetails) {
         get(BASE_URL + placeDetails.getLatitude() + "," + placeDetails.getLongitude(), null, responseHandler);
     }

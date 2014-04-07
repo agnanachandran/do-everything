@@ -297,10 +297,8 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         } else if (mPrimaryOption == Choice.GOOGLE) {
             startGoogleSearchAnything(query);
         } else if (mPrimaryOption == Choice.YOUTUBE) {
-            showProgressBar();
             startYouTubeSearch(query);
         } else if (mPrimaryOption == Choice.WEATHER) {
-            showProgressBar();
             startWeatherSearch();
         }
     }
@@ -326,22 +324,24 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         PlaceDetailsManager placeManager = new PlaceDetailsManager(this);
         if (NetworkManager.isConnected(getActivity())) {
             if (place != null) {
+                showProgressBar();
                 placeManager.getPlaceDetailsQuery(place.getReference());
             } else {
                 Toast.makeText(MainFragment.this.getActivity(), "Please type a query and select an item from the dropdown.", Toast.LENGTH_LONG).show();
             }
         } else {
-            Toast.makeText(getActivity(), "Please make sure you are connected to the internet.", Toast.LENGTH_LONG).show();
+            displayNetworkConnectionToast();
         }
     }
 
     private void startYouTubeSearch(CharSequence query) {
         final YouTubeManager manager = new YouTubeManager(this);
         if (NetworkManager.isConnected(getActivity())) {
+            showProgressBar();
             manager.clearNextPageToken();
             manager.getYouTubeSearch(query.toString());
         } else {
-            // No interwebs; display Toast. TODO
+            displayNetworkConnectionToast();
         }
         if (lvQueryResults.getAdapter() != null) {
             ((BaseArrayAdapter) lvQueryResults.getAdapter()).clear();
@@ -373,6 +373,10 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         // intent.putExtra("search_query", query);
         // intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         // startActivity(intent);
+    }
+
+    private void displayNetworkConnectionToast() {
+        Toast.makeText(getActivity(), "Please make sure you are connected to the internet.", Toast.LENGTH_LONG).show();
     }
 
     private void startMapsSearch(CharSequence query) {
