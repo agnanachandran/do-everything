@@ -69,8 +69,8 @@ import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 
 public class MainFragment extends Fragment implements View.OnClickListener, YouTubeManager.OnFinishedListener, MusicManager.IMusicLoadedListener, PlaceDetailsManager.OnFinishedListener, WeatherManager.OnFinishedListener {
 
-    private static final String DEGREE_SYMBOL = "°";
     public static final String FRAGMENT_TAG = "main_fragment";
+    private static final String DEGREE_SYMBOL = "°";
     private final LocationListener locationListener = new LocationListener() {
         public void onLocationChanged(Location location) {
             double longitude = location.getLongitude();
@@ -293,7 +293,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         if (mPrimaryOption == Choice.FIND) {
             startMapsSearch(query);
         } else if (mPrimaryOption == Choice.LISTEN) {
-            dismissKeyboard();
+            startMusicSearch(query);
         } else if (mPrimaryOption == Choice.GOOGLE) {
             startGoogleSearchAnything(query);
         } else if (mPrimaryOption == Choice.YOUTUBE) {
@@ -301,6 +301,14 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         } else if (mPrimaryOption == Choice.WEATHER) {
             startWeatherSearch();
         }
+    }
+
+    private void startMusicSearch(String query) {
+        if (query.endsWith(" gs")) {
+            Intent grooveSharkIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://html5.grooveshark.com/#!/search/" + query.substring(0, query.indexOf(" gs")).replaceAll(" ", "%20")));
+            startActivity(grooveSharkIntent);
+        }
+        dismissKeyboard();
     }
 
     private void showProgressBar() {

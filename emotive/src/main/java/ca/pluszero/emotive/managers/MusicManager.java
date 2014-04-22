@@ -95,11 +95,11 @@ public class MusicManager implements LoaderManager.LoaderCallbacks<Cursor> {
             int index = cursor.getColumnIndex(MediaStore.Audio.Media.DATA);
             while (cursor.moveToNext()) {
                 // If there's only one result, play it
-                if (cursor.getPosition() == 0 && cursor.getCount() == 1) {
-                    String songPath = cursor.getString(index);
-                    startMusic(songPath);
-                    break;
-                }
+//                if (cursor.getPosition() == 0 && cursor.getCount() == 1) {
+//                    String songPath = cursor.getString(index);
+//                    startMusic(songPath);
+//                    break;
+//                }
                 // MediaPlayer mp = new MediaPlayer();
                 // try {
                 // mp.setDataSource(songPath);
