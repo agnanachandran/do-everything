@@ -10,6 +10,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
@@ -159,10 +160,10 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         lvQueryResults = (ListView) rootView.findViewById(R.id.lvQueryResults);
         progressBar = (SmoothProgressBar) rootView.findViewById(R.id.progress_bar);
 
-        // TODO: do only on 4.4
-        lvQueryResults.setPadding(0, 0, 0, ScreenUtils.getNavbarHeight(getResources()));
-        lvQueryResults.setClipToPadding(false);
-
+        if (isKitKatDevice()) {
+            lvQueryResults.setPadding(0, 0, 0, ScreenUtils.getNavbarHeight(getResources()));
+            lvQueryResults.setClipToPadding(false);
+        }
         etSearchView = (AutoCompleteTextView) rootView.findViewById(R.id.mainSearchView);
         setupAnimations();
 
@@ -614,8 +615,10 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         dismissProgressBar();
         View weatherContainer = rootView.findViewById(R.id.weather_container);
         weatherContainer.setVisibility(View.VISIBLE);
-        // TODO: do only on 4.4
-        weatherContainer.setPadding(0, 0, 0, ScreenUtils.getNavbarHeight(getResources()));
+
+        if(isKitKatDevice()) {
+            weatherContainer.setPadding(0, 0, 0, ScreenUtils.getNavbarHeight(getResources()));
+        }
 
         boolean showFahrenheit = PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("fahrenheit_checkbox", false);
 
@@ -657,6 +660,10 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
                     getResources().getDrawable(hourlyWeatherIconId));
             ((TextView) weatherDailyCardContainer.findViewById(R.id.weather_card_temp)).setText((showFahrenheit ? weather.getTemp().getValueInFahrenheit() : weather.getTemp().toCelsius()) + DEGREE_SYMBOL);
         }
+    }
+
+    private boolean isKitKatDevice() {
+        return Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT;
     }
 
     private void setupCityCountryWeatherInfo() {
