@@ -71,9 +71,9 @@ public class Forecast {
 
         private final Temperature temp;
         private final WeatherIcon icon;
-        private final int timeInMs;
+        private final long timeInMs;
 
-        public FutureWeather(Temperature temp, WeatherIcon icon, int timeInMs) {
+        public FutureWeather(Temperature temp, WeatherIcon icon, long timeInMs) {
             this.temp = temp;
             this.icon = icon;
             this.timeInMs = timeInMs;

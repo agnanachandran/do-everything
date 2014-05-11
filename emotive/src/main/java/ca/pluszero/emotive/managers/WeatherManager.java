@@ -54,7 +54,7 @@ public class WeatherManager {
                     Forecast.Temperature temperature = new Forecast.Temperature((int) Math.round(hourData.getDouble("temperature")));
                     String hourlyIconName = hourData.getString("icon");
                     WeatherIcon hourlyWeatherIcon = WeatherIcon.getEnumForString(hourlyIconName);
-                    int timestamp = 1000 * hourData.getInt("time"); // time in seconds needs to be converted to ms
+                    long timestamp = 1000L * hourData.getLong("time"); // time in seconds needs to be converted to ms
                     hourlyWeatherList.add(new Forecast.FutureWeather(temperature, hourlyWeatherIcon, timestamp));
                 }
 
@@ -65,7 +65,7 @@ public class WeatherManager {
                     Forecast.Temperature temperature = new Forecast.Temperature((int) Math.round(dayData.getDouble("temperatureMax")));
                     String dailyIconName = dayData.getString("icon");
                     WeatherIcon dailyWeatherIcon = WeatherIcon.getEnumForString(dailyIconName);
-                    int timestamp = 1000 * dayData.getInt("time"); // time in seconds needs to be converted to ms
+                    long timestamp = 1000L * dayData.getLong("time"); // time in seconds needs to be converted to ms
                     dailyWeatherList.add(new Forecast.FutureWeather(temperature, dailyWeatherIcon, timestamp));
                 }
 

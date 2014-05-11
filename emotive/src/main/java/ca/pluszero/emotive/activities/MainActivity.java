@@ -9,7 +9,6 @@ import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -196,7 +195,6 @@ public class MainActivity extends FragmentActivity {
 
     @Override
     public void onBackPressed() {
-        Log.d("TAGG", "" + onHomePage);
         if (onHomePage) {
             super.onBackPressed();
         } else {

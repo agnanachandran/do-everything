@@ -549,9 +549,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
 
     @Override
     public void onInitialYoutubeQueryFinished(List<YouTubeVideo> videos) {
-        Log.d("INITIAL FINISHED", "method start");
         if (isAdded()) {
-            Log.d("INITIAL FINISHED", "isAdded");
             dismissKeyboard();
             dismissProgressBar();
             bringUpListView();

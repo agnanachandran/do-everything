@@ -5,7 +5,6 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.widget.RemoteViews;
 
 import java.util.HashSet;
@@ -63,7 +62,6 @@ public class EmotiveAppWidgetProvider extends AppWidgetProvider {
     @Override
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
-        Log.d("TAGGG receive", intent.getAction());
         if (intent.getAction() != null && CHOICE_ACTIONS.contains(intent.getAction())) {
             String choiceAction = intent.getAction();
             Intent newIntent = new Intent(context, MainActivity.class);
@@ -76,7 +74,6 @@ public class EmotiveAppWidgetProvider extends AppWidgetProvider {
     private static PendingIntent getIntentWithChoice(Context context, Choice choice) {
         Intent intent = new Intent(context, EmotiveAppWidgetProvider.class);
         intent.setAction(choice.toString());
-        Log.d("CHOICE: ", choice.toString());
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
         return pendingIntent;
     }
