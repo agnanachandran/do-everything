@@ -3,13 +3,8 @@
     <!-- These settings headers are only used on tablets. -->
 
     <header
-        android:fragment="ca.pluszero.emotive.SettingsActivity$GeneralPreferenceFragment"
+        android:fragment="ca.pluszero.emotive.activities.SettingsActivity$GeneralPreferenceFragment"
         android:title="@string/pref_header_general" />
-    <header
-        android:fragment="ca.pluszero.emotive.SettingsActivity$NotificationPreferenceFragment"
-        android:title="@string/pref_header_notifications" />
-    <header
-        android:fragment="ca.pluszero.emotive.SettingsActivity$DataSyncPreferenceFragment"
-        android:title="@string/pref_header_data_sync" />
+
 
 </preference-headers>

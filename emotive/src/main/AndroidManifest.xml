@@ -33,6 +33,7 @@
         <activity
             android:name="ca.pluszero.emotive.activities.SettingsActivity"
             android:label="@string/title_activity_settings"
+            android:theme="@style/CustomNonOverlayTheme"
             android:parentActivityName="ca.pluszero.emotive.activities.MainActivity">
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data

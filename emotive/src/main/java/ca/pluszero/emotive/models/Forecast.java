@@ -36,7 +36,7 @@ public class Forecast {
     }
 
     public int getTemperatureInFahrenheit() {
-        return temperature.getValue();
+        return temperature.getValueInFahrenheit();
     }
 
     public WeatherIcon getIcon() {
@@ -44,7 +44,7 @@ public class Forecast {
     }
 
     public int getApparentTemperatureInFahrenheit() {
-        return apparentTemperature.getValue();
+        return apparentTemperature.getValueInFahrenheit();
     }
 
     public int getApparentTemperatureInCelsius() {
@@ -108,7 +108,7 @@ public class Forecast {
             return ConversionUtils.fahrenheitToCelsius(temperatureInFahrenheit);
         }
 
-        public int getValue() {
+        public int getValueInFahrenheit() {
             return temperatureInFahrenheit;
         }
     }

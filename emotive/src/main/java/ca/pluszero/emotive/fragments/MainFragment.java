@@ -11,6 +11,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
@@ -616,8 +617,10 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         // TODO: do only on 4.4
         weatherContainer.setPadding(0, 0, 0, ScreenUtils.getNavbarHeight(getResources()));
 
-        ((TextView) rootView.findViewById(R.id.weather_temp)).setText(weatherData.getTemperatureInCelsius() + DEGREE_SYMBOL);
-        ((TextView) rootView.findViewById(R.id.weather_feels_like)).setText(getString(R.string.feels_like, String.valueOf(weatherData.getApparentTemperatureInCelsius())));
+        boolean showFahrenheit = PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("fahrenheit_checkbox", false);
+
+        ((TextView) rootView.findViewById(R.id.weather_temp)).setText((showFahrenheit ? weatherData.getTemperatureInFahrenheit() : weatherData.getTemperatureInCelsius()) + DEGREE_SYMBOL);
+        ((TextView) rootView.findViewById(R.id.weather_feels_like)).setText(getString(R.string.feels_like, String.valueOf(showFahrenheit ? weatherData.getApparentTemperatureInFahrenheit() : weatherData.getApparentTemperatureInCelsius())));
         ((TextView) rootView.findViewById(R.id.weather_status)).setText(weatherData.getSummary());
         ((TextView) rootView.findViewById(R.id.weather_precipitation)).setText(getString(R.string.precipitation, String.valueOf(weatherData.getPrecipitationPercentage())));
         ((TextView) rootView.findViewById(R.id.weather_humidity)).setText(getString(R.string.humidity, String.valueOf(weatherData.getHumidity())));
@@ -639,7 +642,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
             int hourlyWeatherIconId = weather.getIcon().getDrawableId();
             ((ImageView) weatherHourlyCardContainer.findViewById(R.id.weather_card_icon)).setImageDrawable(
                     getResources().getDrawable(hourlyWeatherIconId));
-            ((TextView) weatherHourlyCardContainer.findViewById(R.id.weather_card_temp)).setText(weather.getTemp().toCelsius() + DEGREE_SYMBOL);
+            ((TextView) weatherHourlyCardContainer.findViewById(R.id.weather_card_temp)).setText((showFahrenheit ? weather.getTemp().getValueInFahrenheit() : weather.getTemp().toCelsius()) + DEGREE_SYMBOL);
         }
 
         ViewGroup weatherDailyContainer = (ViewGroup) rootView.findViewById(R.id.weather_daily_container);
@@ -652,7 +655,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
             int hourlyWeatherIconId = weather.getIcon().getDrawableId();
             ((ImageView) weatherDailyCardContainer.findViewById(R.id.weather_card_icon)).setImageDrawable(
                     getResources().getDrawable(hourlyWeatherIconId));
-            ((TextView) weatherDailyCardContainer.findViewById(R.id.weather_card_temp)).setText(weather.getTemp().toCelsius() + DEGREE_SYMBOL);
+            ((TextView) weatherDailyCardContainer.findViewById(R.id.weather_card_temp)).setText((showFahrenheit ? weather.getTemp().getValueInFahrenheit() : weather.getTemp().toCelsius()) + DEGREE_SYMBOL);
         }
     }
 

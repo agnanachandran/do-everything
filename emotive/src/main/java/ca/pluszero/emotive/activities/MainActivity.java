@@ -49,6 +49,8 @@ public class MainActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+//        PreferenceManager.setDefaultValues(this, R.xml.pref_general, false);
+
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
 
@@ -189,7 +191,7 @@ public class MainActivity extends FragmentActivity {
     // Called upon calling invalidateOptionsMenu()
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        // TODO: Probably nothing to do here at the moment http://developer.android.com/training/implementing-navigation/nav-drawer.html
+        // Probably nothing to do here at the moment http://developer.android.com/training/implementing-navigation/nav-drawer.html
         return super.onPrepareOptionsMenu(menu);
     }
 
