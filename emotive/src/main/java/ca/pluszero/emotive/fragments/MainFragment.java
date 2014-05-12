@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -73,11 +74,14 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
 
     public static final String FRAGMENT_TAG = "main_fragment";
     private static final String DEGREE_SYMBOL = "°";
+    private static boolean locationFromAutoDetection = false;
     private final LocationListener locationListener = new LocationListener() {
         public void onLocationChanged(Location location) {
             double longitude = location.getLongitude();
             double latitude = location.getLatitude();
-            new WeatherManager(MainFragment.this, MainFragment.this).getWeatherQuery(new PlaceDetails(String.valueOf(latitude), String.valueOf(longitude)));
+            showProgressBar();
+            locationFromAutoDetection = true;
+            new WeatherManager(MainFragment.this).getWeatherQuery(new PlaceDetails(String.valueOf(latitude), String.valueOf(longitude)));
         }
 
         @Override
@@ -306,7 +310,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
     }
 
     private void startMusicSearch(String query) {
-        if (query.endsWith(" gs")) {
+        if (query.matches("[A-Za-z0-9 ]+ gs")) {
             Intent grooveSharkIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://html5.grooveshark.com/#!/search/" + query.substring(0, query.indexOf(" gs")).replaceAll(" ", "%20")));
             startActivity(grooveSharkIntent);
         }
@@ -335,7 +339,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         if (NetworkManager.isConnected(getActivity())) {
             if (place != null) {
                 showProgressBar();
-                placeManager.getPlaceDetailsQuery(place.getReference());
+                placeManager.getPlaceDetailsQuery(place.getReference()); // TODO: check for failure and if fails; do googler weather search
             } else {
                 Toast.makeText(MainFragment.this.getActivity(), "Please type a query and select an item from the dropdown.", Toast.LENGTH_LONG).show();
             }
@@ -408,8 +412,8 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
             int[] mSongListItems = {R.id.tvMusicTitle, R.id.tvMusicDuration, R.id.tvMusicArtist, R.id.tvMusicAlbum};
             musicCursorAdapter = new MusicCursorAdapter(getActivity(), R.layout.music_row_card, null, columns, mSongListItems);
             startedMusicSearch = true;
-            bringUpListView();
         }
+        bringUpListView();
         lvQueryResults.setAdapter(musicCursorAdapter);
         lvQueryResults.setOnItemClickListener(musicCursorAdapter);
         musicLauncher.searchMusic(query);
@@ -515,10 +519,13 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
                 place = ((PlacesAutoCompleteAdapter) etSearchView.getAdapter()).getItemForPosition(position);
             }
         });
+        Criteria crit = new Criteria();
+        crit.setAccuracy(Criteria.ACCURACY_LOW);
+        crit.setPowerRequirement(Criteria.NO_REQUIREMENT);
 
         if (NetworkManager.isConnected(getActivity())) {
             LocationManager lm = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 10, locationListener);
+            lm.requestLocationUpdates(lm.getBestProvider(crit, true), 500, 10, locationListener);
         }
     }
 
@@ -544,9 +551,11 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         }
         etSearchView.setText(""); // Clear out old text
 
-        // Show keyboard
-        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.showSoftInput(etSearchView, InputMethodManager.SHOW_IMPLICIT);
+        // Show keyboard if the weather option is not chosen
+        if (mPrimaryOption != Choice.WEATHER) {
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(etSearchView, InputMethodManager.SHOW_IMPLICIT);
+        }
     }
 
     @Override
@@ -606,10 +615,10 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
 
     @Override
     public void onPlaceDetailsQueryFinished(PlaceDetails placeDetails) {
-        new WeatherManager(this, this).getWeatherQuery(placeDetails);
+        new WeatherManager(this).getWeatherQuery(placeDetails);
     }
 
-    // TODO: Refactor into WeatherViewManager (singleton?)
+    // TODO: Refactor into WeatherViewFormatter
     @Override
     public void onWeatherQueryFinished(Forecast weatherData) {
         dismissProgressBar();
@@ -676,6 +685,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
             String[] querySplit = currentQuery.split(", ");
             cityName = querySplit[0];
             countryName = currentQuery.substring(currentQuery.indexOf(',') + 2);
+            currentQuery = null;
         } else {
             if (currentQuery == null) {
                 cityName = "My Location";

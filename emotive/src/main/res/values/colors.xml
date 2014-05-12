@@ -229,12 +229,12 @@
     <integer-array name="youtube_colors">
        <item name="red">@color/red</item>
         <item name="darker_red">@color/win8_red</item>
-        <item name="lighter_red">@color/IndianRed</item>
+        <item name="lighter_red">@color/WhiteSmoke</item>
     </integer-array>
 
     <integer-array name="weather_colors">
-        <item name="blue">@color/win8_blue</item>
         <item name="light_blue">@color/default_light_blue</item>
+        <item name="light_blue">@color/LightSkyBlue</item>
         <item name="lighter_blue">@color/AliceBlue</item>
     </integer-array>
 </resources>

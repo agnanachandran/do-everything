@@ -1,7 +1,5 @@
 package ca.pluszero.emotive.managers;
 
-import android.support.v4.app.Fragment;
-
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -25,7 +23,6 @@ public class WeatherManager {
 
     private static AsyncHttpClient client = new AsyncHttpClient();
     private final OnFinishedListener listener;
-    private final Fragment fragment;
 
     private JsonHttpResponseHandler responseHandler = new JsonHttpResponseHandler() {
         @Override
@@ -69,17 +66,14 @@ public class WeatherManager {
                     dailyWeatherList.add(new Forecast.FutureWeather(temperature, dailyWeatherIcon, timestamp));
                 }
 
-                if (fragment.isAdded()) {
-                    listener.onWeatherQueryFinished(new Forecast(summary, temperatureInFahrenheit, apparentTemperatureInFahrenheit, humidity, precipitation, hourlyWeatherList, dailyWeatherList, weatherIcon));
-                }
+                listener.onWeatherQueryFinished(new Forecast(summary, temperatureInFahrenheit, apparentTemperatureInFahrenheit, humidity, precipitation, hourlyWeatherList, dailyWeatherList, weatherIcon));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
     };
 
-    public WeatherManager(Fragment fragment, OnFinishedListener listener) {
-        this.fragment = fragment;
+    public WeatherManager(OnFinishedListener listener) {
         this.listener = listener;
     }
 
