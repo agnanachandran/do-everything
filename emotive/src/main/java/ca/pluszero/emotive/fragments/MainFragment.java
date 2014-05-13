@@ -318,14 +318,16 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
     }
 
     private void showProgressBar() {
-        if (mPrimaryOption == Choice.YOUTUBE) {
-            progressBar.setSmoothProgressDrawableColors(getResources().getIntArray(R.array.youtube_colors));
-        } else if (mPrimaryOption == Choice.WEATHER) {
-            progressBar.setSmoothProgressDrawableColors(getResources().getIntArray(R.array.weather_colors));
+        if (!isDetached()) {
+            if (mPrimaryOption == Choice.YOUTUBE) {
+                progressBar.setSmoothProgressDrawableColors(getResources().getIntArray(R.array.youtube_colors));
+            } else if (mPrimaryOption == Choice.WEATHER) {
+                progressBar.setSmoothProgressDrawableColors(getResources().getIntArray(R.array.weather_colors));
+            }
+            progressBar.progressiveStop();
+            progressBar.setVisibility(View.VISIBLE);
+            progressBar.progressiveStart();
         }
-        progressBar.progressiveStop();
-        progressBar.setVisibility(View.VISIBLE);
-        progressBar.progressiveStart();
     }
 
     public void dismissProgressBar() {
