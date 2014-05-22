@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.widget.Toast;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -22,9 +23,11 @@ public class ChoiceDataSource {
 
     private SQLiteDatabase database;
     private DatabaseHelper dbHelper;
+    private Context ctx;
 
     public ChoiceDataSource(Context context) {
         dbHelper = new DatabaseHelper(context);
+        ctx = context;
     }
 
     public void open() throws SQLException {
@@ -38,7 +41,19 @@ public class ChoiceDataSource {
 
     public int updateChoice(Choice choice) {
         ContentValues values = new ContentValues();
-        values.put(DatabaseHelper.COLUMN_TIMES_TAPPED, choice.getTimesTapped());
+        Cursor cursor = database.query(DatabaseHelper.TABLE_CHOICES,
+                new String[] {DatabaseHelper.COLUMN_TIMES_TAPPED},
+                DatabaseHelper.COLUMN_TITLE + " = ?",
+                new String[]{choice.getTitle()},
+                "", "", "");
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            int numTimesTapped = cursor.getInt(cursor.getColumnIndex(DatabaseHelper.COLUMN_TIMES_TAPPED));
+            Toast.makeText(ctx, "num for choice: " + choice.getTitle() + " is: " + numTimesTapped, Toast.LENGTH_SHORT).show();
+            values.put(DatabaseHelper.COLUMN_TIMES_TAPPED, numTimesTapped + 1); // increment choice's number of times tapped
+            cursor.moveToNext();
+        }
+        cursor.close();
         return database.update(DatabaseHelper.TABLE_CHOICES, values, DatabaseHelper.COLUMN_TITLE + " = ?", new String[]{choice.getTitle()});
     }
 

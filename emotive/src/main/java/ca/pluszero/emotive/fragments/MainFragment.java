@@ -18,7 +18,6 @@ import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -42,10 +41,7 @@ import android.widget.ViewSwitcher;
 
 import com.google.android.youtube.player.YouTubeIntents;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import ca.pluszero.emotive.R;
@@ -74,14 +70,13 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
 
     public static final String FRAGMENT_TAG = "main_fragment";
     private static final String DEGREE_SYMBOL = "°";
-    private static boolean locationFromAutoDetection = false;
+    private Location currentLocation;
+
     private final LocationListener locationListener = new LocationListener() {
         public void onLocationChanged(Location location) {
-            double longitude = location.getLongitude();
-            double latitude = location.getLatitude();
-            showProgressBar();
-            locationFromAutoDetection = true;
-            new WeatherManager(MainFragment.this).getWeatherQuery(new PlaceDetails(String.valueOf(latitude), String.valueOf(longitude)));
+            currentLocation = location;
+            displayWeather();
+
         }
 
         @Override
@@ -121,7 +116,6 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
     private View rootView;
     private TextSwitcher mSwitcher;
     private Animation slideUp;
-    private boolean startedMusicSearch;
     private Place place;
     private String currentQuery;
     private MusicCursorAdapter musicCursorAdapter;
@@ -269,33 +263,35 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
 
     private List<Choice> fetchChoices() {
         // TODO: use algo. based on time of day, and user's past experiences with this app
-        ChoiceDataSource dataSource = new ChoiceDataSource(getActivity());
-        try {
-            dataSource.open();
-            List<Choice> choices = dataSource.getAllChoices();
-            Collections.sort(choices, new Comparator<Choice>() {
-                @Override
-                public int compare(Choice lhs, Choice rhs) {
-                    return rhs.getTimesTapped() - lhs.getTimesTapped();
-                }
-            });
-            return Collections.unmodifiableList(choices);
-        } catch (SQLException e) {
-            Log.e(MainFragment.class.getName(), "SQLException: " + e.getMessage());
-            List<Choice> choices = new ArrayList<Choice>();
-            choices.add(Choice.FOOD);
-            choices.add(Choice.LISTEN);
-            choices.add(Choice.GOOGLE);
-            choices.add(Choice.FIND);
-            choices.add(Choice.YOUTUBE);
-            choices.add(Choice.WEATHER);
-            return choices;
-        }
+//        ChoiceDataSource dataSource = new ChoiceDataSource(getActivity());
+//        try {
+//            dataSource.open();
+//            List<Choice> choices = dataSource.getAllChoices();
+//            Collections.sort(choices, new Comparator<Choice>() {
+//                @Override
+//                public int compare(Choice lhs, Choice rhs) {
+//                    return rhs.getTimesTapped() - lhs.getTimesTapped();
+//                }
+//            });
+//            return Collections.unmodifiableList(choices);
+//        } catch (SQLException e) {
+//            Log.e(MainFragment.class.getName(), "SQLException: " + e.getMessage());
+        List<Choice> choices = new ArrayList<Choice>();
+        choices.add(Choice.FOOD);
+        choices.add(Choice.LISTEN);
+        choices.add(Choice.GOOGLE);
+        choices.add(Choice.FIND);
+        choices.add(Choice.YOUTUBE);
+        choices.add(Choice.WEATHER);
+        return choices;
+//        }
 
     }
 
     private void performSearch(String query) {
         currentQuery = query;
+        ChoiceDataSource dataSource = new ChoiceDataSource(getActivity());
+        dataSource.updateChoice(mPrimaryOption);
         if (mPrimaryOption == Choice.FIND) {
             startMapsSearch(query);
         } else if (mPrimaryOption == Choice.LISTEN) {
@@ -315,6 +311,13 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
             startActivity(grooveSharkIntent);
         }
         dismissKeyboard();
+    }
+
+    private void displayWeather() {
+        double longitude = currentLocation.getLongitude();
+        double latitude = currentLocation.getLatitude();
+        showProgressBar();
+        new WeatherManager(this).getWeatherQuery(new PlaceDetails(String.valueOf(latitude), String.valueOf(longitude)));
     }
 
     private void showProgressBar() {
@@ -341,7 +344,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         if (NetworkManager.isConnected(getActivity())) {
             if (place != null) {
                 showProgressBar();
-                placeManager.getPlaceDetailsQuery(place.getReference()); // TODO: check for failure and if fails; do googler weather search
+                placeManager.getPlaceDetailsQuery(place.getReference()); // TODO: check for failure and if fails; do google weather search
             } else {
                 Toast.makeText(MainFragment.this.getActivity(), "Please type a query and select an item from the dropdown.", Toast.LENGTH_LONG).show();
             }
@@ -409,12 +412,9 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
 
     private void startMusicSearchDevice(String query) {
         MusicManager musicLauncher = new MusicManager(this, this);
-        if (!startedMusicSearch) {
-            String[] columns = {MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.DURATION, MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.ALBUM};
-            int[] mSongListItems = {R.id.tvMusicTitle, R.id.tvMusicDuration, R.id.tvMusicArtist, R.id.tvMusicAlbum};
-            musicCursorAdapter = new MusicCursorAdapter(getActivity(), R.layout.music_row_card, null, columns, mSongListItems);
-            startedMusicSearch = true;
-        }
+        String[] columns = {MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.DURATION, MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.ALBUM};
+        int[] mSongListItems = {R.id.tvMusicTitle, R.id.tvMusicDuration, R.id.tvMusicArtist, R.id.tvMusicAlbum};
+        musicCursorAdapter = new MusicCursorAdapter(getActivity(), R.layout.music_row_card, null, columns, mSongListItems);
         bringUpListView();
         lvQueryResults.setAdapter(musicCursorAdapter);
         lvQueryResults.setOnItemClickListener(musicCursorAdapter);
@@ -526,8 +526,12 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         crit.setPowerRequirement(Criteria.NO_REQUIREMENT);
 
         if (NetworkManager.isConnected(getActivity())) {
-            LocationManager lm = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-            lm.requestLocationUpdates(lm.getBestProvider(crit, true), 500, 10, locationListener);
+            if (currentLocation != null) {
+                displayWeather();
+            } else {
+                LocationManager lm = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+                lm.requestLocationUpdates(lm.getBestProvider(crit, true), 500, 10, locationListener);
+            }
         }
     }
 
@@ -542,15 +546,15 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         searchContainer.setVisibility(View.VISIBLE);
         searchContainer.startAnimation(slideUp);
 
+        lvQueryResults.setAdapter(null);
+
         if (mPrimaryOption != Choice.FIND) {
             etSearchView.setOnItemClickListener(null);
             if (etSearchView.getAdapter() != null) {
                 etSearchView.setAdapter((ArrayAdapter<String>) null);
             }
         }
-        if (mPrimaryOption != Choice.LISTEN) {
-            etSearchView.removeTextChangedListener(musicTextWatcher);
-        }
+        etSearchView.removeTextChangedListener(musicTextWatcher);
         etSearchView.setText(""); // Clear out old text
 
         // Show keyboard if the weather option is not chosen
@@ -627,7 +631,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         View weatherContainer = rootView.findViewById(R.id.weather_container);
         weatherContainer.setVisibility(View.VISIBLE);
 
-        if(isKitKatDevice()) {
+        if (isKitKatDevice()) {
             weatherContainer.setPadding(0, 0, 0, ScreenUtils.getNavbarHeight(getResources()));
         }
 
