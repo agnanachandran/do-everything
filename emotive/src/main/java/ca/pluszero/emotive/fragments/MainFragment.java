@@ -3,6 +3,8 @@ package ca.pluszero.emotive.fragments;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
@@ -41,7 +43,10 @@ import android.widget.ViewSwitcher;
 
 import com.google.android.youtube.player.YouTubeIntents;
 
+import java.io.File;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import ca.pluszero.emotive.R;
@@ -70,6 +75,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
 
     public static final String FRAGMENT_TAG = "main_fragment";
     private static final String DEGREE_SYMBOL = "°";
+    public static final int DAY_MILLIS = 86400000;
     private Location currentLocation;
 
     private final LocationListener locationListener = new LocationListener() {
@@ -172,6 +178,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
     }
 
     public void setup() {
+        dismissProgressBar();
         mSwitcher.setText(DateTimeUtils.getGreetingBasedOnTimeOfDay() + ",\n What do you want to do?");
         showPanel(false);
 
@@ -290,8 +297,6 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
 
     private void performSearch(String query) {
         currentQuery = query;
-        ChoiceDataSource dataSource = new ChoiceDataSource(getActivity());
-        dataSource.updateChoice(mPrimaryOption);
         if (mPrimaryOption == Choice.FIND) {
             startMapsSearch(query);
         } else if (mPrimaryOption == Choice.LISTEN) {
@@ -344,13 +349,30 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         if (NetworkManager.isConnected(getActivity())) {
             if (place != null) {
                 showProgressBar();
-                placeManager.getPlaceDetailsQuery(place.getReference()); // TODO: check for failure and if fails; do google weather search
+                ChoiceDataSource dataSource = new ChoiceDataSource(getActivity());
+                try {
+                    dataSource.open();
+                    dataSource.updateChoice(mPrimaryOption);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+                if (isPastMaxUsesOfWeatherAPI()) {
+                    googleWeatherSearch(place.getDescription());
+                } else {
+                    placeManager.getPlaceDetailsQuery(place.getReference()); // TODO: check for failure and if fails; do google weather search
+                }
             } else {
                 Toast.makeText(MainFragment.this.getActivity(), "Please type a query and select an item from the dropdown.", Toast.LENGTH_LONG).show();
             }
         } else {
             displayNetworkConnectionToast();
         }
+    }
+
+    private void googleWeatherSearch(String description) {
+        Intent browserIntent = new Intent(Intent.ACTION_WEB_SEARCH);
+        browserIntent.putExtra(SearchManager.QUERY, "weather " + description);
+        startActivity(browserIntent);
     }
 
     private void startYouTubeSearch(CharSequence query) {
@@ -483,6 +505,20 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         setupButton();
     }
 
+    private boolean isPastMaxUsesOfWeatherAPI() {
+        PackageManager pm = getActivity().getPackageManager();
+        long installTime = new Date().getTime();
+        try {
+            ApplicationInfo appInfo = null;
+            appInfo = pm.getApplicationInfo("ca.pluszero.emotive", 0);
+            String appFile = appInfo.sourceDir;
+            installTime = new File(appFile).lastModified(); //Epoch Time
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return ((new Date().getTime() - installTime) / DAY_MILLIS + 1) * 5 < Choice.WEATHER.getTimesTapped(); // Prevent spamming of API
+    }
+
     private void setupListenOptions() {
         setupButton();
         etSearchView.addTextChangedListener(musicTextWatcher);
@@ -526,9 +562,9 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         crit.setPowerRequirement(Criteria.NO_REQUIREMENT);
 
         if (NetworkManager.isConnected(getActivity())) {
-            if (currentLocation != null) {
+            if (currentLocation != null && !isPastMaxUsesOfWeatherAPI()) {
                 displayWeather();
-            } else {
+            } else if (!isPastMaxUsesOfWeatherAPI()) {
                 LocationManager lm = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
                 lm.requestLocationUpdates(lm.getBestProvider(crit, true), 500, 10, locationListener);
             }
@@ -538,6 +574,14 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
     private void setupButton() {
         LinearLayout searchContainer = (LinearLayout) rootView.findViewById(R.id.ll_search_container);
         showPanel(true);
+
+        ChoiceDataSource dataSource = new ChoiceDataSource(getActivity());
+        try {
+            dataSource.open();
+            dataSource.updateChoice(mPrimaryOption);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
         etSearchView.setHint(mPrimaryOption.getMainInfo());
         etSearchView.setFocusableInTouchMode(true);

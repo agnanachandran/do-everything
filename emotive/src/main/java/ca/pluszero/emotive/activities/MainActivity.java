@@ -104,6 +104,8 @@ public class MainActivity extends FragmentActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        MainFragment fragment = (MainFragment) getSupportFragmentManager().findFragmentByTag(MainFragment.FRAGMENT_TAG);
+        fragment.dismissProgressBar();
 //        getSupportFragmentManager().beginTransaction().attach(getSupportFragmentManager().getFragments().get(0)).commit();
     }
 

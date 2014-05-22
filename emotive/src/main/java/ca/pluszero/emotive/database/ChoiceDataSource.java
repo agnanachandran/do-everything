@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.widget.Toast;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -49,7 +48,7 @@ public class ChoiceDataSource {
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
             int numTimesTapped = cursor.getInt(cursor.getColumnIndex(DatabaseHelper.COLUMN_TIMES_TAPPED));
-            Toast.makeText(ctx, "num for choice: " + choice.getTitle() + " is: " + numTimesTapped, Toast.LENGTH_SHORT).show();
+            choice.setTimesTapped(numTimesTapped);
             values.put(DatabaseHelper.COLUMN_TIMES_TAPPED, numTimesTapped + 1); // increment choice's number of times tapped
             cursor.moveToNext();
         }
