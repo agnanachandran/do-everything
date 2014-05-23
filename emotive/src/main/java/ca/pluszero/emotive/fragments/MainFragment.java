@@ -3,8 +3,6 @@ package ca.pluszero.emotive.fragments;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
@@ -43,10 +41,8 @@ import android.widget.ViewSwitcher;
 
 import com.google.android.youtube.player.YouTubeIntents;
 
-import java.io.File;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import ca.pluszero.emotive.R;
@@ -326,7 +322,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
     }
 
     private void showProgressBar() {
-        if (!isDetached()) {
+        if (!getActivity().isFinishing()) {
             if (mPrimaryOption == Choice.YOUTUBE) {
                 progressBar.setSmoothProgressDrawableColors(getResources().getIntArray(R.array.youtube_colors));
             } else if (mPrimaryOption == Choice.WEATHER) {
@@ -349,30 +345,13 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         if (NetworkManager.isConnected(getActivity())) {
             if (place != null) {
                 showProgressBar();
-                ChoiceDataSource dataSource = new ChoiceDataSource(getActivity());
-                try {
-                    dataSource.open();
-                    dataSource.updateChoice(mPrimaryOption);
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-                if (isPastMaxUsesOfWeatherAPI()) {
-                    googleWeatherSearch(place.getDescription());
-                } else {
-                    placeManager.getPlaceDetailsQuery(place.getReference()); // TODO: check for failure and if fails; do google weather search
-                }
+                placeManager.getPlaceDetailsQuery(place.getReference());
             } else {
                 Toast.makeText(MainFragment.this.getActivity(), "Please type a query and select an item from the dropdown.", Toast.LENGTH_LONG).show();
             }
         } else {
             displayNetworkConnectionToast();
         }
-    }
-
-    private void googleWeatherSearch(String description) {
-        Intent browserIntent = new Intent(Intent.ACTION_WEB_SEARCH);
-        browserIntent.putExtra(SearchManager.QUERY, "weather " + description);
-        startActivity(browserIntent);
     }
 
     private void startYouTubeSearch(CharSequence query) {
@@ -505,20 +484,6 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         setupButton();
     }
 
-    private boolean isPastMaxUsesOfWeatherAPI() {
-        PackageManager pm = getActivity().getPackageManager();
-        long installTime = new Date().getTime();
-        try {
-            ApplicationInfo appInfo = null;
-            appInfo = pm.getApplicationInfo("ca.pluszero.emotive", 0);
-            String appFile = appInfo.sourceDir;
-            installTime = new File(appFile).lastModified(); //Epoch Time
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        return ((new Date().getTime() - installTime) / DAY_MILLIS + 1) * 5 < Choice.WEATHER.getTimesTapped(); // Prevent spamming of API
-    }
-
     private void setupListenOptions() {
         setupButton();
         etSearchView.addTextChangedListener(musicTextWatcher);
@@ -562,9 +527,9 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         crit.setPowerRequirement(Criteria.NO_REQUIREMENT);
 
         if (NetworkManager.isConnected(getActivity())) {
-            if (currentLocation != null && !isPastMaxUsesOfWeatherAPI()) {
+            if (currentLocation != null) {
                 displayWeather();
-            } else if (!isPastMaxUsesOfWeatherAPI()) {
+            } else {
                 LocationManager lm = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
                 lm.requestLocationUpdates(lm.getBestProvider(crit, true), 500, 10, locationListener);
             }
@@ -682,10 +647,10 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         boolean showFahrenheit = PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("fahrenheit_checkbox", false);
 
         ((TextView) rootView.findViewById(R.id.weather_temp)).setText((showFahrenheit ? weatherData.getTemperatureInFahrenheit() : weatherData.getTemperatureInCelsius()) + DEGREE_SYMBOL);
-        ((TextView) rootView.findViewById(R.id.weather_feels_like)).setText(getString(R.string.feels_like, String.valueOf(showFahrenheit ? weatherData.getApparentTemperatureInFahrenheit() : weatherData.getApparentTemperatureInCelsius())));
+//        ((TextView) rootView.findViewById(R.id.weather_feels_like)).setText(getString(R.string.feels_like, String.valueOf(showFahrenheit ? weatherData.getApparentTemperatureInFahrenheit() : weatherData.getApparentTemperatureInCelsius())));
         ((TextView) rootView.findViewById(R.id.weather_status)).setText(weatherData.getSummary());
-        ((TextView) rootView.findViewById(R.id.weather_precipitation)).setText(getString(R.string.precipitation, String.valueOf(weatherData.getPrecipitationPercentage())));
         ((TextView) rootView.findViewById(R.id.weather_humidity)).setText(getString(R.string.humidity, String.valueOf(weatherData.getHumidity())));
+        ((TextView) rootView.findViewById(R.id.weather_wind_speed)).setText(getString(R.string.wind_speed, weatherData.getFormattedWindSpeed()));
 
         setupCityCountryWeatherInfo();
 
