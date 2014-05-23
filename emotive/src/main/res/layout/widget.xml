@@ -9,6 +9,7 @@
         android:layout_gravity="center"
         android:layout_marginTop="15dp"
         android:background="@drawable/bg_shadow_card"
+        android:paddingBottom="0dp"
         android:orientation="vertical">
 
         <LinearLayout

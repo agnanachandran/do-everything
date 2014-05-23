@@ -23,7 +23,7 @@ import ca.pluszero.emotive.utils.DateTimeUtils;
 
 public class YouTubeManager {
 
-    public static final int[] COLORS = {R.color.red, R.color.win8_pink};
+    public static final int[] COLORS = {R.color.win8_red, R.color.LightGrayText, R.color.gray};
     // private static final long NUMBER_OF_VIDEOS_RETURNED = 25;
     private static final String API_KEY = ApiKeys.GOOGLE_KEY;
     private static final String BASE_URL = "https://www.googleapis.com/youtube/v3";

@@ -50,6 +50,6 @@
     <string name="feels_like">Feels like: %s°</string>
     <string name="humidity">Humidity: %s%%</string>
     <string name="precipitation">Precip: %s%%</string>
-    <string name="wind_speed">Wind: %s km/h</string>
+    <string name="wind_speed">Wind: %1$s %2$s</string>
 
 </resources>

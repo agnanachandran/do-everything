@@ -1,7 +1,5 @@
 package ca.pluszero.emotive.managers;
 
-import android.widget.Toast;
-
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -74,7 +72,6 @@ public class WeatherManager {
                         hourlyIconName = hourlyWeatherArray.getJSONObject(0).getString("icon");
                     }
                     WeatherIcon hourlyWeatherIcon = WeatherIcon.getEnumForString(hourlyIconName);
-                    Toast.makeText(((MainFragment) listener).getActivity(), hourlyWeatherIcon.getNames().toString(), Toast.LENGTH_SHORT).show();
                     long timestamp = 1000L * weatherObject.getLong("dt");
                     Calendar cal = Calendar.getInstance();
                     cal.setTimeInMillis(timestamp);
@@ -99,17 +96,6 @@ public class WeatherManager {
                     long timestamp = 1000L * weatherObject.getLong("dt");
                     dailyWeatherList.add(new Forecast.FutureWeather(temperature, dailyWeatherIcon, timestamp));
                 }
-//
-//                JSONArray dailyData = response.getJSONObject("daily").getJSONArray("data");
-//                for (int i = 0; i < 6; i++) {
-//                    JSONObject dayData = dailyData.getJSONObject(i);
-//                    Forecast.Temperature temperature = new Forecast.Temperature((int) Math.round(dayData.getDouble("temperatureMax")));
-//                    String dailyIconName = dayData.getString("icon");
-//                    WeatherIcon dailyWeatherIcon = WeatherIcon.getEnumForString(dailyIconName);
-//                    long timestamp = 1000L * dayData.getLong("time"); // time in seconds needs to be converted to ms
-//                    dailyWeatherList.add(new Forecast.FutureWeather(temperature, dailyWeatherIcon, timestamp));
-//                }
-
                 listener.onWeatherQueryFinished(new Forecast(summary, temperatureInFahrenheit, humidity, windSpeed, hourlyWeatherList, dailyWeatherList, weatherIcon));
             } catch (JSONException e) {
                 e.printStackTrace();

@@ -2,10 +2,19 @@
 
     <CheckBoxPreference
         android:defaultValue="false"
+        android:key="grooveshark_checkbox"
+        android:summary="@string/pref_description_open_grooveshark"
+        android:title="@string/pref_title_open_grooveshark" />
+    <CheckBoxPreference
+        android:defaultValue="false"
         android:key="fahrenheit_checkbox"
-        android:summary="@string/pref_description_social_recommendations"
-        android:title="@string/pref_title_social_recommendations" />
-
+        android:summary="@string/pref_description_show_in_fahrenheit"
+        android:title="@string/pref_title_show_in_fahrenheit" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="miles_checkbox"
+        android:summary="@string/pref_description_show_in_mi"
+        android:title="@string/pref_title_show_in_mi" />
     <!--&lt;!&ndash; NOTE: EditTextPreference accepts EditText attributes. &ndash;&gt;-->
     <!--&lt;!&ndash; NOTE: EditTextPreference's summary should be set to its value by the activity code. &ndash;&gt;-->
     <!--<EditTextPreference-->

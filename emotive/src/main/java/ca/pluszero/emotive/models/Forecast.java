@@ -15,8 +15,6 @@ public class Forecast {
 //    private final int precipitationPercentage;
     private final List<FutureWeather> hourlyWeatherList;
     private final List<FutureWeather> dailyWeatherList;
-
-
     private final double windSpeed;
     private WeatherIcon icon;
 
@@ -52,8 +50,8 @@ public class Forecast {
         return windSpeed;
     }
 
-    public String getFormattedWindSpeed() {
-        return new DecimalFormat("#.##").format(windSpeed);
+    public String getFormattedWindSpeed(boolean inMiles) {
+        return new DecimalFormat("#.##").format(inMiles ? windSpeed : windSpeed * 1.609);
     }
 
 //    public int getApparentTemperatureInFahrenheit() {

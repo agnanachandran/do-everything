@@ -3,6 +3,7 @@ package ca.pluszero.emotive.fragments;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
@@ -78,7 +79,6 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         public void onLocationChanged(Location location) {
             currentLocation = location;
             displayWeather();
-
         }
 
         @Override
@@ -307,7 +307,8 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
     }
 
     private void startMusicSearch(String query) {
-        if (query.matches("[A-Za-z0-9 ]+ gs")) {
+        boolean shouldOpenGrooveshark = PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("grooveshark_checkbox", false);
+        if (shouldOpenGrooveshark && query.matches("[A-Za-z0-9 ]+ gs")) {
             Intent grooveSharkIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://html5.grooveshark.com/#!/search/" + query.substring(0, query.indexOf(" gs")).replaceAll(" ", "%20")));
             startActivity(grooveSharkIntent);
         }
@@ -328,9 +329,11 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
             } else if (mPrimaryOption == Choice.WEATHER) {
                 progressBar.setSmoothProgressDrawableColors(getResources().getIntArray(R.array.weather_colors));
             }
-            progressBar.progressiveStop();
-            progressBar.setVisibility(View.VISIBLE);
-            progressBar.progressiveStart();
+            if (progressBar.getVisibility() == View.GONE) {
+                progressBar.progressiveStop();
+                progressBar.setVisibility(View.VISIBLE);
+                progressBar.progressiveStart();
+            }
         }
     }
 
@@ -425,17 +428,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
     private void bringUpListView() {
         LinearLayout resultsContainer = (LinearLayout) rootView.findViewById(R.id.ll_panel_container);
         resultsContainer.setVisibility(View.VISIBLE);
-
         lvQueryResults.setVisibility(View.VISIBLE);
-
-//        LinearLayout searchContainer = (LinearLayout) rootView.findViewById(R.id.ll_search_container);
-//        ((ViewGroup) rootView.findViewById(R.id.main_container)).removeView(searchContainer);
-//        resultsContainer.removeView(searchContainer);
-//        resultsContainer.addView(searchContainer, 0);
-//        etSearchView = (AutoCompleteTextView) resultsContainer.findViewById(R.id.mainSearchView);
-//        etSearchView.requestFocus();
-//        etSearchView.setSelection(etSearchView.length());
-//        rootView.findViewById(R.id.ll_panel_container).startAnimation(slideUp);
     }
 
     private void dismissKeyboard() {
@@ -530,6 +523,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
             if (currentLocation != null) {
                 displayWeather();
             } else {
+                showProgressBar();
                 LocationManager lm = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
                 lm.requestLocationUpdates(lm.getBestProvider(crit, true), 500, 10, locationListener);
             }
@@ -540,6 +534,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         LinearLayout searchContainer = (LinearLayout) rootView.findViewById(R.id.ll_search_container);
         showPanel(true);
 
+        currentQuery = null;
         ChoiceDataSource dataSource = new ChoiceDataSource(getActivity());
         try {
             dataSource.open();
@@ -644,13 +639,15 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
             weatherContainer.setPadding(0, 0, 0, ScreenUtils.getNavbarHeight(getResources()));
         }
 
-        boolean showFahrenheit = PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("fahrenheit_checkbox", false);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        boolean showFahrenheit = preferences.getBoolean("fahrenheit_checkbox", false);
+        boolean showMiles = preferences.getBoolean("miles_checkbox", false);
 
         ((TextView) rootView.findViewById(R.id.weather_temp)).setText((showFahrenheit ? weatherData.getTemperatureInFahrenheit() : weatherData.getTemperatureInCelsius()) + DEGREE_SYMBOL);
 //        ((TextView) rootView.findViewById(R.id.weather_feels_like)).setText(getString(R.string.feels_like, String.valueOf(showFahrenheit ? weatherData.getApparentTemperatureInFahrenheit() : weatherData.getApparentTemperatureInCelsius())));
         ((TextView) rootView.findViewById(R.id.weather_status)).setText(weatherData.getSummary());
         ((TextView) rootView.findViewById(R.id.weather_humidity)).setText(getString(R.string.humidity, String.valueOf(weatherData.getHumidity())));
-        ((TextView) rootView.findViewById(R.id.weather_wind_speed)).setText(getString(R.string.wind_speed, weatherData.getFormattedWindSpeed()));
+        ((TextView) rootView.findViewById(R.id.weather_wind_speed)).setText(getString(R.string.wind_speed, weatherData.getFormattedWindSpeed(showMiles), showMiles ? "mi/h" : "km/h"));
 
         setupCityCountryWeatherInfo();
 
