@@ -19,6 +19,7 @@ import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -58,27 +59,33 @@ import ca.pluszero.emotive.managers.MusicManager;
 import ca.pluszero.emotive.managers.NetworkManager;
 import ca.pluszero.emotive.managers.PlaceDetailsManager;
 import ca.pluszero.emotive.managers.WeatherManager;
+import ca.pluszero.emotive.managers.YelpManager;
 import ca.pluszero.emotive.managers.YouTubeManager;
 import ca.pluszero.emotive.models.Choice;
 import ca.pluszero.emotive.models.Forecast;
 import ca.pluszero.emotive.models.Place;
 import ca.pluszero.emotive.models.PlaceDetails;
+import ca.pluszero.emotive.models.YelpData;
 import ca.pluszero.emotive.models.YouTubeVideo;
 import ca.pluszero.emotive.utils.DateTimeUtils;
 import ca.pluszero.emotive.utils.ScreenUtils;
 import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 
-public class MainFragment extends Fragment implements View.OnClickListener, YouTubeManager.OnFinishedListener, MusicManager.IMusicLoadedListener, PlaceDetailsManager.OnFinishedListener, WeatherManager.OnFinishedListener {
+public class MainFragment extends Fragment implements View.OnClickListener, YouTubeManager.OnFinishedListener, MusicManager.IMusicLoadedListener, PlaceDetailsManager.OnFinishedListener, WeatherManager.OnFinishedListener, YelpManager.OnYelpFinishedListener {
 
     public static final String FRAGMENT_TAG = "main_fragment";
     private static final String DEGREE_SYMBOL = "°";
-    public static final int DAY_MILLIS = 86400000;
     private Location currentLocation;
+    private boolean startedFoodSearch;
 
     private final LocationListener locationListener = new LocationListener() {
         public void onLocationChanged(Location location) {
             currentLocation = location;
-            displayWeather();
+            if (mPrimaryOption == Choice.WEATHER) {
+                displayWeather();
+            } else if (mPrimaryOption == Choice.FOOD && !startedFoodSearch) {
+
+            }
         }
 
         @Override
@@ -318,6 +325,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
     private void displayWeather() {
         double longitude = currentLocation.getLongitude();
         double latitude = currentLocation.getLatitude();
+        new YelpManager(this).query("tacos", currentLocation);
         showProgressBar();
         new WeatherManager(this).getWeatherQuery(new PlaceDetails(String.valueOf(latitude), String.valueOf(longitude)));
     }
@@ -711,5 +719,14 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
             tvCountryName.setText(countryName);
             tvCountryName.setVisibility(View.VISIBLE);
         }
+    }
+
+    @Override
+    public void onYelpDataRetrieved(List<YelpData> datas) {
+        for(YelpData data : datas) {
+            Log.d("TAG", data.getBody());
+            Toast.makeText(getActivity(), data.getBody(), Toast.LENGTH_LONG).show();
+        }
+
     }
 }

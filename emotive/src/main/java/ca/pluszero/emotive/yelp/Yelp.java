@@ -52,17 +52,17 @@ public class Yelp {
         return response.getBody();
     }
 
-    // CLI
-    public static void main(String[] args) {
-        // Update tokens here from Yelp developers site, Manage API access.
-        String consumerKey = "";
-        String consumerSecret = "";
-        String token = "";
-        String tokenSecret = "";
-
-        Yelp yelp = new Yelp(consumerKey, consumerSecret, token, tokenSecret);
-        String response = yelp.search("burritos", 30.361471, -87.164326);
-
-        System.out.println(response);
-    }
+//    // CLI
+//    public static void main(String[] args) {
+//        // Update tokens here from Yelp developers site, Manage API access.
+//        String consumerKey = "";
+//        String consumerSecret = "";
+//        String token = "";
+//        String tokenSecret = "";
+//
+//        Yelp yelp = new Yelp(consumerKey, consumerSecret, token, tokenSecret);
+//        String response = yelp.search("burritos", 30.361471, -87.164326);
+//
+//        System.out.println(response);
+//    }
 }
