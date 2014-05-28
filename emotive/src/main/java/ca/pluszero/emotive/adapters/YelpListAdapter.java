@@ -46,6 +46,12 @@ public class YelpListAdapter extends BaseArrayAdapter<YelpData> {
         final YelpData data = getItem(position);
         holder.businessName.setText(data.getBusinessName());
         imageLoader.displayImage(data.getThumbnailImageUrl(), holder.thumbnail);
+        holder.thumbnail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // go to location
+            }
+        });
         holder.phoneNumber.setText(data.getDisplayPhoneNumber());
         holder.phoneNumber.setOnClickListener(new View.OnClickListener() {
 
@@ -58,7 +64,11 @@ public class YelpListAdapter extends BaseArrayAdapter<YelpData> {
             }
         });
         imageLoader.displayImage(data.getRatingImageUrl(), holder.starRating);
-        holder.numberOfReviews.setText(data.getReviewCount() + " Reviews");
+        if (data.getReviewCount() == 1) {
+            holder.numberOfReviews.setText(data.getReviewCount() + " Review");
+        } else {
+            holder.numberOfReviews.setText(data.getReviewCount() + " Reviews");
+        }
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this.context);
         boolean showMiles = preferences.getBoolean("miles_checkbox", false);
         if (showMiles) {

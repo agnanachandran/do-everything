@@ -64,7 +64,7 @@
                 android:focusable="false"
                 android:fontFamily="sans-serif"
                 android:text="416-123-4567"
-                android:textColor="@color/default_light_blue" />
+                android:textColor="@color/LightSkyBlue" />
 
             <LinearLayout
                 android:id="@+id/ll_rating_stars_and_number_of_reviews"
@@ -75,8 +75,10 @@
                     android:id="@+id/ivRatingStars"
                     android:adjustViewBounds="true"
                     android:scaleType="fitXY"
+                    android:layout_gravity="center_vertical"
                     android:layout_width="80dp"
-                    android:layout_height="18dp"
+                    android:layout_height="14dp"
+                    android:layout_marginTop="3dp"
                     android:layout_marginRight="3dp" />
 
                 <TextView

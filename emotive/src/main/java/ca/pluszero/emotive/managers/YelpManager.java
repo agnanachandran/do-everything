@@ -48,11 +48,11 @@ public class YelpManager {
                     double distanceInMetres = business.getDouble("distance");
                     float distanceInKm = (float) distanceInMetres/1000.f;
                     String mobileUrl = business.getString("mobile_url");
-                    String ratingImageUrl = business.getString("rating_img_url");
+                    String ratingImageUrl = business.getString("rating_img_url_large");
                     int reviewCount = business.getInt("review_count");
                     String thumbnailImageUrl  = business.getString("image_url");
-                    String phoneNumber = business.getString("display_phone");
-                    String displayPhoneNumber = business.getString("phone");
+                    String phoneNumber = business.getString("phone");
+                    String displayPhoneNumber = business.getString("display_phone");
                     JSONObject location = business.getJSONObject("location");
                     String address = location.getJSONArray("display_address").getString(0);
                     boolean isClosed = business.getBoolean("is_closed");
@@ -65,6 +65,11 @@ public class YelpManager {
                 e.printStackTrace();
             }
             return yelpDatas;
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+
         }
 
         @Override

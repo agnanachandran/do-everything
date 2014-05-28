@@ -163,7 +163,6 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         public void afterTextChanged(Editable s) {
         }
     };
-    private long mShortAnimationDuration;
     private TextWatcher clearSearchTextWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {  }
@@ -190,7 +189,6 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
 
         lvQueryResults = (ListView) rootView.findViewById(R.id.lvQueryResults);
         progressBar = (SmoothProgressBar) rootView.findViewById(R.id.progress_bar);
-        mShortAnimationDuration = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
         if (isKitKatDevice()) {
             lvQueryResults.setPadding(0, 0, 0, ScreenUtils.getNavbarHeight(getResources()));
@@ -207,6 +205,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
 
     public void setup() {
         dismissProgressBar();
+        mPrimaryOption = null;
         mSwitcher.setText(DateTimeUtils.getGreetingBasedOnTimeOfDay() + ",\n What do you want to do?");
         showPanel(false);
         LocationManager lm = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
@@ -626,9 +625,11 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         if (isAdded()) {
             dismissKeyboard();
             dismissProgressBar();
-            bringUpListView();
-            lvQueryResults.setAdapter(new YouTubeListAdapter(
-                    getActivity(), videos));
+            if (mPrimaryOption == Choice.YOUTUBE) {
+                bringUpListView();
+                lvQueryResults.setAdapter(new YouTubeListAdapter(
+                        getActivity(), videos));
+            }
         }
     }
 
@@ -685,6 +686,9 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
     @Override
     public void onWeatherQueryFinished(Forecast weatherData) {
         dismissProgressBar();
+        if (mPrimaryOption != Choice.WEATHER) {
+            return;
+        }
         View weatherContainer = rootView.findViewById(R.id.weather_container);
         weatherContainer.setVisibility(View.VISIBLE);
 
@@ -769,7 +773,9 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
     @Override
     public void onYelpDataRetrieved(List<YelpData> datas) {
         dismissProgressBar();
-        bringUpListView();
-        lvQueryResults.setAdapter(new YelpListAdapter(getActivity(), datas));
+        if (mPrimaryOption == Choice.FOOD) {
+            bringUpListView();
+            lvQueryResults.setAdapter(new YelpListAdapter(getActivity(), datas));
+        }
     }
 }
