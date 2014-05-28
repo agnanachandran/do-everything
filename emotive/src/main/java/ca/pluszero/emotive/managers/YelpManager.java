@@ -68,11 +68,6 @@ public class YelpManager {
         }
 
         @Override
-        protected void onProgressUpdate(Void... values) {
-
-        }
-
-        @Override
         protected void onPostExecute(List<YelpData> yelpDatas) {
             listener.onYelpDataRetrieved(yelpDatas);
         }

@@ -227,15 +227,15 @@
     <!-- z -->
 
     <integer-array name="food_colors">
-        <item name="red">@color/red</item>
+        <item name="red">@color/OrangeRed</item>
         <item name="darker_red">@color/win8_red</item>
-        <item name="lighter_red">@color/WhiteSmoke</item>
+        <item name="lighter_red">@color/DimGray</item>
     </integer-array>
 
     <integer-array name="youtube_colors">
-       <item name="red">@color/red</item>
+       <item name="red">@color/DeepPink</item>
         <item name="darker_red">@color/win8_red</item>
-        <item name="lighter_red">@color/WhiteSmoke</item>
+        <item name="lighter_red">@color/LightGrayText</item>
     </integer-array>
 
     <integer-array name="weather_colors">

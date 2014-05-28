@@ -1,5 +1,7 @@
 package ca.pluszero.emotive.managers;
 
+import android.widget.Toast;
+
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -12,7 +14,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import ca.pluszero.emotive.ApiKeys;
@@ -59,9 +60,9 @@ public class WeatherManager {
 
                 WeatherIcon weatherIcon = WeatherIcon.getEnumForString(iconName);
 
-                int afternoonIndex = -1; // Index corresponding to 5pm today, so we know where to start for the `for` loop.
-                boolean gotAfternoonIndex = false;
-                for (int i = 1; i < 10; i++) {
+                int startOfDayIndex = 0; // Index corresponding to 5pm today, so we know where to start for the `for` loop.
+                boolean gotStartOfDayIndex = false;
+                for (int i = 1; i < 15; i++) {
                     JSONObject weatherObject = weatherList.getJSONObject(i);
                     double kelvinTemp = weatherObject.getJSONObject("main").getDouble("temp");
                     int fahrenheitTemp = kelvinToFahrenheitRounded(kelvinTemp);
@@ -75,14 +76,37 @@ public class WeatherManager {
                     long timestamp = 1000L * weatherObject.getLong("dt");
                     Calendar cal = Calendar.getInstance();
                     cal.setTimeInMillis(timestamp);
-                    if (cal.get(Calendar.HOUR_OF_DAY) == 17 && !gotAfternoonIndex) {
-                        afternoonIndex = i;
-                        gotAfternoonIndex = true;
+                    if (cal.get(Calendar.HOUR_OF_DAY) == 2 && !gotStartOfDayIndex) {
+                        startOfDayIndex = i;
+                        gotStartOfDayIndex = true;
                     }
                     hourlyWeatherList.add(new Forecast.FutureWeather(temperature, hourlyWeatherIcon, timestamp));
                 }
 
-                for (int i = afternoonIndex; i < weatherList.length(); i+=8) {
+                List<Integer> maxTempIndices = new ArrayList<Integer>();
+                List<Double> maxTemps = new ArrayList<Double>();
+                for (int i = startOfDayIndex; i < weatherList.length(); i++) {
+                    JSONObject weatherObject = weatherList.getJSONObject(i);
+                    double kelvinTemp = weatherObject.getJSONObject("main").getDouble("temp");
+                    int numDaysPassed = (i - startOfDayIndex)/8;
+                    if (maxTemps.size() <= numDaysPassed) {
+                        maxTemps.add(kelvinTemp);
+                    } else {
+                        if (maxTemps.get(numDaysPassed) < kelvinTemp) {
+                            maxTemps.set(numDaysPassed, kelvinTemp);
+                        }
+                    }
+
+                    if (maxTempIndices.size() <= numDaysPassed) {
+                        maxTempIndices.add(i);
+                    } else {
+                        if (maxTemps.get(numDaysPassed) <= kelvinTemp) {
+                            maxTempIndices.set(numDaysPassed, i);
+                        }
+                    }
+                }
+
+                for (int i : maxTempIndices) {
                     JSONObject weatherObject = weatherList.getJSONObject(i);
                     double kelvinTemp = weatherObject.getJSONObject("main").getDouble("temp");
                     int fahrenheitTemp = kelvinToFahrenheitRounded(kelvinTemp);

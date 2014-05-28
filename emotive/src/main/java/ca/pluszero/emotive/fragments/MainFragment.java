@@ -370,6 +370,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
     private void displayWeather() {
         double longitude = currentLocation.getLongitude();
         double latitude = currentLocation.getLatitude();
+        showProgressBar();
         new WeatherManager(this).getWeatherQuery(new PlaceDetails(String.valueOf(latitude), String.valueOf(longitude)));
     }
 
@@ -444,11 +445,6 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
                 showProgressBar();
             }
         });
-        // Intent intent = new Intent(Intent.ACTION_SEARCH);
-        // intent.setPackage("com.google_icon.android.youtube");
-        // intent.putExtra("search_query", query);
-        // intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        // startActivity(intent);
     }
 
     private void displayNetworkConnectionToast() {
