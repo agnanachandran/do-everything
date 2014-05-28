@@ -3,11 +3,7 @@
 
     <string name="app_name">emotive</string>
     <string name="action_settings">Settings</string>
-    <string name="title_new_section">New Emotive</string>
-    <string name="title_section2">Previous</string>
-    <string name="title_section3">More Previous Emotive</string>
     <string name="placeholder_mainSearchView">Search…</string>
-    <string name="search_text_label">Search:</string>
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
 
@@ -51,5 +47,6 @@
     <string name="humidity">Humidity: %s%%</string>
     <string name="precipitation">Precip: %s%%</string>
     <string name="wind_speed">Wind: %1$s %2$s</string>
+    <string name="action_feedback">Feedback</string>
 
 </resources>

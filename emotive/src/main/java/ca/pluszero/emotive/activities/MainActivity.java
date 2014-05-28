@@ -178,6 +178,15 @@ public class MainActivity extends FragmentActivity {
         if (mDrawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                startSettingsActivity();
+                return true;
+            case R.id.action_feedback:
+                displayFeedback();
+                return true;
+        }
+
         // handle other action bar items here
 
         return super.onOptionsItemSelected(item);
@@ -235,20 +244,11 @@ public class MainActivity extends FragmentActivity {
         private void selectItem(int position) {
             switch (position) {
                 case 0:
-                    Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
-                    MainActivity.this.startActivity(intent);
+                    startSettingsActivity();
                     break;
                 case 1:
-                    Intent i = new Intent(Intent.ACTION_SEND);
-                    i.setType("message/rfc822");
-                    i.putExtra(Intent.EXTRA_EMAIL, new String[]{getResources().getString(R.string.my_email)});
-                    i.putExtra(Intent.EXTRA_SUBJECT, getResources().getString(R.string.feedback_subject));
-                    i.putExtra(Intent.EXTRA_TEXT, "");
-                    try {
-                        startActivity(Intent.createChooser(i, "Send mail..."));
-                    } catch (android.content.ActivityNotFoundException ex) {
-                        Toast.makeText(MainActivity.this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
-                    }
+                    displayFeedback();
+                    break;
                 default:
                     break;
             }
@@ -262,6 +262,24 @@ public class MainActivity extends FragmentActivity {
 //    		getActionBar().setTitle(mActionBarTitle);
         }
 
+    }
+
+    private void displayFeedback() {
+        Intent i = new Intent(Intent.ACTION_SEND);
+        i.setType("message/rfc822");
+        i.putExtra(Intent.EXTRA_EMAIL, new String[]{getResources().getString(R.string.my_email)});
+        i.putExtra(Intent.EXTRA_SUBJECT, getResources().getString(R.string.feedback_subject));
+        i.putExtra(Intent.EXTRA_TEXT, "");
+        try {
+            startActivity(Intent.createChooser(i, "Send mail..."));
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void startSettingsActivity() {
+        Intent intent = new Intent(this, SettingsActivity.class);
+        this.startActivity(intent);
     }
 
 }

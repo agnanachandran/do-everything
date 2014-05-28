@@ -226,6 +226,12 @@
     <color name="YellowGreen">#9ACD32</color>
     <!-- z -->
 
+    <integer-array name="food_colors">
+        <item name="red">@color/red</item>
+        <item name="darker_red">@color/win8_red</item>
+        <item name="lighter_red">@color/WhiteSmoke</item>
+    </integer-array>
+
     <integer-array name="youtube_colors">
        <item name="red">@color/red</item>
         <item name="darker_red">@color/win8_red</item>

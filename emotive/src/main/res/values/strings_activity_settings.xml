@@ -9,8 +9,8 @@
     <string name="pref_header_general">General</string>
     <string name="pref_title_show_in_fahrenheit">Show temp. in Fahrenheit</string>
     <string name="pref_description_show_in_fahrenheit">Show temperatures in degrees Fahrenheit</string>
-    <string name="pref_title_show_in_mi">Show speeds in miles/h</string>
-    <string name="pref_description_show_in_mi">Show wind speeds in miles per hour</string>
+    <string name="pref_title_show_in_mi">Show distances in miles/h</string>
+    <string name="pref_description_show_in_mi">Show distances and speeds in miles per hour</string>
     <string name="pref_title_open_grooveshark">Play music in Grooveshark</string>
     <string name="pref_description_open_grooveshark">Put \" gs\" at the end of your "Listen" search to search Grooveshark</string>
     <!--<string name="pref_title_display_name">Display name</string>-->

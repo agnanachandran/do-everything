@@ -19,7 +19,6 @@ import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -52,6 +51,7 @@ import ca.pluszero.emotive.activities.MainActivity;
 import ca.pluszero.emotive.adapters.BaseArrayAdapter;
 import ca.pluszero.emotive.adapters.MusicCursorAdapter;
 import ca.pluszero.emotive.adapters.PlacesAutoCompleteAdapter;
+import ca.pluszero.emotive.adapters.YelpListAdapter;
 import ca.pluszero.emotive.adapters.YouTubeListAdapter;
 import ca.pluszero.emotive.database.ChoiceDataSource;
 import ca.pluszero.emotive.listeners.EndlessScrollListener;
@@ -78,13 +78,19 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
     private Location currentLocation;
     private boolean startedFoodSearch;
 
+    Criteria crit = new Criteria();
+    {
+        crit.setAccuracy(Criteria.ACCURACY_LOW);
+        crit.setPowerRequirement(Criteria.NO_REQUIREMENT);
+    }
+
     private final LocationListener locationListener = new LocationListener() {
         public void onLocationChanged(Location location) {
             currentLocation = location;
             if (mPrimaryOption == Choice.WEATHER) {
                 displayWeather();
-            } else if (mPrimaryOption == Choice.FOOD && !startedFoodSearch) {
-
+            } else if (mPrimaryOption == Choice.FOOD) {
+                new YelpManager(MainFragment.this).query(currentQuery, currentLocation);
             }
         }
 
@@ -157,6 +163,24 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         public void afterTextChanged(Editable s) {
         }
     };
+    private long mShortAnimationDuration;
+    private TextWatcher clearSearchTextWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {  }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            View searchClear = rootView.findViewById(R.id.imgSearchClear);
+            if (s.length() > 0) {
+                searchClear.setVisibility(View.VISIBLE);
+            } else {
+                searchClear.setVisibility(View.GONE);
+            }
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {  }
+    };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -166,6 +190,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
 
         lvQueryResults = (ListView) rootView.findViewById(R.id.lvQueryResults);
         progressBar = (SmoothProgressBar) rootView.findViewById(R.id.progress_bar);
+        mShortAnimationDuration = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
         if (isKitKatDevice()) {
             lvQueryResults.setPadding(0, 0, 0, ScreenUtils.getNavbarHeight(getResources()));
@@ -184,6 +209,8 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         dismissProgressBar();
         mSwitcher.setText(DateTimeUtils.getGreetingBasedOnTimeOfDay() + ",\n What do you want to do?");
         showPanel(false);
+        LocationManager lm = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        lm.removeUpdates(locationListener);
 
         etSearchView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -201,6 +228,12 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         lvQueryResults.setOnItemClickListener(null);
         lvQueryResults.setOnScrollListener(null);
         lvQueryResults.setVisibility(View.GONE);
+        rootView.findViewById(R.id.imgSearchClear).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                etSearchView.setText("");
+            }
+        });
         if (lvQueryResults.getAdapter() != null) {
             if (lvQueryResults.getAdapter() instanceof BaseArrayAdapter) {
                 ((BaseArrayAdapter) lvQueryResults.getAdapter()).clear();
@@ -300,7 +333,9 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
 
     private void performSearch(String query) {
         currentQuery = query;
-        if (mPrimaryOption == Choice.FIND) {
+        if (mPrimaryOption == Choice.FOOD) {
+            startFoodSearch(query);
+        } else if (mPrimaryOption == Choice.FIND) {
             startMapsSearch(query);
         } else if (mPrimaryOption == Choice.LISTEN) {
             startMusicSearch(query);
@@ -316,17 +351,26 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
     private void startMusicSearch(String query) {
         boolean shouldOpenGrooveshark = PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("grooveshark_checkbox", false);
         if (shouldOpenGrooveshark && query.matches("[A-Za-z0-9 ]+ gs")) {
-            Intent grooveSharkIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://html5.grooveshark.com/#!/search/" + query.substring(0, query.indexOf(" gs")).replaceAll(" ", "%20")));
+            Intent grooveSharkIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://html5.grooveshark.com/#!/search/" + query.substring(0, query.lastIndexOf(" gs")).replaceAll(" ", "%20")));
             startActivity(grooveSharkIntent);
         }
         dismissKeyboard();
     }
 
+    private void startFoodSearch(String query) {
+        dismissKeyboard();
+        showProgressBar();
+        if (currentLocation == null) {
+            LocationManager lm = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+            lm.requestLocationUpdates(lm.getBestProvider(crit, true), 500, 10, locationListener);
+        } else {
+            new YelpManager(this).query(query, currentLocation);
+        }
+    }
+
     private void displayWeather() {
         double longitude = currentLocation.getLongitude();
         double latitude = currentLocation.getLatitude();
-        new YelpManager(this).query("tacos", currentLocation);
-        showProgressBar();
         new WeatherManager(this).getWeatherQuery(new PlaceDetails(String.valueOf(latitude), String.valueOf(longitude)));
     }
 
@@ -336,6 +380,8 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
                 progressBar.setSmoothProgressDrawableColors(getResources().getIntArray(R.array.youtube_colors));
             } else if (mPrimaryOption == Choice.WEATHER) {
                 progressBar.setSmoothProgressDrawableColors(getResources().getIntArray(R.array.weather_colors));
+            } else if (mPrimaryOption == Choice.FOOD) {
+                progressBar.setSmoothProgressDrawableColors(getResources().getIntArray(R.array.food_colors));
             }
             if (progressBar.getVisibility() == View.GONE) {
                 progressBar.progressiveStop();
@@ -488,6 +534,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
     private void setupListenOptions() {
         setupButton();
         etSearchView.addTextChangedListener(musicTextWatcher);
+        etSearchView.setText("");
     }
 
     private void setupGoogleOptions() {
@@ -523,9 +570,6 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
                 place = ((PlacesAutoCompleteAdapter) etSearchView.getAdapter()).getItemForPosition(position);
             }
         });
-        Criteria crit = new Criteria();
-        crit.setAccuracy(Criteria.ACCURACY_LOW);
-        crit.setPowerRequirement(Criteria.NO_REQUIREMENT);
 
         if (NetworkManager.isConnected(getActivity())) {
             if (currentLocation != null) {
@@ -567,6 +611,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
             }
         }
         etSearchView.removeTextChangedListener(musicTextWatcher);
+        etSearchView.addTextChangedListener(clearSearchTextWatcher);
         etSearchView.setText(""); // Clear out old text
 
         // Show keyboard if the weather option is not chosen
@@ -723,10 +768,8 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
 
     @Override
     public void onYelpDataRetrieved(List<YelpData> datas) {
-        for(YelpData data : datas) {
-            Log.d("TAG", data.getBody());
-            Toast.makeText(getActivity(), data.getBody(), Toast.LENGTH_LONG).show();
-        }
-
+        dismissProgressBar();
+        bringUpListView();
+        lvQueryResults.setAdapter(new YelpListAdapter(getActivity(), datas));
     }
 }

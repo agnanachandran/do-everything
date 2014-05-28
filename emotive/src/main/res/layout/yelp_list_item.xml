@@ -19,23 +19,26 @@
 
             <ImageView
                 android:id="@+id/ivFoodThumbnail"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:src="@drawable/google_icon" />
+                android:adjustViewBounds="true"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:scaleType="fitXY"
+                />
 
             <TextView
-                android:id="@+id/tvDollarSymbols"
+                android:id="@+id/tvAddress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@+id/ivFoodThumbnail"
                 android:layout_alignRight="@+id/ivFoodThumbnail"
                 android:alpha="0.8"
+                android:maxLines="1"
+                android:ellipsize="end"
                 android:background="@color/transparent_black"
                 android:gravity="right"
                 android:paddingRight="5dp"
-                android:text="$$$"
                 android:textColor="@color/LightGreen"
-                android:textSize="12sp" />
+                android:textSize="10sp" />
 
         </RelativeLayout>
 
@@ -54,12 +57,13 @@
                 android:text="The Works" />
 
             <TextView
-                android:id="@+id/tvAddress"
+                android:id="@+id/tvPhoneNumber"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:maxLines="2"
+                android:focusable="false"
                 android:fontFamily="sans-serif"
-                android:text="123 Sesame Street"
+                android:text="416-123-4567"
                 android:textColor="@color/default_light_blue" />
 
             <LinearLayout
@@ -69,20 +73,23 @@
 
                 <ImageView
                     android:id="@+id/ivRatingStars"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitXY"
+                    android:layout_width="80dp"
+                    android:layout_height="18dp"
                     android:layout_marginRight="3dp" />
 
                 <TextView
-                    android:id="@+id/tvDateUploaded"
+                    android:id="@+id/tvNumberOfReviews"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif"
                     android:layout_marginLeft="5dp"
-                    android:text="5 Reviews"
+                    android:text="17 Reviews"
                     android:textColor="@color/LightGrayText" />
             </LinearLayout>
             <TextView
+                android:id="@+id/tvDistance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="1.0 km"/>

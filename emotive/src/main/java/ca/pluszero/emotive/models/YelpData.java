@@ -1,16 +1,23 @@
 package ca.pluszero.emotive.models;
 
-public class YelpData {
+import android.telephony.PhoneNumberUtils;
+
+import java.text.DecimalFormat;
+
+public class YelpData extends BaseModel {
     private final String businessName;
-    private final int distanceInKm;
+    private final float distanceInKm;
     private final String mobileUrl;
     private final String ratingImageUrl;
     private final int reviewCount;
     private final String thumbnailImageUrl;
     private final String phoneNumber;
     private final String displayPhoneNumber;
+    private final String address;
+    private DecimalFormat twoDecimalPlaces = new DecimalFormat("#.##");
 
-    public YelpData(String businessName, int distanceInKm, String mobileUrl, String ratingImageUrl, int reviewCount, String thumbnailImageUrl, String phoneNumber, String displayPhoneNumber) {
+
+    public YelpData(String businessName, float distanceInKm, String mobileUrl, String ratingImageUrl, int reviewCount, String thumbnailImageUrl, String phoneNumber, String displayPhoneNumber, String address) {
         this.businessName = businessName;
         this.distanceInKm = distanceInKm;
         this.mobileUrl = mobileUrl;
@@ -19,14 +26,27 @@ public class YelpData {
         this.thumbnailImageUrl = thumbnailImageUrl;
         this.phoneNumber = phoneNumber;
         this.displayPhoneNumber = displayPhoneNumber;
+        this.address = address;
     }
 
     public String getBusinessName() {
         return businessName;
     }
 
-    public int getDistanceInKm() {
+    public float getDistanceInKm() {
         return distanceInKm;
+    }
+
+    public float getDistanceInMiles() {
+        return getDistanceInKm() / 1.609f;
+    }
+
+    public String getFormattedDistanceInKm() {
+        return twoDecimalPlaces.format(getDistanceInKm());
+    }
+
+    public String getFormattedDistanceInMiles() {
+        return twoDecimalPlaces.format(getDistanceInMiles());
     }
 
     public String getMobileUrl() {
@@ -50,6 +70,11 @@ public class YelpData {
     }
 
     public String getDisplayPhoneNumber() {
-        return displayPhoneNumber;
+        return PhoneNumberUtils.formatNumber(displayPhoneNumber);
     }
+
+    public String getAddress() {
+        return address;
+    }
+
 }

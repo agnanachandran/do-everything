@@ -58,16 +58,19 @@
                 android:id="@+id/imgSearchIcon"
                 android:layout_width="28dp"
                 android:layout_height="match_parent"
+                android:layout_gravity="left"
                 android:layout_marginRight="3dp"
                 android:contentDescription="@string/search_icon_desc"
                 android:src="@android:drawable/ic_menu_search" />
 
             <AutoCompleteTextView
                 android:id="@+id/mainSearchView"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:layout_gravity="left"
                 android:background="@android:color/transparent"
                 android:ems="10"
+                android:ellipsize="end"
                 android:focusable="true"
                 android:fontFamily="sans-serif-light"
                 android:gravity="center_vertical"
@@ -76,6 +79,14 @@
                 android:inputType="text"
                 android:textColor="@color/white"
                 android:textColorHint="@color/LightGrayText" />
+            <ImageView
+                android:id="@+id/imgSearchClear"
+                android:layout_width="28dp"
+                android:layout_height="match_parent"
+                android:gravity="right"
+                android:layout_marginLeft="75dp"
+                android:contentDescription="@string/search_icon_desc"
+                android:src="@android:drawable/ic_menu_close_clear_cancel" />
         </LinearLayout>
 
         <ListView
@@ -103,7 +114,6 @@
         android:id="@+id/progress_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"
         android:indeterminate="true"
         app:spb_sections_count="4"
         app:spb_color="#33bee5"

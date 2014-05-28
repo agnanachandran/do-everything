@@ -59,7 +59,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
                 android:text="@string/placeholder_video_channel_name"
-                android:textColor="@color/default_light_blue" />
+                android:textColor="@color/gray" />
 
             <LinearLayout
                 android:id="@+id/ll_view_count_and_date_uploaded"
