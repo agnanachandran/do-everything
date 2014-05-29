@@ -26,6 +26,18 @@
         <item>…</item>
     </string-array>
 
+    <string-array name="Background">
+        <item>Blue Desert</item>
+        <item>Starry Sky</item>
+        <item>Starry Landscape</item>
+    </string-array>
+
+    <string-array name="backgroundNames">
+        <item>dark_sun_landscape</item>
+        <item>starry_sky</item>
+        <item>starry_landscape</item>
+    </string-array>
+
     <string name="drawer_icon_desc">Drawer icon</string>
     <string name="placeholder_search_query_textview">Search something! :)</string>
     <string name="placeholder_button">Button</string>

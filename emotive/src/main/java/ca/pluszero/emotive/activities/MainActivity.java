@@ -2,9 +2,12 @@ package ca.pluszero.emotive.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.GravityCompat;
@@ -35,7 +38,6 @@ import ca.pluszero.emotive.models.DrawerItem;
 public class MainActivity extends FragmentActivity {
 
     public static final String PRESSED_OPTION = "pressed option";
-    private static int[] backgrounds = {R.drawable.dark_sun_landscape};
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private CharSequence mActionBarTitle;
@@ -106,12 +108,24 @@ public class MainActivity extends FragmentActivity {
         super.onResume();
         MainFragment fragment = (MainFragment) getSupportFragmentManager().findFragmentByTag(MainFragment.FRAGMENT_TAG);
         fragment.dismissProgressBar();
+        setUpBackground();
 //        getSupportFragmentManager().beginTransaction().attach(getSupportFragmentManager().getFragments().get(0)).commit();
     }
 
     private void setUpBackground() {
-        int background = backgrounds[(int) (Math.random() * backgrounds.length)];
-        mDrawerLayout.setBackgroundResource(background);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String background = preferences.getString("background", "dark_sun_landscape");
+        Drawable bgDrawable;
+        if (background.equals("dark_sun_landscape")) {
+            bgDrawable = getResources().getDrawable(R.drawable.dark_sun_landscape);
+        } else if (background.equals("starry_sky")) {
+            bgDrawable = getResources().getDrawable(R.drawable.starry_sky_1);
+        } else if (background.equals("starry_landscape")) {
+            bgDrawable = getResources().getDrawable(R.drawable.starry_landscape);
+        } else {
+            bgDrawable = getResources().getDrawable(R.drawable.dark_sun_landscape);
+        }
+        mDrawerLayout.setBackground(bgDrawable);
     }
 
     private void getPressedOptionFromWidget() {

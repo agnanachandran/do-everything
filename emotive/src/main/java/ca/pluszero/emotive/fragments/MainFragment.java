@@ -77,7 +77,6 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
     public static final String FRAGMENT_TAG = "main_fragment";
     private static final String DEGREE_SYMBOL = "°";
     private Location currentLocation;
-    private boolean startedFoodSearch;
 
     Criteria crit = new Criteria();
     {
@@ -140,7 +139,6 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         @Override
         public View makeView() {
 
-            // Create a new TextView
             TextView t = new TextView(getActivity());
             t.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL);
             t.setShadowLayer(3, -3, -3, R.color.text_shadow);

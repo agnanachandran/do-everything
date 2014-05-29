@@ -1,5 +1,11 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
+    <ListPreference
+        android:defaultValue="dark_sun_landscape"
+        android:key="background"
+        android:title="@string/pref_title_choose_background"
+        android:entries="@array/Background"
+        android:entryValues="@array/backgroundNames" />
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="grooveshark_checkbox"
