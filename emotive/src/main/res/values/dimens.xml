@@ -7,7 +7,7 @@
     <dimen name="default_vertical_margin">10dp</dimen>
     <dimen name="default_small_vertical_margin">5dp</dimen>
     <dimen name="default_medium_vertical_margin">7dp</dimen>
-    <dimen name="right_aligned_info">21sp</dimen>
+    <dimen name="right_aligned_info">18sp</dimen>
     <dimen name="weather_text_size">80sp</dimen>
 
 </resources>

@@ -5,7 +5,6 @@
         android:top="130dp"
         android:left="150dp"
         android:right="150dp"
-        android:bottom="130dp"
-        />
+        android:bottom="130dp" />
     <item android:drawable="@drawable/outer_circle" />
 </layer-list>

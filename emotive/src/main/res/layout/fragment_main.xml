@@ -114,7 +114,7 @@
             android:clipToPadding="false"
             android:visibility="gone">
 
-            <include layout="@layout/layout_weather" />
+            <include layout="@layout/weather" />
         </ScrollView>
     </LinearLayout>
 
