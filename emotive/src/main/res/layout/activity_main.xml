@@ -27,7 +27,6 @@
         android:background="#dd000000"
         android:choiceMode="singleChoice"
         android:divider="@drawable/drawer_list_divider"
-        android:dividerHeight="1dp"
-        android:paddingTop="?android:attr/actionBarSize"/>
+        android:dividerHeight="1dp"/>
 
 </android.support.v4.widget.DrawerLayout>

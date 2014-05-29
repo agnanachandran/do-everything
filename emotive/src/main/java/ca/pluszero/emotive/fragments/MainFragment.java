@@ -183,8 +183,12 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_main, container, false);
-        rootView.findViewById(R.id.outermost_main_container).setPadding(0, ((MainActivity) getActivity()).getStatusBarHeight()
+        if (isKitKatDevice()) {
+            rootView.findViewById(R.id.outermost_main_container).setPadding(0, ((MainActivity) getActivity()).getStatusBarHeight()
                 + ((MainActivity) getActivity()).getActionBarSize() + 30, 0, 0);
+        } else {
+            rootView.findViewById(R.id.outermost_main_container).setPadding(0, 20, 0, 0);
+        }
 
         lvQueryResults = (ListView) rootView.findViewById(R.id.lvQueryResults);
         progressBar = (SmoothProgressBar) rootView.findViewById(R.id.progress_bar);
@@ -193,6 +197,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
             lvQueryResults.setPadding(0, 0, 0, ScreenUtils.getNavbarHeight(getResources()));
             lvQueryResults.setClipToPadding(false);
         }
+        ((LinearLayout) rootView.findViewById(R.id.ll_panel_container)).setClipToPadding(false);
         etSearchView = (AutoCompleteTextView) rootView.findViewById(R.id.mainSearchView);
         setupAnimations();
 

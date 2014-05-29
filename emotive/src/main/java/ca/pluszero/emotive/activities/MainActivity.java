@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -71,7 +72,9 @@ public class MainActivity extends FragmentActivity {
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
-        mDrawerList.setPadding(15, statusBarHeight + actionBarSize, 0, 4);
+        if (isKitKatDevice()) {
+            mDrawerList.setPadding(15, statusBarHeight + actionBarSize, 0, 4);
+        }
 
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_navigation_drawer, R.string.drawer_open, R.string.drawer_close) {
             // Called when drawer has settled in completely closed state
@@ -242,6 +245,10 @@ public class MainActivity extends FragmentActivity {
             result = getResources().getDimensionPixelSize(resourceId);
         }
         return result;
+    }
+
+    private boolean isKitKatDevice() {
+        return Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT;
     }
 
     public void setOnHomePage(boolean onHomePage) {

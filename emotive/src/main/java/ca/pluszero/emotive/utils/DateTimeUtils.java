@@ -52,10 +52,14 @@ public final class DateTimeUtils {
     }
 
     public static String formatMillis(String millis) {
-        int total = Integer.parseInt(millis);
-        Date date = new Date(total);
-        DateFormat formatter = new SimpleDateFormat("m:ss");
-        return formatter.format(date);
+        if (millis != null && !millis.isEmpty()) {
+            int total = Integer.parseInt(millis);
+            Date date = new Date(total);
+            DateFormat formatter = new SimpleDateFormat("m:ss");
+            return formatter.format(date);
+        } else {
+            return ""; // no time available for some songs?
+        }
     }
 
     public static String formatMillisToHourOfDay(long timeInMs) {
