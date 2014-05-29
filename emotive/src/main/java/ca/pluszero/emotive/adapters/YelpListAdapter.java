@@ -44,7 +44,7 @@ public class YelpListAdapter extends BaseArrayAdapter<YelpData> {
         }
         ViewHolder holder = (ViewHolder) rowView.getTag();
         final YelpData data = getItem(position);
-        rowView.setOnClickListener(new View.OnClickListener() {
+        rowView.findViewById(R.id.yelp_list_item_container_view).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (data.getMobileUrl() != null && !data.getMobileUrl().isEmpty()) {
@@ -56,12 +56,6 @@ public class YelpListAdapter extends BaseArrayAdapter<YelpData> {
         });
         holder.businessName.setText(data.getBusinessName());
         imageLoader.displayImage(data.getThumbnailImageUrl(), holder.thumbnail);
-        holder.thumbnail.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // go to location
-            }
-        });
         holder.phoneNumber.setText(data.getDisplayPhoneNumber());
         holder.phoneNumber.setOnClickListener(new View.OnClickListener() {
 

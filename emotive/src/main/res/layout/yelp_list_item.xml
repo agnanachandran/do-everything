@@ -6,6 +6,7 @@
     android:background="@drawable/bg_shadow_card" >
 
     <LinearLayout
+        android:id="@+id/yelp_list_item_container_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"

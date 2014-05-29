@@ -35,6 +35,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -578,7 +579,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
     }
 
     private void setupButton() {
-        LinearLayout searchContainer = (LinearLayout) rootView.findViewById(R.id.ll_search_container);
+        RelativeLayout searchContainer = (RelativeLayout) rootView.findViewById(R.id.ll_search_container);
         showPanel(true);
 
         currentQuery = null;
