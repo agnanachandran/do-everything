@@ -365,9 +365,18 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         showProgressBar();
         if (currentLocation == null) {
             LocationManager lm = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-            lm.requestLocationUpdates(lm.getBestProvider(crit, true), 500, 10, locationListener);
+            String locationProvider = getBestLocationProvider(lm);
+            if (locationProvider != null) {
+                lm.requestLocationUpdates(locationProvider, 500, 10, locationListener);
+            } else {
+                Toast.makeText(getActivity(), "Please turn on location services.", Toast.LENGTH_SHORT).show();
+            }
         } else {
-            new YelpManager(this).query(query, currentLocation);
+            if (NetworkManager.isConnected(getActivity())) {
+                new YelpManager(this).query(query, currentLocation);
+            } else {
+                displayNetworkConnectionToast();
+            }
         }
     }
 
@@ -574,13 +583,21 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
             if (currentLocation != null) {
                 displayWeather();
             } else {
-                showProgressBar();
                 LocationManager lm = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-                lm.requestLocationUpdates(lm.getBestProvider(crit, true), 500, 10, locationListener);
+                String locationProvider = getBestLocationProvider(lm);
+                if (locationProvider != null) {
+                    lm.requestLocationUpdates(locationProvider, 500, 10, locationListener);
+                    showProgressBar();
+                } else {
+                    Toast.makeText(getActivity(), "Please turn on location services.", Toast.LENGTH_SHORT).show();
+                }
             }
         }
     }
 
+    private String getBestLocationProvider(LocationManager manager) {
+        return manager.getBestProvider(crit, true);
+    }
     private void setupButton() {
         RelativeLayout searchContainer = (RelativeLayout) rootView.findViewById(R.id.ll_search_container);
         showPanel(true);

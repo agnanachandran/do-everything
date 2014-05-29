@@ -59,7 +59,7 @@
         <item name="android:layout_marginTop">5dp</item>
         <item name="android:fontFamily">sans-serif-light</item>
         <item name="android:textColor">@color/WhiteSmoke</item>
-        <item name="android:textSize">21sp</item>
+        <item name="android:textSize">@dimen/right_aligned_info</item>
     </style>
 
 </resources>
