@@ -183,7 +183,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_main, container, false);
-        if (isKitKatDevice()) {
+        if (isAtLeastKitKatDevice()) {
             rootView.findViewById(R.id.outermost_main_container).setPadding(0, ((MainActivity) getActivity()).getStatusBarHeight()
                 + ((MainActivity) getActivity()).getActionBarSize() + 30, 0, 0);
         } else {
@@ -193,7 +193,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         lvQueryResults = (ListView) rootView.findViewById(R.id.lvQueryResults);
         progressBar = (SmoothProgressBar) rootView.findViewById(R.id.progress_bar);
 
-        if (isKitKatDevice()) {
+        if (isAtLeastKitKatDevice()) {
             lvQueryResults.setPadding(0, 0, 0, ScreenUtils.getNavbarHeight(getResources()));
             lvQueryResults.setClipToPadding(false);
         }
@@ -709,7 +709,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         View weatherContainer = rootView.findViewById(R.id.weather_container);
         weatherContainer.setVisibility(View.VISIBLE);
 
-        if (isKitKatDevice()) {
+        if (isAtLeastKitKatDevice()) {
             weatherContainer.setPadding(0, 0, 0, ScreenUtils.getNavbarHeight(getResources()));
         }
 
@@ -757,8 +757,8 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         }
     }
 
-    private boolean isKitKatDevice() {
-        return Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT;
+    private boolean isAtLeastKitKatDevice() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
     }
 
     private void setupCityCountryWeatherInfo() {
