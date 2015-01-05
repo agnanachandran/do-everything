@@ -1,6 +1,5 @@
 package ca.pluszero.emotive.fragments;
 
-import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -29,7 +28,6 @@ import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -115,14 +113,10 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
     private Button bSecondButton;
     private Button bThirdButton;
     private Button bFourthButton;
-    private Button bFifthButton;
-    private Button bSixthButton;
     private ImageView imgFirstOption;
     private ImageView imgSecondOption;
     private ImageView imgThirdOption;
     private ImageView imgFourthOption;
-    private ImageView imgFifthOption;
-    private ImageView imgSixthOption;
     private Button[] primaryButtons;
     private ImageView[] primaryImages;
     private ListView lvQueryResults;
@@ -281,18 +275,14 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         bSecondButton = (Button) rootView.findViewById(R.id.bSecondOption);
         bThirdButton = (Button) rootView.findViewById(R.id.bThirdOption);
         bFourthButton = (Button) rootView.findViewById(R.id.bFourthOption);
-        bFifthButton = (Button) rootView.findViewById(R.id.bFifthOption);
-        bSixthButton = (Button) rootView.findViewById(R.id.bSixthOption);
 
         imgFirstOption = (ImageView) rootView.findViewById(R.id.imgFirstOption);
         imgSecondOption = (ImageView) rootView.findViewById(R.id.imgSecondOption);
         imgThirdOption = (ImageView) rootView.findViewById(R.id.imgThirdOption);
         imgFourthOption = (ImageView) rootView.findViewById(R.id.imgFourthOption);
-        imgFifthOption = (ImageView) rootView.findViewById(R.id.imgFifthOption);
-        imgSixthOption = (ImageView) rootView.findViewById(R.id.imgSixthOption);
 
-        primaryButtons = new Button[]{bFirstButton, bSecondButton, bThirdButton, bFourthButton, bFifthButton, bSixthButton};
-        primaryImages = new ImageView[]{imgFirstOption, imgSecondOption, imgThirdOption, imgFourthOption, imgFifthOption, imgSixthOption};
+        primaryButtons = new Button[]{bFirstButton, bSecondButton, bThirdButton, bFourthButton};
+        primaryImages = new ImageView[]{imgFirstOption, imgSecondOption, imgThirdOption, imgFourthOption};
 
         List<Choice> choices = fetchChoices();
         for (int i = 0; i < primaryButtons.length; i++) {
@@ -322,15 +312,13 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
 //            return Collections.unmodifiableList(choices);
 //        } catch (SQLException e) {
 //            Log.e(MainFragment.class.getName(), "SQLException: " + e.getMessage());
+//        }
         List<Choice> choices = new ArrayList<Choice>();
         choices.add(Choice.FOOD);
         choices.add(Choice.LISTEN);
-        choices.add(Choice.GOOGLE);
-        choices.add(Choice.FIND);
         choices.add(Choice.YOUTUBE);
         choices.add(Choice.WEATHER);
         return choices;
-//        }
 
     }
 
@@ -338,12 +326,8 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         currentQuery = query;
         if (mPrimaryOption == Choice.FOOD) {
             startFoodSearch(query);
-        } else if (mPrimaryOption == Choice.FIND) {
-            startMapsSearch(query);
         } else if (mPrimaryOption == Choice.LISTEN) {
             startMusicSearch(query);
-        } else if (mPrimaryOption == Choice.GOOGLE) {
-            startGoogleSearchAnything(query);
         } else if (mPrimaryOption == Choice.YOUTUBE) {
             startYouTubeSearch(query);
         } else if (mPrimaryOption == Choice.WEATHER) {
@@ -464,18 +448,6 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         Toast.makeText(getActivity(), "Please make sure you are connected to the internet.", Toast.LENGTH_LONG).show();
     }
 
-    private void startMapsSearch(CharSequence query) {
-        String url = "geo:0,0?q=" + query;
-        Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(url));
-        startActivity(intent);
-    }
-
-    private void startGoogleSearchAnything(CharSequence query) {
-        Intent browserIntent = new Intent(Intent.ACTION_WEB_SEARCH);
-        browserIntent.putExtra(SearchManager.QUERY, query.toString());
-        startActivity(browserIntent);
-    }
-
     private void startMusicSearchDevice(String query) {
         MusicManager musicLauncher = new MusicManager(this, this);
         String[] columns = {MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.DURATION, MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.ALBUM};
@@ -516,14 +488,6 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
                 mPrimaryOption = Choice.LISTEN;
                 setupListenOptions();
                 break;
-            case GOOGLE:
-                mPrimaryOption = Choice.GOOGLE;
-                setupGoogleOptions();
-                break;
-            case FIND:
-                mPrimaryOption = Choice.FIND;
-                setupFindOptions();
-                break;
             case YOUTUBE:
                 mPrimaryOption = Choice.YOUTUBE;
                 setupYoutubeOptions();
@@ -543,23 +507,6 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         setupButton();
         etSearchView.addTextChangedListener(musicTextWatcher);
         etSearchView.setText("");
-    }
-
-    private void setupGoogleOptions() {
-        setupButton();
-    }
-
-    private void setupFindOptions() {
-        setupButton();
-        etSearchView.setAdapter(new PlacesAutoCompleteAdapter(
-                getActivity(), R.layout.simple_list_item));
-        etSearchView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                setTextAndCursorOfSearchEditText(adapterView, position);
-            }
-        });
     }
 
     private void setupYoutubeOptions() {
@@ -620,12 +567,6 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
 
         lvQueryResults.setAdapter(null);
 
-        if (mPrimaryOption != Choice.FIND) {
-            etSearchView.setOnItemClickListener(null);
-            if (etSearchView.getAdapter() != null) {
-                etSearchView.setAdapter((ArrayAdapter<String>) null);
-            }
-        }
         etSearchView.removeTextChangedListener(musicTextWatcher);
         etSearchView.addTextChangedListener(clearSearchTextWatcher);
         etSearchView.setText(""); // Clear out old text

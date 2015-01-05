@@ -93,7 +93,6 @@ public class MusicManager implements LoaderManager.LoaderCallbacks<Cursor> {
             this.listener.onLoadFinished(cursor);
 
             int index = cursor.getColumnIndex(MediaStore.Audio.Media.DATA);
-            while (cursor.moveToNext()) {
                 // If there's only one result, play it
 //                if (cursor.getPosition() == 0 && cursor.getCount() == 1) {
 //                    String songPath = cursor.getString(index);
@@ -114,7 +113,6 @@ public class MusicManager implements LoaderManager.LoaderCallbacks<Cursor> {
                 // e.printStackTrace();
                 // }
                 // mp.start();
-            }
         }
     }
 

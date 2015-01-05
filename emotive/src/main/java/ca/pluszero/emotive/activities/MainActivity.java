@@ -72,7 +72,7 @@ public class MainActivity extends FragmentActivity {
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
-        if (isKitKatDevice()) {
+        if (isAtLeastKitKatDevice()) {
             mDrawerList.setPadding(15, statusBarHeight + actionBarSize, 0, 4);
         }
 
@@ -247,8 +247,8 @@ public class MainActivity extends FragmentActivity {
         return result;
     }
 
-    private boolean isKitKatDevice() {
-        return Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT;
+    private boolean isAtLeastKitKatDevice() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
     }
 
     public void setOnHomePage(boolean onHomePage) {

@@ -6,11 +6,11 @@
         android:title="@string/pref_title_choose_background"
         android:entries="@array/Background"
         android:entryValues="@array/backgroundNames" />
-    <CheckBoxPreference
-        android:defaultValue="false"
-        android:key="grooveshark_checkbox"
-        android:summary="@string/pref_description_open_grooveshark"
-        android:title="@string/pref_title_open_grooveshark" />
+    <!--<CheckBoxPreference-->
+        <!--android:defaultValue="false"-->
+        <!--android:key="play_music_in_bg_checkbox"-->
+        <!--android:summary="@string/pref_description_play_music_bg"-->
+        <!--android:title="@string/pref_title_play_music_bg" />-->
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="fahrenheit_checkbox"

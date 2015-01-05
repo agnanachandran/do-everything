@@ -16,7 +16,7 @@ import ca.pluszero.emotive.models.Choice;
 
 public class EmotiveAppWidgetProvider extends AppWidgetProvider {
 
-    private static final Set<String> CHOICE_ACTIONS = new HashSet();
+    private static final Set<String> CHOICE_ACTIONS = new HashSet<String>();
     static {
         for (Choice choice : Choice.values()) {
             CHOICE_ACTIONS.add(choice.toString());
@@ -33,8 +33,6 @@ public class EmotiveAppWidgetProvider extends AppWidgetProvider {
             // Create an Intent to launch ExampleActivity
             PendingIntent pendingFoodIntent = getIntentWithChoice(context, Choice.FOOD);
             PendingIntent pendingListenIntent = getIntentWithChoice(context, Choice.LISTEN);
-            PendingIntent pendingLearnIntent = getIntentWithChoice(context, Choice.GOOGLE);
-            PendingIntent pendingFindIntent = getIntentWithChoice(context, Choice.FIND);
             PendingIntent pendingWatchIntent = getIntentWithChoice(context, Choice.YOUTUBE);
             PendingIntent pendingWeatherIntent = getIntentWithChoice(context, Choice.WEATHER);
 
@@ -45,14 +43,10 @@ public class EmotiveAppWidgetProvider extends AppWidgetProvider {
             views.setOnClickPendingIntent(R.id.imgFirstOption, pendingFoodIntent);
             views.setOnClickPendingIntent(R.id.bSecondOption, pendingListenIntent);
             views.setOnClickPendingIntent(R.id.imgSecondOption, pendingListenIntent);
-            views.setOnClickPendingIntent(R.id.bThirdOption, pendingLearnIntent);
-            views.setOnClickPendingIntent(R.id.imgThirdOption, pendingLearnIntent);
-            views.setOnClickPendingIntent(R.id.bFourthOption, pendingFindIntent);
-            views.setOnClickPendingIntent(R.id.imgFourthOption, pendingFindIntent);
-            views.setOnClickPendingIntent(R.id.bFifthOption, pendingWatchIntent);
-            views.setOnClickPendingIntent(R.id.imgFifthOption, pendingWatchIntent);
-            views.setOnClickPendingIntent(R.id.bSixthOption, pendingWeatherIntent);
-            views.setOnClickPendingIntent(R.id.imgSixthOption, pendingWeatherIntent);
+            views.setOnClickPendingIntent(R.id.bThirdOption, pendingWatchIntent);
+            views.setOnClickPendingIntent(R.id.imgThirdOption, pendingWatchIntent);
+            views.setOnClickPendingIntent(R.id.bFourthOption, pendingWeatherIntent);
+            views.setOnClickPendingIntent(R.id.imgFourthOption, pendingWeatherIntent);
 
             // Tell the AppWidgetManager to perform an update on the current app widget
             appWidgetManager.updateAppWidget(appWidgetId, views);
