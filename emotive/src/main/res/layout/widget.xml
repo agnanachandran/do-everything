@@ -3,21 +3,24 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_gravity="center"
     android:gravity="center">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/ll_primary_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
         android:background="@drawable/bg_shadow_card"
         android:orientation="vertical"
+        android:layout_centerInParent="true"
+        android:paddingTop="13dp"
         android:paddingBottom="0dp">
 
         <LinearLayout
             android:id="@+id/horizontalButtonLinearLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
             android:background="@drawable/roundrect">
 
             <LinearLayout
@@ -53,11 +56,11 @@
         <LinearLayout
             android:id="@+id/horizontalButtonLinearLayout2"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="15dp"
             android:background="@drawable/roundrect">
-
+ <!-- paddingRight is a hack -->
 
             <LinearLayout
                 style="@style/primaryBtnContainer"

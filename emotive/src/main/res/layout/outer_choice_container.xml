@@ -6,6 +6,9 @@
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:layout_marginTop="15dp"
+    android:paddingTop="20dp"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp"
     android:background="@drawable/bg_shadow_card"
     android:orientation="vertical">
 
@@ -13,6 +16,8 @@
         android:id="@+id/horizontalButtonLinearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingRight="1dp"
+        android:paddingEnd="1dp"
         android:background="@drawable/roundrect">
 
         <LinearLayout
@@ -56,6 +61,8 @@
         android:id="@+id/horizontalButtonLinearLayout2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingRight="1dp"
+        android:paddingEnd="1dp"
         android:background="@drawable/roundrect">
 
         <LinearLayout

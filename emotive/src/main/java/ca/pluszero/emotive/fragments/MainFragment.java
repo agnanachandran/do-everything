@@ -28,6 +28,7 @@ import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -209,6 +210,8 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
         LocationManager lm = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         lm.removeUpdates(locationListener);
 
+         // set useless adapter (empty item list). Necessary to reset the adapter after places autocomplete adapter use in weather view.
+        etSearchView.setAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, new String[] {}));
         etSearchView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -539,12 +542,15 @@ public class MainFragment extends Fragment implements View.OnClickListener, YouT
                     Toast.makeText(getActivity(), "Please turn on location services.", Toast.LENGTH_SHORT).show();
                 }
             }
+        } else {
+            displayNetworkConnectionToast();
         }
     }
 
     private String getBestLocationProvider(LocationManager manager) {
         return manager.getBestProvider(crit, true);
     }
+
     private void setupButton() {
         RelativeLayout searchContainer = (RelativeLayout) rootView.findViewById(R.id.ll_search_container);
         showPanel(true);
